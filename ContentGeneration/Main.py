@@ -12,6 +12,7 @@ client = minecraft_pb2_grpc.MinecraftServiceStub(channel)
 
 class Main:
     work = []
+    total_surface_dict = {}
 
     def run(self):
         self.create_area_for_work()
@@ -19,19 +20,17 @@ class Main:
         first_time = time.time()
         result = self.pool_handler()
         print(time.time() - first_time)
-        total_dict = {}
-        for dick in result:
-            total_dict.update(dick)
-        print(len(total_dict))
-        self.build_surface(total_dict)
+        for dictionary in result:
+            self.total_surface_dict.update(dictionary)
+        self.build_surface()
 
     def create_area_for_work(self):
         for x in range(box_x_min, box_x_max):
-            self.work.append((x, [box_z_min, box_z_max]))
+            self.work.append({"x": x, "z_min": box_z_min, "z_max": box_z_max})
 
     def work_log(self, work_data):
-        # result = self.smart_row_read(work_data[0], work_data[0], work_data[1][0], work_data[1][1])
-        result = self.read_part_of_world(work_data[0], work_data[0], work_data[1][0], work_data[1][1])['surface_dict']
+        result = self.read_part_of_world(work_data["x"], work_data["x"], work_data["z_min"],
+                                         work_data["z_max"])['surface_dict']
         return result
 
     def pool_handler(self):
@@ -39,11 +38,11 @@ class Main:
         result = p.map(self.work_log, self.work)
         return result
 
-    def build_surface(self, block_dict):
+    def build_surface(self):
         blocks = []
-        for value in block_dict.values():
+        for value in self.total_surface_dict.values():
             block = value["block"]
-            block.type = WOOL
+            block.type = COBBLESTONE
             blocks.append(block)
         client.spawnBlocks(Blocks(blocks=blocks))
 
@@ -70,4 +69,3 @@ class Main:
 
 if __name__ == '__main__':
     Main().run()
-
