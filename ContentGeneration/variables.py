@@ -1,0 +1,12 @@
+from minecraft_pb2 import *
+
+# Box area
+box_x_min = 1
+box_x_max = 11
+box_z_min = 1
+box_z_max = 11
+
+# List of blocks that is ignored
+skip_list = [AIR, TALLGRASS, RED_FLOWER, YELLOW_FLOWER, CHORUS_FLOWER, LEAVES, LEAVES2, VINE, SAPLING, WATERLILY,
+             RED_MUSHROOM, BROWN_MUSHROOM, REEDS, POTATOES, MELON_BLOCK, MELON_STEM, PUMPKIN_STEM, PUMPKIN, DEADBUSH,
+             SNOW_LAYER, WHEAT, RAIL, CHORUS_PLANT, DOUBLE_PLANT, FIRE, COCOA, CARROTS, CACTUS]
