@@ -1,0 +1,62 @@
+    # def smart_row_read(self, min_x, max_x, min_z, max_z):
+    #     surface_dict = {}
+    #     first_read = True
+    #     row_y = 100
+    #     last_y = 100
+    #     for x in range(min_x, max_x+1):
+    #         new_row = True
+    #         for z in range(min_z, max_z+1):
+    #             if first_read:
+    #                 block = self.find_surface(x, z)
+    #                 surface_dict[x, z] = {"y": block.position.y, "type": block.type, "block": block}
+    #                 last_y = block.position.y
+    #                 first_read = False
+    #             else:
+    #                 if new_row:
+    #                     last_y = row_y
+    #                     block = self.find_surface(x, z, last_y)
+    #                     surface_dict[x, z] = {"y": block.position.y, "type": block.type, "block": block}
+    #                     last_y = block.position.y
+    #                     row_y = block.position.y
+    #                     new_row = False
+    #                 else:
+    #                     block = self.find_surface(x, z, last_y)
+    #                     surface_dict[x, z] = {"y": block.position.y, "type": block.type, "block": block}
+    #                     last_y = block.position.y
+    #     return surface_dict
+    #
+    # def find_surface(self, x, z, y=160):
+    #     counter = 0
+    #     surface_found = False
+    #     last_was_in_skip_list = False
+    #     read_more_than_once = False
+    #     old_block = None
+    #     while not surface_found:
+    #         counter += 1
+    #         block = self.read_block(x, z, y)[0]
+    #         if counter > 300:
+    #             return -1
+    #         elif block.type in skip_list:
+    #             if not last_was_in_skip_list and read_more_than_once:
+    #                 return old_block
+    #             old_block = block
+    #             y -= 1
+    #             last_was_in_skip_list = True
+    #             read_more_than_once = True
+    #             continue
+    #         else:
+    #             if last_was_in_skip_list and read_more_than_once:
+    #                 return block
+    #             old_block = block
+    #             y += 1
+    #             last_was_in_skip_list = False
+    #             read_more_than_once = True
+    #             continue
+    #
+    # def read_block(self, x, z, y):
+    #     result = client.readCube(Cube(
+    #         min=Point(x=x, y=y, z=z),
+    #         max=Point(x=x, y=y, z=z)
+    #     ))
+    #
+    #     return result.blocks
