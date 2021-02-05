@@ -25,7 +25,7 @@ class Main:
         self.build_surface()
 
     def create_area_for_work(self):
-        for x in range(box_x_min, box_x_max):
+        for x in range(box_x_min, box_x_max + 1):
             self.work.append({"x": x, "z_min": box_z_min, "z_max": box_z_max})
 
     def work_log(self, work_data):
