@@ -21,13 +21,13 @@ class MapAnalysis:
         self.create_area_for_work()
         first_time = time.time()
         result = self.pool_handler()
-        print(time.time() - first_time)
+        print("Time:", time.time() - first_time)
         for dictionary in result:
             total_block_dict.update(dictionary['block_dict'])
             total_surface_dict.update(dictionary['surface_dict'])
         result = self.find_areas_for_districts2(total_surface_dict)
-        print(len(result))
-        print(result)
+        print("Length: ", len(result))
+        print("Result: ", result)
         # district_areas.extend()
         return total_block_dict, total_surface_dict
 
@@ -64,24 +64,24 @@ class MapAnalysis:
                     surface_dict[x, z] = {"y": y, "type": block.type, "block": block}
         return {"surface_dict": surface_dict, "block_dict": block_dict}
 
-    def find_areas_for_districts(self, surface_dict):
-        areas = []
-        checked_nodes = []
-        nodes_to_be_checked = []
-        current_area = []
-        for block in surface_dict:
-            nodes_to_be_checked.append(block)
-            current_area.append(block)
-            break
-        while nodes_to_be_checked:
-            current_node = nodes_to_be_checked.pop()
-            checked_nodes.append(current_node)
-            neighbors = self.get_neighbors(surface_dict, current_node[0], current_node[1])
-            for neighbor in neighbors:
-                nodes_to_be_checked.append(neighbor)
-                if surface_dict[current_node]['y'] == surface_dict[neighbor]['y']:
-                    current_area.append(neighbor)
-        return areas
+    # def find_areas_for_districts(self, surface_dict):
+    #     areas = []
+    #     checked_nodes = []
+    #     nodes_to_be_checked = []
+    #     current_area = []
+    #     for block in surface_dict:
+    #         nodes_to_be_checked.append(block)
+    #         current_area.append(block)
+    #         break
+    #     while nodes_to_be_checked:
+    #         current_node = nodes_to_be_checked.pop()
+    #         checked_nodes.append(current_node)
+    #         neighbors = self.get_neighbors(surface_dict, current_node[0], current_node[1])
+    #         for neighbor in neighbors:
+    #             nodes_to_be_checked.append(neighbor)
+    #             if surface_dict[current_node]['y'] == surface_dict[neighbor]['y']:
+    #                 current_area.append(neighbor)
+    #     return areas
 
     def find_areas_for_districts2(self, surface_dict):
         areas = []
@@ -92,16 +92,15 @@ class MapAnalysis:
             if cheese not in checked_nodes:
                 result = self.fill_me_daddy(surface_dict, cheese[0], cheese[1], checked_nodes)
                 areas.append(result)
-                print(len(checked_nodes))
+                print("hello")
         return areas
 
     def fill_me_daddy(self, surface_dict, block_x, block_z, checked_nodes):
         nodes_to_be_checked = []
+        checked_neighbors = []
         current_area = []
         nodes_to_be_checked.append((block_x, block_z))
-        i = 0
         while nodes_to_be_checked:
-            i += 1
             current_node = nodes_to_be_checked.pop()
             x = current_node[0]
             z = current_node[1]
@@ -109,12 +108,12 @@ class MapAnalysis:
             neighbors = self.get_neighbors(surface_dict, x, z)
             for neighbor in neighbors:
                 if neighbor not in checked_nodes:
-                    if surface_dict[current_node]['y'] == surface_dict[neighbor]['y']:
-                        # print("yay")
-                        current_area.append(neighbor)
-                        nodes_to_be_checked.append(neighbor)
+                    if neighbor not in checked_neighbors:
+                        if surface_dict[current_node]['y'] == surface_dict[neighbor]['y']:
+                            checked_neighbors.append(neighbor)
+                            current_area.append(neighbor)
+                            nodes_to_be_checked.append(neighbor)
             checked_nodes.append(current_node)
-        # print(i)
         return current_area
 
     def get_neighbors(self, surface_dict, block_x, block_z):
