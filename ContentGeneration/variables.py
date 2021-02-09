@@ -1,10 +1,10 @@
 from minecraft_pb2 import *
 
 # Box area (they are made to be inclusive)
-box_x_min = 0
-box_x_max = 0
-box_z_min = -11
-box_z_max = -11
+box_x_min = -100
+box_x_max = -4
+box_z_min = 201
+box_z_max = 300
 
 # List of blocks that is ignored
 skip_list = [DARK_OAK_DOOR, IRON_DOOR, BIRCH_DOOR, JUNGLE_DOOR, ACACIA_DOOR, SPRUCE_DOOR, WOODEN_DOOR, IRON_TRAPDOOR,
@@ -14,4 +14,4 @@ skip_list = [DARK_OAK_DOOR, IRON_DOOR, BIRCH_DOOR, JUNGLE_DOOR, ACACIA_DOOR, SPR
              WALL_SIGN, WOODEN_BUTTON, STONE_BUTTON, TRIPWIRE, AIR, BEETROOTS, TALLGRASS, RED_FLOWER, YELLOW_FLOWER,
              CHORUS_FLOWER, LEAVES, LEAVES2, VINE, SAPLING, WATERLILY, RED_MUSHROOM, BROWN_MUSHROOM, REEDS, POTATOES,
              MELON_BLOCK, MELON_STEM, PUMPKIN_STEM, PUMPKIN, DEADBUSH, SNOW_LAYER, WHEAT, RAIL, CHORUS_PLANT,
-             DOUBLE_PLANT, FIRE, COCOA, CARROTS, CACTUS]
+             DOUBLE_PLANT, FIRE, COCOA, CARROTS, CACTUS, TORCH]
