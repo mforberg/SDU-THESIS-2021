@@ -61,3 +61,23 @@ MAIN:
     #     ))
     #
     #     return result.blocks
+
+map_analysis
+    # def find_areas_for_districts(self, surface_dict):
+    #     areas = []
+    #     checked_nodes = []
+    #     nodes_to_be_checked = []
+    #     current_area = []
+    #     for block in surface_dict:
+    #         nodes_to_be_checked.append(block)
+    #         current_area.append(block)
+    #         break
+    #     while nodes_to_be_checked:
+    #         current_node = nodes_to_be_checked.pop()
+    #         checked_nodes.append(current_node)
+    #         neighbors = self.get_neighbors(surface_dict, current_node[0], current_node[1])
+    #         for neighbor in neighbors:
+    #             nodes_to_be_checked.append(neighbor)
+    #             if surface_dict[current_node]['y'] == surface_dict[neighbor]['y']:
+    #                 current_area.append(neighbor)
+    #     return areas

@@ -24,8 +24,8 @@ class MapAnalysis:
         for dictionary in result:
             total_block_dict.update(dictionary['block_dict'])
             total_surface_dict.update(dictionary['surface_dict'])
-        district_areas = self.find_areas_for_districts2(total_surface_dict)
-        district_areas.sort(key=len, reverse=True)
+        district_areas = self.find_areas_for_districts(total_surface_dict)
+        district_areas.sort(key=lambda x: len(x[0]), reverse=True)  # [[[x, z][x,z]],[fluid_amount] [].....]
         return total_block_dict, total_surface_dict, district_areas
 
     def create_area_for_work(self):
@@ -61,40 +61,22 @@ class MapAnalysis:
                     surface_dict[x, z] = {"y": y, "type": block.type, "block": block}
         return {"surface_dict": surface_dict, "block_dict": block_dict}
 
-    # def find_areas_for_districts(self, surface_dict):
-    #     areas = []
-    #     checked_nodes = []
-    #     nodes_to_be_checked = []
-    #     current_area = []
-    #     for block in surface_dict:
-    #         nodes_to_be_checked.append(block)
-    #         current_area.append(block)
-    #         break
-    #     while nodes_to_be_checked:
-    #         current_node = nodes_to_be_checked.pop()
-    #         checked_nodes.append(current_node)
-    #         neighbors = self.get_neighbors(surface_dict, current_node[0], current_node[1])
-    #         for neighbor in neighbors:
-    #             nodes_to_be_checked.append(neighbor)
-    #             if surface_dict[current_node]['y'] == surface_dict[neighbor]['y']:
-    #                 current_area.append(neighbor)
-    #     return areas
-
-    def find_areas_for_districts2(self, surface_dict):
+    def find_areas_for_districts(self, surface_dict):
         areas = []
         surface_dict_iter = iter(surface_dict)
         checked_nodes = []
         while len(checked_nodes) < len(surface_dict):
-            cheese = next(surface_dict_iter)
-            if cheese not in checked_nodes:
-                result = self.fill_me_daddy(surface_dict, cheese[0], cheese[1], checked_nodes)
-                areas.append(result)
+            node = next(surface_dict_iter)
+            if node not in checked_nodes:
+                result, fluid_amount = self.find_area(surface_dict, node[0], node[1], checked_nodes)
+                areas.append([result, fluid_amount])
         return areas
 
-    def fill_me_daddy(self, surface_dict, block_x, block_z, checked_nodes):
+    def find_area(self, surface_dict, block_x, block_z, checked_nodes):
         nodes_to_be_checked = []
         checked_neighbors = []
         current_area = []
+        fluid_amount = 0
         nodes_to_be_checked.append((block_x, block_z))
         while nodes_to_be_checked:
             current_node = nodes_to_be_checked.pop()
@@ -108,8 +90,10 @@ class MapAnalysis:
                     checked_neighbors.append(neighbor)
                     current_area.append(neighbor)
                     nodes_to_be_checked.append(neighbor)
+            if surface_dict[current_node]['type'] in fluid_list:
+                fluid_amount += 1
             checked_nodes.append(current_node)
-        return current_area
+        return current_area, fluid_amount
 
     def get_neighbors(self, surface_dict, block_x, block_z):
         neighbors = []  # [[x1, z1], [x2, z2]]
