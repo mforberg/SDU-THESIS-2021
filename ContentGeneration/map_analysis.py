@@ -25,7 +25,7 @@ class MapAnalysis:
             total_block_dict.update(dictionary['block_dict'])
             total_surface_dict.update(dictionary['surface_dict'])
         district_areas = self.find_areas_for_districts(total_surface_dict)
-        district_areas.sort(key=lambda x: len(x[0]), reverse=True)  # [[[x, z][x,z]],[fluid_amount] [].....]
+        district_areas.sort(key=lambda x: len(x), reverse=True)  # [[[x, z][x,z]],[fluid_amount] [].....]
         return total_block_dict, total_surface_dict, district_areas
 
     def create_area_for_work(self):
@@ -68,32 +68,29 @@ class MapAnalysis:
         while len(checked_nodes) < len(surface_dict):
             node = next(surface_dict_iter)
             if node not in checked_nodes:
-                result, fluid_amount = self.find_area(surface_dict, node[0], node[1], checked_nodes)
-                areas.append([result, fluid_amount])
+                result = self.find_area(surface_dict, node[0], node[1], checked_nodes)
+                areas.append(result)
         return areas
 
     def find_area(self, surface_dict, block_x, block_z, checked_nodes):
         nodes_to_be_checked = []
         checked_neighbors = []
         current_area = []
-        fluid_amount = 0
         nodes_to_be_checked.append((block_x, block_z))
         while nodes_to_be_checked:
             current_node = nodes_to_be_checked.pop()
             x = current_node[0]
             z = current_node[1]
-            current_area.append(current_node)
-            neighbors = self.get_neighbors(surface_dict, x, z)
-            for neighbor in neighbors:
-                if neighbor not in checked_nodes and neighbor not in checked_neighbors \
-                        and surface_dict[current_node]['y'] == surface_dict[neighbor]['y']:
-                    checked_neighbors.append(neighbor)
-                    current_area.append(neighbor)
-                    nodes_to_be_checked.append(neighbor)
-            if surface_dict[current_node]['type'] in fluid_list:
-                fluid_amount += 1
+            if surface_dict[current_node]['type'] not in fluid_list:
+                current_area.append(current_node)
+                neighbors = self.get_neighbors(surface_dict, x, z)
+                for neighbor in neighbors:
+                    if neighbor not in checked_nodes and neighbor not in checked_neighbors \
+                            and surface_dict[current_node]['y'] == surface_dict[neighbor]['y']:
+                        checked_neighbors.append(neighbor)
+                        nodes_to_be_checked.append(neighbor)
             checked_nodes.append(current_node)
-        return current_area, fluid_amount
+        return current_area
 
     def get_neighbors(self, surface_dict, block_x, block_z):
         neighbors = []  # [[x1, z1], [x2, z2]]

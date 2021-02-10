@@ -8,7 +8,9 @@ class Main:
 
     def run(self):
         total_block_dict, total_surface_dict, district_areas = map_analysis.MapAnalysis().run()
-        # print(district_areas)
+
+        for i in range(0, 20):
+            print(len(district_areas[i]))
         self.build_surface(total_surface_dict, district_areas)
 
     # def build_surface(self):
@@ -25,7 +27,7 @@ class Main:
         channel = grpc.insecure_channel('localhost:5001', options=options)
         client = minecraft_pb2_grpc.MinecraftServiceStub(channel)
 
-        biggest_surface = district_areas[0][0]
+        biggest_surface = district_areas[0]
 
         blocks = []
         for value in biggest_surface:
