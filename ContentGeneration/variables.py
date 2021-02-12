@@ -1,10 +1,13 @@
 from minecraft_pb2 import *
 
 # Box area (they are made to be inclusive)
-box_x_min = -201
-box_x_max = -101
-box_z_min = 202
-box_z_max = 302
+box_x_min = 0
+box_x_max = 100
+box_z_min = 0
+box_z_max = 100
+
+# Map analysis
+min_size_of_district = 50
 
 # GA variables
 ga_amount = 100

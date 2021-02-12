@@ -11,7 +11,7 @@ class Main:
 
         for i in range(0, 20):
             print(len(district_areas[i]))
-        self.build_surface(total_surface_dict, district_areas)
+        # self.build_surface(total_surface_dict, district_areas)
 
     # def build_surface(self):
     #     blocks = []

@@ -4,6 +4,8 @@ from multiprocessing import Pool
 import time
 import grpc
 from variables import *
+import tqdm
+import copy
 
 
 options = [('grpc.max_send_message_length', 512 * 1024 * 1024), ('grpc.max_receive_message_length', 512 * 1024 * 1024)]
@@ -22,7 +24,7 @@ class MapAnalysis:
         result = self.pool_handler()
         print("Time:", time.time() - first_time)
         for dictionary in result:
-            total_block_dict.update(dictionary['block_dict'])
+            # total_block_dict.update(dictionary['block_dict'])
             total_surface_dict.update(dictionary['surface_dict'])
         district_areas = self.find_areas_for_districts(total_surface_dict)
         district_areas.sort(key=lambda x: len(x), reverse=True)  # [[[x, z][x,z]],[fluid_amount] [].....]
@@ -38,7 +40,9 @@ class MapAnalysis:
 
     def pool_handler(self):
         p = Pool(int(multiprocessing.cpu_count() / 2))
-        result = p.map(self.work_log, self.work)
+        result = []
+        for i in tqdm.tqdm(p.imap_unordered(self.work_log, self.work), total=len(self.work)):
+            result.append(i)
         return result
 
     def read_part_of_world(self, min_x, max_x, min_z, max_z, min_y=30, max_y=160):
@@ -53,7 +57,7 @@ class MapAnalysis:
         # changes the class structure to dictionaries + finds the surface
         for block in cube_result.blocks:
             x, y, z = block.position.x, block.position.y, block.position.z
-            block_dict[x, y, z] = {"type": block.type}
+            # block_dict[x, y, z] = {"type": block.type}
             if block.type not in skip_list:
                 if (x, z) not in surface_dict:
                     surface_dict[x, z] = {"y": y, "type": block.type, "block": block}
@@ -63,13 +67,25 @@ class MapAnalysis:
 
     def find_areas_for_districts(self, surface_dict):
         areas = []
+
+        # surface_dict_copy = copy.deepcopy(surface_dict)
+        # thing = []
+        # print(len(surface_dict))
+        # print(len(surface_dict_copy))
+        # for key in surface_dict.keys():
+        #     thing.append(key)
+        # print(len(thing))
+        # surface_dict_iter = CustomIter(thing)
+
         surface_dict_iter = iter(surface_dict)
         checked_nodes = []
         while len(checked_nodes) < len(surface_dict):
             node = next(surface_dict_iter)
             if node not in checked_nodes:
                 result = self.find_area(surface_dict, node[0], node[1], checked_nodes)
-                areas.append(result)
+                if len(result) >= min_size_of_district:
+                    areas.append(result)
+        print(len(checked_nodes))
         return areas
 
     def find_area(self, surface_dict, block_x, block_z, checked_nodes):
@@ -103,3 +119,32 @@ class MapAnalysis:
                 if (block_x, block_z + z) in surface_dict:
                     neighbors.append((block_x, block_z + z))
         return neighbors
+
+
+# class CustomIter:
+#
+#     def __init__(self, list1):
+#         self.index = 0
+#         self.max = len(list1)
+#         print(self.max)
+#         self.list = list1
+#
+#     def __next__(self):
+#         if self.index <= self.max:
+#             result = self.list[self.index]
+#             self.index += 1
+#             return result
+#         else:
+#             raise StopIteration
+#
+#     def has_next(self):
+#         return self.index < self.max
+#
+#     def remove(self, element):
+#         for lelement in self.list:
+#             if element == lelement:
+#                 self.list.remove(lelement)
+#                 self.max -= 1
+#
+#     def get_len(self):
+#         return self.max
