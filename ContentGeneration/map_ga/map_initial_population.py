@@ -1,13 +1,16 @@
 from ..variables import *
 import random
+import copy
 
 
 class InitialPopulation:
 
-    def create(self):
-        print("hello")
+    def create(self, areas):
+        population = []
+        for i in range(0, random.randint(min_districts_in_city, max_districts_in_city)):
+            population.append(self.pick_random_area(areas))
+        return population
 
-    def get_random_coordinate(self):
-        x = random.randint(box_x_min, box_x_max)
-        z = random.randint(box_z_min, box_z_max)
-        return x, z
+    def pick_random_area(self, areas):
+        area = copy.deepcopy(areas[random.randint(0, len(areas)-1)])
+        return area
