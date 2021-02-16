@@ -7,7 +7,6 @@ from variables.map_variables import *
 import tqdm
 import copy
 import queue
-from adjacency_tree import *
 
 
 
