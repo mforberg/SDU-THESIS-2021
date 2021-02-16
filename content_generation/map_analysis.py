@@ -6,6 +6,9 @@ import grpc
 from variables.map_variables import *
 import tqdm
 import copy
+import queue
+from adjacency_tree import *
+
 
 
 options = [('grpc.max_send_message_length', 512 * 1024 * 1024), ('grpc.max_receive_message_length', 512 * 1024 * 1024)]
@@ -24,7 +27,7 @@ class MapAnalysis:
         result = self.pool_handler()
         print("Time:", time.time() - first_time)
         for dictionary in result:
-            # total_block_dict.update(dictionary['block_dict'])
+            total_block_dict.update(dictionary['block_dict'])
             total_surface_dict.update(dictionary['surface_dict'])
         district_areas = self.find_areas_for_districts(total_surface_dict)
         district_areas.sort(key=lambda x: len(x), reverse=True)  # [[[x, z][x,z]],[fluid_amount] [].....]
@@ -39,7 +42,7 @@ class MapAnalysis:
         return result
 
     def pool_handler(self):
-        p = Pool(int(multiprocessing.cpu_count() / 2))
+        p = Pool(int(multiprocessing.cpu_count() - 1))
         result = []
         for i in tqdm.tqdm(p.imap_unordered(self.work_log, self.work), total=len(self.work)):
             result.append(i)
@@ -78,13 +81,17 @@ class MapAnalysis:
         # surface_dict_iter = CustomIter(thing)
 
         surface_dict_iter = iter(surface_dict)
-        checked_nodes = []
+        #checked_nodes = []
+        checked_nodes = set()
+        start = time.time()
         while len(checked_nodes) < len(surface_dict):
             node = next(surface_dict_iter)
             if node not in checked_nodes:
                 result = self.find_area(surface_dict, node[0], node[1], checked_nodes)
                 if len(result) >= min_size_of_district:
                     areas.append(result)
+        print(f"End of while time: {time.time() - start}")
+        print(f"Length of checked nodes {len(checked_nodes)}")
         return areas
 
     def find_area(self, surface_dict, block_x, block_z, checked_nodes):
@@ -104,8 +111,10 @@ class MapAnalysis:
                             and surface_dict[current_node]['y'] == surface_dict[neighbor]['y']:
                         checked_neighbors.append(neighbor)
                         nodes_to_be_checked.append(neighbor)
-            checked_nodes.append(current_node)
+            #checked_nodes.append(current_node)
+            checked_nodes.add(current_node)
         return current_area
+
 
     def get_neighbors(self, surface_dict, block_x, block_z):
         neighbors = []  # [[x1, z1], [x2, z2]]
