@@ -27,7 +27,7 @@ class MapAnalysis:
         result = self.pool_handler()
         print("Time:", time.time() - first_time)
         for dictionary in result:
-            # total_block_dict.update(dictionary['block_dict'])
+            total_block_dict.update(dictionary['block_dict'])
             total_surface_dict.update(dictionary['surface_dict'])
         district_areas = self.find_areas_for_districts(total_surface_dict)
         district_areas.sort(key=lambda x: len(x), reverse=True)  # [[[x, z][x,z]],[fluid_amount] [].....]
@@ -84,15 +84,12 @@ class MapAnalysis:
         #checked_nodes = []
         checked_nodes = set()
         start = time.time()
-        i = 0
         while len(checked_nodes) < len(surface_dict):
-            print(f"{i} / {len(surface_dict)}")
             node = next(surface_dict_iter)
             if node not in checked_nodes:
                 result = self.find_area(surface_dict, node[0], node[1], checked_nodes)
                 if len(result) >= min_size_of_district:
                     areas.append(result)
-            i = i+1
         print(f"End of while time: {time.time() - start}")
         print(f"Length of checked nodes {len(checked_nodes)}")
         return areas
