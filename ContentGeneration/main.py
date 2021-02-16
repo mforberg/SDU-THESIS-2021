@@ -1,5 +1,6 @@
 import map_analysis
 from minecraft_pb2 import *
+from map_ga import map_main
 import minecraft_pb2_grpc
 import grpc
 
@@ -8,9 +9,10 @@ class Main:
 
     def run(self):
         total_block_dict, total_surface_dict, district_areas = map_analysis.MapAnalysis().run()
-
-        for i in range(0, 20):
-            print(len(district_areas[i]))
+        map_main.DistrictGA().run(total_block_dict=total_block_dict, total_surface_dict=total_surface_dict,
+                                  district_areas=district_areas)
+        # for i in range(0, 20):
+        #     print(len(district_areas[i]))
         # self.build_surface(total_surface_dict, district_areas)
 
     # def build_surface(self):

@@ -9,10 +9,11 @@ box_z_max = 100
 # Map analysis
 min_size_of_district = 50
 
-# GA variables
+# Map_GA variables
 population_size = 100
 min_districts_in_city = 1
 max_districts_in_city = 4
+repetitions = 50
 
 # List of blocks that is ignored
 skip_list = [DARK_OAK_DOOR, IRON_DOOR, BIRCH_DOOR, JUNGLE_DOOR, ACACIA_DOOR, SPRUCE_DOOR, WOODEN_DOOR, IRON_TRAPDOOR,

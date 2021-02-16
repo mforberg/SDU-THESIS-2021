@@ -85,7 +85,6 @@ class MapAnalysis:
                 result = self.find_area(surface_dict, node[0], node[1], checked_nodes)
                 if len(result) >= min_size_of_district:
                     areas.append(result)
-        print(len(checked_nodes))
         return areas
 
     def find_area(self, surface_dict, block_x, block_z, checked_nodes):
