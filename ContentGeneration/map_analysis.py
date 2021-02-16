@@ -6,6 +6,9 @@ import grpc
 from variables import *
 import tqdm
 import copy
+import queue
+from adjacency_tree import *
+
 
 
 options = [('grpc.max_send_message_length', 512 * 1024 * 1024), ('grpc.max_receive_message_length', 512 * 1024 * 1024)]
@@ -39,7 +42,7 @@ class MapAnalysis:
         return result
 
     def pool_handler(self):
-        p = Pool(int(multiprocessing.cpu_count() / 2))
+        p = Pool(int(multiprocessing.cpu_count() - 1))
         result = []
         for i in tqdm.tqdm(p.imap_unordered(self.work_log, self.work), total=len(self.work)):
             result.append(i)
@@ -79,13 +82,19 @@ class MapAnalysis:
 
         surface_dict_iter = iter(surface_dict)
         checked_nodes = []
+        #checked_nodes = set()
+        start = time.time()
+        i = 0
         while len(checked_nodes) < len(surface_dict):
+            print(f"{i} / {len(surface_dict)}")
             node = next(surface_dict_iter)
             if node not in checked_nodes:
                 result = self.find_area(surface_dict, node[0], node[1], checked_nodes)
                 if len(result) >= min_size_of_district:
                     areas.append(result)
-        print(len(checked_nodes))
+            i = i+1
+        print(f"End of while time: {time.time() - start}")
+        print(f"Length of checked nodes {len(checked_nodes)}")
         return areas
 
     def find_area(self, surface_dict, block_x, block_z, checked_nodes):
@@ -106,7 +115,9 @@ class MapAnalysis:
                         checked_neighbors.append(neighbor)
                         nodes_to_be_checked.append(neighbor)
             checked_nodes.append(current_node)
+            #checked_nodes.add(current_node)
         return current_area
+
 
     def get_neighbors(self, surface_dict, block_x, block_z):
         neighbors = []  # [[x1, z1], [x2, z2]]
