@@ -3,7 +3,7 @@ import multiprocessing
 from multiprocessing import Pool
 import time
 import grpc
-from variables import *
+from variables.map_variables import *
 import tqdm
 import copy
 import queue
@@ -81,8 +81,8 @@ class MapAnalysis:
         # surface_dict_iter = CustomIter(thing)
 
         surface_dict_iter = iter(surface_dict)
-        checked_nodes = []
-        #checked_nodes = set()
+        #checked_nodes = []
+        checked_nodes = set()
         start = time.time()
         i = 0
         while len(checked_nodes) < len(surface_dict):
@@ -114,8 +114,8 @@ class MapAnalysis:
                             and surface_dict[current_node]['y'] == surface_dict[neighbor]['y']:
                         checked_neighbors.append(neighbor)
                         nodes_to_be_checked.append(neighbor)
-            checked_nodes.append(current_node)
-            #checked_nodes.add(current_node)
+            #checked_nodes.append(current_node)
+            checked_nodes.add(current_node)
         return current_area
 
 
