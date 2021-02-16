@@ -1,9 +1,9 @@
-import map_initial_population
-import map_fitness
-import map_selection
-import map_crossover
-import map_mutation
-from ..variables import *
+from .map_fitness import MapFitness
+from .map_initial_population import InitialPopulation
+# import map_selection
+# import map_crossover
+# import map_mutation
+from variables.ga_map_variables import *
 import copy
 
 
@@ -16,12 +16,12 @@ class DistrictGA:
 
         # Generate initial population
         for i in range(0, population_size-1):
-            initial_population = map_initial_population.InitialPopulation().create(district_areas)
+            initial_population = InitialPopulation().create(district_areas)
             populations.append({"population": initial_population, "fitness": None})
         # repete fitness calculation and select the best solution overall
         for i in range(0, repetitions-1):
             print("Current generation: ", i)
-            map_fitness.MapFitness().calculate_fitness_for_all(populations, total_surface_dict, total_block_dict)
+            MapFitness().calculate_fitness_for_all(populations, total_surface_dict, total_block_dict)
             self.check_for_new_best_solution(populations)
             # if i != repetitions - 1:
             #     map_selection.MapSelection().select_best_solutions(populations)

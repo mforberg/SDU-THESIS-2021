@@ -3,7 +3,7 @@ import multiprocessing
 from multiprocessing import Pool
 import time
 import grpc
-from variables import *
+from variables.map_variables import *
 import tqdm
 import copy
 

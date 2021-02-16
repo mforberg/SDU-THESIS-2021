@@ -1,4 +1,3 @@
-from ..variables import *
 import random
 
 class MapFitness:

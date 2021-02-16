@@ -1,4 +1,4 @@
-from ..variables import *
+from variables.ga_map_variables import *
 import random
 import copy
 
