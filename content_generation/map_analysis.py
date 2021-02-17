@@ -9,7 +9,6 @@ import copy
 import queue
 
 
-
 options = [('grpc.max_send_message_length', 512 * 1024 * 1024), ('grpc.max_receive_message_length', 512 * 1024 * 1024)]
 channel = grpc.insecure_channel('localhost:5001', options=options)
 client = minecraft_pb2_grpc.MinecraftServiceStub(channel)
@@ -33,8 +32,8 @@ class MapAnalysis:
         return total_block_dict, total_surface_dict, district_areas
 
     def create_area_for_work(self):
-        for x in range(box_x_min, box_x_max + 1):
-            self.work.append({"x": x, "z_min": box_z_min, "z_max": box_z_max})
+        for x in range(BOX_X_MIN, BOX_X_MAX + 1):
+            self.work.append({"x": x, "z_min": BOX_Z_MIN, "z_max": BOX_Z_MAX})
 
     def work_log(self, work_data):
         result = self.read_part_of_world(work_data["x"], work_data["x"], work_data["z_min"], work_data["z_max"])
@@ -60,7 +59,7 @@ class MapAnalysis:
         for block in cube_result.blocks:
             x, y, z = block.position.x, block.position.y, block.position.z
             # block_dict[x, y, z] = {"type": block.type}
-            if block.type not in skip_list:
+            if block.type not in SKIP_LIST:
                 if (x, z) not in surface_dict:
                     surface_dict[x, z] = {"y": y, "type": block.type, "block": block}
                 elif surface_dict[x, z]["y"] < y:
@@ -87,7 +86,7 @@ class MapAnalysis:
             node = next(surface_dict_iter)
             if node not in checked_nodes:
                 result = self.find_area(surface_dict, node[0], node[1], checked_nodes)
-                if len(result) >= min_size_of_district:
+                if len(result) >= MIN_SIZE_OF_DISTRICT:
                     areas.append(result)
         print(f"End of while time: {time.time() - start}")
         print(f"Length of checked nodes {len(checked_nodes)}")
@@ -102,7 +101,7 @@ class MapAnalysis:
             current_node = nodes_to_be_checked.pop()
             x = current_node[0]
             z = current_node[1]
-            if surface_dict[current_node]['type'] not in fluid_list:
+            if surface_dict[current_node]['type'] not in FLUID_LIST:
                 current_area.append(current_node)
                 neighbors = self.get_neighbors(surface_dict, x, z)
                 for neighbor in neighbors:
