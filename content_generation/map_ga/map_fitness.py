@@ -1,4 +1,6 @@
 import random
+from variables.ga_map_variables import *
+
 
 class MapFitness:
 
@@ -11,5 +13,13 @@ class MapFitness:
         dict_index['fitness'] = self.calculate_fitness_from_population(dict_index['population'])
 
     def calculate_fitness_from_population(self, population):
+        current_fitness = 0
+        checked_districts = set()
+        for district in population:
+            if district in checked_districts:
+                pass
+            if len(district) >= FITNESS_SINGLE_DISTRICT_LIMIT:
+                pass
 
+            checked_districts.add(district)
         return random.randint(1, 10000)

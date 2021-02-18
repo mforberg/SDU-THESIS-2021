@@ -23,11 +23,11 @@ class DistrictGA:
             MapFitness().calculate_fitness_for_all(populations, total_surface_dict, total_block_dict)
             self.check_for_new_best_solution(populations)
             if i != REPETITIONS - 1:
-                parents = MapSelection().select_best_solutions(populations)
-                new_population = MapCrossover().crossover(populations, parents)
-                print(new_population)
-            #     MapMutation().mutate_populations(populations)
-        print(self.best_solution)
+                parents_no_fitness = MapSelection().select_best_solutions(populations)
+                crossed_population_no_fitness = MapCrossover().crossover(populations, parents_no_fitness)
+                MapMutation().mutate_populations(crossed_population_no_fitness, district_areas)
+                populations = crossed_population_no_fitness
+        return self.best_solution
 
     def check_for_new_best_solution(self, populations_dict):
         for solution in populations_dict:
