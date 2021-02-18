@@ -1,39 +1,41 @@
 import random
 import copy
+from typing import List
+
 from variables.ga_map_variables import *
 
 
 class MapCrossover:
     parent_list = []
 
-    def crossover(self, population_dict, parent_list):
+    def crossover(self, population_list: List[dict], parent_list: [List[List[tuple]]]) -> List[dict]:
         self.parent_list = parent_list
         new_population = []
-        ordered_population_dict = copy.deepcopy(population_dict)
-        ordered_population_dict.sort(key=lambda x: x['fitness'], reverse=True)
+        ordered_population_list = copy.deepcopy(population_list)
+        ordered_population_list.sort(key=lambda x: x['fitness'], reverse=True)
         # pick top x
-        for i in ordered_population_dict:
-            new_population.append(i['population'])
+        for i in ordered_population_list:
+            new_population.append({"population": i['population']})
             if i == ELITISM_AMOUNT:
                 break
         while len(new_population) > POPULATION_SIZE:
             parents = self.find_two_parents()
             result = self.create_offspring(parents['p1'], parents['p2'])
-            new_population.append(result['c1'])
+            new_population.append({"population": result['c1']})
             if len(new_population) > POPULATION_SIZE:
-                new_population.append(result['c2'])
+                new_population.append({"population": result['c2']})
         return new_population
 
-    def find_two_parents(self):
+    def find_two_parents(self) -> dict:
         parent1 = self.get_parent()
         parent2 = self.get_parent()
         return {"p1": copy.deepcopy(parent1), "p2": copy.deepcopy(parent2)}
 
-    def get_parent(self):
+    def get_parent(self) -> List[tuple]:
         random_index = random.randint(0, len(self.parent_list) - 1)
-        return self.parent_list[random_index]
+        return copy.deepcopy(self.parent_list[random_index])
 
-    def create_offspring(self, parent1, parent2):
+    def create_offspring(self, parent1: List[tuple], parent2: List[tuple]) -> dict:
         random.shuffle(parent1)
         random.shuffle(parent2)
         if len(parent1) > len(parent2):
@@ -41,7 +43,7 @@ class MapCrossover:
         else:
             return self.single_point_crossover(shortest=parent1, longest=parent2)
 
-    def single_point_crossover(self, shortest, longest):
+    def single_point_crossover(self, shortest: List[tuple], longest: List[tuple]) -> dict:
         point = random.randint(0, len(shortest)-1)
         child1 = []
         child2 = []
