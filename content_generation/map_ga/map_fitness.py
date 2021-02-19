@@ -1,10 +1,13 @@
 import random
+from typing import List
+
 from variables.ga_map_variables import *
+from variables.map_variables import MIN_SIZE_OF_AREA
 
 
 class MapFitness:
 
-    def calculate_fitness_for_all(self, population_list: list, surface_dict: dict, blocks_dict: dict):
+    def calculate_fitness_for_all(self, population_list: List[dict], surface_dict: dict, blocks_dict: dict):
         for population in population_list:
             self.calculate_individual_fitness(population)
 
@@ -13,13 +16,45 @@ class MapFitness:
 
     def calculate_fitness_from_population(self, population: list) -> int:
         current_fitness = 0
-        checked_areas = set()
+        duplicate_areas = {} # key = mass_coordinate, value = [repetitions, length]
         for area in population:
-            print(area)
-            if area['mass_coordinate'] in checked_areas:
-                pass
-            if len(area['area']) >= FITNESS_SINGLE_AREA_LIMIT:
-                pass
-
-            checked_areas.add(area['mass_coordinate'])
+            if area['mass_coordinate'] in duplicate_areas:
+                duplicate_areas[area['mass_coordinate']]['repetitions'] += 1  # should increase repetitions with 1
+            else:
+                duplicate_areas[area['mass_coordinate']] = {'repetitions': 1, 'length': len(area['area'])}
         return random.randint(1, 10000)
+
+    def size_fitness(self, area_list: list) -> int:
+        # Size (dont pick small areas)
+        length = len(area_list)
+        if length >= FITNESS_PERFECT_LENGTH:
+            return FITNESS_SIZE_MAX_SCORE
+        else:
+            # y = a*x + b
+            # a = y2 - y1 / x2 - x1 (y1 and x1 is 0, as the formula crosses the coordinate 0,0)
+            # b = 0
+            # x = length - size that gives 0 point (aka minimum allowed size of an area)
+            return (FITNESS_SIZE_MAX_SCORE / FITNESS_PERFECT_LENGTH) * (length - MIN_SIZE_OF_AREA)
+
+    def duplicates_fitness(self, duplicate_areas: dict):
+        # Duplicates? (good or bad depending on size)
+        fitness = FITNESS_DUPLICATE_DEFAULT_SCORE
+        for value in duplicate_areas.values():
+            if value['repetitions'] > 1:
+                value_should_be_close_to_repetitions = value['length'] / FITNESS_AREA_PER_DISTRICT_FOR_SHARED_SPACE
+                difference = abs(value_should_be_close_to_repetitions - value['repetitions'])
+                # 1 is perfect score, anything higher than that should decrease the score
+
+        pass
+
+    def distance_fitness(self):
+        # Distance to each other (create mass center for all and check distance to all districts)
+        pass
+
+    def altitude_fitness(self):
+        # Altitude difference (too much too bad)
+        pass
+
+    def amount_fitness(self):
+        # Amount (should not always go for most districts)
+        pass

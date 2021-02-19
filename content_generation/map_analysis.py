@@ -77,7 +77,8 @@ class MapAnalysis:
             if node not in checked_nodes:
                 area, mass_coordinate = self.find_area(surface_dict, node[0], node[1], checked_nodes)
                 if len(area) >= MIN_SIZE_OF_AREA:
-                    areas.append({"area": area, "mass_coordinate": mass_coordinate})
+                    height = surface_dict[node[0], node[1]]
+                    areas.append({"area": area, "mass_coordinate": mass_coordinate, "height": height})
         print(f"End of while time: {time.time() - start}")
         print(f"Length of checked nodes {len(checked_nodes)}")
         return areas
