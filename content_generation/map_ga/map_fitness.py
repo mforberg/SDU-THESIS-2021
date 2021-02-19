@@ -39,13 +39,22 @@ class MapFitness:
     def duplicates_fitness(self, duplicate_areas: dict):
         # Duplicates? (good or bad depending on size)
         fitness = FITNESS_DUPLICATE_DEFAULT_SCORE
+        duplicate_combined_fitness = 0
+        duplicates_amount = 0
         for value in duplicate_areas.values():
             if value['repetitions'] > 1:
+                duplicates_amount += 1
                 value_should_be_close_to_repetitions = value['length'] / FITNESS_AREA_PER_DISTRICT_FOR_SHARED_SPACE
-                difference = abs(value_should_be_close_to_repetitions - value['repetitions'])
-                # 1 is perfect score, anything higher than that should decrease the score
-
-        pass
+                diff = abs(value_should_be_close_to_repetitions - value['repetitions'])
+                # 0 is perfect score, anything higher than that should decrease the score
+                # y = a*x + b
+                # a = y2 - y1 / x2 - x1 (y1 is max score, x1 is 0, x2 is 0.5, and y2 is 0)
+                # b = (max score)
+                # x = difference
+                a = -FITNESS_DUPLICATE_PERFECT_AMOUNT_SCORE / 0.5
+                duplicate_combined_fitness += a * diff + FITNESS_DUPLICATE_PERFECT_AMOUNT_SCORE
+        fitness += duplicate_combined_fitness / duplicates_amount
+        return fitness
 
     def distance_fitness(self):
         # Distance to each other (create mass center for all and check distance to all districts)
