@@ -1,10 +1,10 @@
 from minecraft_pb2 import *
 
 # Box area (they are made to be inclusive)
-BOX_X_MIN = 1
-BOX_X_MAX = 100
-BOX_Z_MIN = 1
-BOX_Z_MAX = 100
+BOX_X_MIN = -103
+BOX_X_MAX = -3
+BOX_Z_MIN = 315
+BOX_Z_MAX = 415
 
 # Map analysis
 MIN_SIZE_OF_AREA = 50

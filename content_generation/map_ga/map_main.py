@@ -20,11 +20,11 @@ class AreasGA:
             initial_population = InitialPopulation().create(areas)
             populations.append({"population": initial_population})
         # repeat fitness calculation and select the best solution overall
-        for i in range(0, REPETITIONS):
+        for i in range(0, GENERATION_AMOUNT):
             print(f"Current generation: {i}")
             MapFitness().calculate_fitness_for_all(populations, total_surface_dict, total_block_dict)
             self.check_for_new_best_solution(populations)
-            if i != REPETITIONS - 1:
+            if i != GENERATION_AMOUNT - 1:
                 parents_no_fitness = MapSelection().select_best_solutions(populations)
                 crossed_population_no_fitness = MapCrossover().crossover(populations, parents_no_fitness)
                 MapMutation().mutate_populations(crossed_population_no_fitness, areas)
