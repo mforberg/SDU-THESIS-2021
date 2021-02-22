@@ -11,8 +11,8 @@ class Main:
         total_block_dict, total_surface_dict, district_areas = map_analysis.MapAnalysis().run()
         result = map_main.AreasGA().run(total_block_dict=total_block_dict, total_surface_dict=total_surface_dict,
                                         areas=district_areas)
-        for area in result['population']:
-            self.build_surface(surface_dict=total_surface_dict, list_of_x_z_coordinates=area['area'])
+        # for area in result['population']:
+        #     self.build_surface(surface_dict=total_surface_dict, list_of_x_z_coordinates=area['area'])
         # for i in range(0, 20):
         #     print(len(district_areas[i]))
         # self.build_surface(total_surface_dict, district_areas)

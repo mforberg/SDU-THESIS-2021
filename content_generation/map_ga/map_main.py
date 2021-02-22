@@ -35,4 +35,4 @@ class AreasGA:
         for solution in populations_dict:
             if solution['fitness'] > self.best_solution['fitness']:
                 self.best_solution = copy.deepcopy(solution)
-                print(f"New best {solution}")
+                print(f"New best {solution['fitness']}")
