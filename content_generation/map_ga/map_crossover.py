@@ -24,6 +24,9 @@ class MapCrossover:
             new_population.append({"population": result['c1']})
             if len(new_population) > POPULATION_SIZE:
                 new_population.append({"population": result['c2']})
+        for a in new_population:
+            if len(a['population']) > MAX_AREAS_IN_CITY:
+                print("cross problem")
         return new_population
 
     def find_two_parents(self) -> dict:

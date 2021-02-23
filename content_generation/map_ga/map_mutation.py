@@ -14,11 +14,13 @@ class MapMutation:
         for population in population_list:
             if random.randint(1, 100) > MUTATION_PERCENTAGE:
                 if random.randint(1, 2) == 1:
-                    if len(population) < MAX_AREAS_IN_CITY:
+                    if len(population['population']) < MAX_AREAS_IN_CITY:
                         self.increase_size(population)
                 else:
-                    if len(population) > MIN_AREAS_IN_CITY:
+                    if len(population['population']) > MIN_AREAS_IN_CITY:
                         self.decrease_size(population)
+            if len(population['population']) > MAX_AREAS_IN_CITY:
+                print("mutate problem")
 
     def increase_size(self, population: dict):
         population["population"].append(self.areas[random.randint(0, len(self.areas) - 1)])
@@ -26,4 +28,4 @@ class MapMutation:
 
     def decrease_size(self, population: dict):
         random.shuffle(population['population'])
-        population.pop(0)
+        population['population'].pop(0)
