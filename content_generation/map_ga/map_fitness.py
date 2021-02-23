@@ -1,5 +1,4 @@
 import math
-import random
 from typing import List
 
 from variables.ga_map_variables import *
@@ -22,6 +21,7 @@ class MapFitness:
 
     def calculate_fitness_from_population(self, population: list) -> float:
         current_fitness = 0
+        per_area_fitness = 0
         mass_centers = []
         height_list = []
         total_x = 0
@@ -33,7 +33,8 @@ class MapFitness:
                 duplicate_areas[area['mass_coordinate']]['repetitions'] += 1  # should increase repetitions with 1
             else:
                 duplicate_areas[area['mass_coordinate']] = {'repetitions': 1, 'length': len(area['area'])}
-            current_fitness += self.size_fitness(area['area'])
+            per_area_fitness += self.size_fitness(area['area'])
+            per_area_fitness += self.pillar_fitness(area['area_set'], area['min_max_values'])
             mass_centers.append(area['mass_coordinate'])
             height_list.append(area['height'])
             total_x += area['mass_coordinate'][0]
@@ -42,6 +43,7 @@ class MapFitness:
         population_len = len(population)
         self.mass_center = (total_x / population_len, total_z / population_len)
         self.avg_y = total_y / population_len
+        current_fitness += per_area_fitness / population_len
         current_fitness += self.duplicates_fitness(duplicate_areas)
         current_fitness += self.distance_fitness(mass_centers)
         current_fitness += self.altitude_fitness(height_list)
@@ -114,3 +116,20 @@ class MapFitness:
         # Amount (should not always go for most districts, but smaller solutions can easily get max score in the other)
         extra_populations = population_len - MIN_AREAS_IN_CITY
         return extra_populations * FITNESS_AMOUNT_BONUS_PER_EXTRA
+
+    def pillar_fitness(self, area_set: set, min_max_values: dict) -> float:
+        min_x = min_max_values['min_x']
+        max_x = min_max_values['max_x']
+        min_z = min_max_values['min_z']
+        max_z = min_max_values['max_z']
+        step_size_x = int(round((max_x-min_x)/2))
+        step_size_z = int(round((max_z-min_z)/2))
+        total_possible_pillars = 0
+        amount_of_pillars_found = 0
+        for x in range(min_x, max_x, step_size_x):
+            for z in range(min_z, max_z, step_size_z):
+                if (x, z) in area_set:
+                    amount_of_pillars_found += 1
+                total_possible_pillars += 1
+        fitness = (FITNESS_PILLAR_MAX_SCORE / total_possible_pillars) * amount_of_pillars_found
+        return fitness
