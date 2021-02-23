@@ -75,11 +75,11 @@ class MapAnalysis:
         while len(checked_nodes) < len(surface_dict):
             node = next(surface_dict_iter)
             if node not in checked_nodes:
-                area, mass_coordinate, min_max_values = self.find_area(surface_dict, node[0], node[1], checked_nodes)
+                area, mass_coordinate, min_max_values, area_set = self.find_area(surface_dict, node[0], node[1], checked_nodes)
                 if len(area) >= MIN_SIZE_OF_AREA:
                     height = surface_dict[node[0], node[1]]['y']
                     areas.append({"area": area, "mass_coordinate": mass_coordinate, "height": height,
-                                  "min_max_values": min_max_values})
+                                  "min_max_values": min_max_values, "area_set": area_set})
         print(f"End of while time: {time.time() - start}")
         print(f"Length of checked nodes {len(checked_nodes)}")
         return areas
@@ -96,6 +96,7 @@ class MapAnalysis:
         amount = 1
         checked_neighbors = []
         current_area = []
+        current_area_set = set()
         nodes_to_be_checked.append((block_x, block_z))
         while nodes_to_be_checked:
             current_node = nodes_to_be_checked.pop()
@@ -103,6 +104,7 @@ class MapAnalysis:
             z = current_node[1]
             if surface_dict[current_node]['type'] not in FLUID_LIST:
                 current_area.append(current_node)
+                current_area_set.add(current_node)
                 neighbors = self.get_neighbors(surface_dict, x, z)
                 for neighbor in neighbors:
                     if neighbor not in checked_nodes and neighbor not in checked_neighbors \
@@ -123,7 +125,7 @@ class MapAnalysis:
             checked_nodes.add(current_node)
         mass_x = total_x / amount
         mass_z = total_z / amount
-        return current_area, (mass_x, mass_z), {"min_x": min_x, "max_x": max_x, "min_z": min_z, "max_z": max_z}
+        return current_area, (mass_x, mass_z), {"min_x": min_x, "max_x": max_x, "min_z": min_z, "max_z": max_z}, current_area_set
 
     def get_neighbors(self, surface_dict: dict, block_x: int, block_z: int) -> List[tuple]:
         neighbors = []  # [[x1, z1], [x2, z2]]

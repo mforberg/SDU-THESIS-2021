@@ -3,14 +3,19 @@ from minecraft_pb2 import *
 from map_ga import map_main
 import minecraft_pb2_grpc
 import grpc
+import time
 
 
 class Main:
 
     def run(self):
+        first_time = time.time()
         total_block_dict, total_surface_dict, district_areas = map_analysis.MapAnalysis().run()
+        print(f"Map analysis - Time: {time.time() - first_time}")
+        first_time = time.time()
         result = map_main.AreasGA().run(total_block_dict=total_block_dict, total_surface_dict=total_surface_dict,
                                         areas=district_areas)
+        print(f"GA - Time: {time.time() - first_time}")
         # for area in result['population']:
         #     self.build_surface(surface_dict=total_surface_dict, list_of_x_z_coordinates=area['area'])
         # for i in range(0, 20):
