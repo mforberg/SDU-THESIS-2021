@@ -1,0 +1,28 @@
+on:
+  issues:
+    types: [labeled]
+jobs:
+  Move_Reading_Labeled_Issue_On_Project_Board:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: konradpabjan/move-labeled-or-milestoned-issue@v2.0
+      with:
+        action-token: "${{ secrets.MY_TOKEN }}"
+        project-url: "https://github.com/mforberg/SDU-THESIS-2021/projects/1"
+        column-name: "To Do - Diverse"
+        label-name: "Reading"
+        columns-to-ignore: "In Review,Ready to deploy,Done"
+    - uses: konradpabjan/move-labeled-or-milestoned-issue@v2.0
+      with:
+        action-token: "${{ secrets.MY_TOKEN }}"
+        project-url: "https://github.com/mforberg/SDU-THESIS-2021/projects/1"
+        column-name: "To Do - Programming"
+        label-name: "Funtionality"
+        columns-to-ignore: "In Review,Ready to deploy,Done"
+    - uses: konradpabjan/move-labeled-or-milestoned-issue@v2.0
+      with:
+        action-token: "${{ secrets.MY_TOKEN }}"
+        project-url: "https://github.com/mforberg/SDU-THESIS-2021/projects/1"
+        column-name: "To Do - Rapport"
+        label-name: "Rapport"
+        columns-to-ignore: "In Review,Ready to deploy,Done"
