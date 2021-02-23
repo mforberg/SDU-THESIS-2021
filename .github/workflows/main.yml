@@ -12,8 +12,6 @@ jobs:
         column-name: "To Do - Diverse"
         label-name: "Reading"
         columns-to-ignore: "In Review,Ready to deploy,Done"
-    Move_Functionality_Labeled_Issue_On_Project_Board:
-    steps:
     - uses: konradpabjan/move-labeled-or-milestoned-issue@v2.0
       with:
         action-token: "${{ secrets.MY_TOKEN }}"
@@ -21,8 +19,6 @@ jobs:
         column-name: "To Do - Programming"
         label-name: "Funtionality"
         columns-to-ignore: "In Review,Ready to deploy,Done"
-    Move_Rapport_Labeled_Issue_On_Project_Board:
-    steps:
     - uses: konradpabjan/move-labeled-or-milestoned-issue@v2.0
       with:
         action-token: "${{ secrets.MY_TOKEN }}"
