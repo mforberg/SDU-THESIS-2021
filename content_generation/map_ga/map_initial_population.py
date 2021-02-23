@@ -5,7 +5,7 @@ import random
 import copy
 
 
-class InitialPopulation:
+class MapInitialPopulation:
 
     def create(self, areas: List[List[tuple]]) -> List[List[tuple]]:
         population = []

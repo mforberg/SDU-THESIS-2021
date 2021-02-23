@@ -1,7 +1,7 @@
 from typing import List
 
 from .map_fitness import MapFitness
-from .map_initial_population import InitialPopulation
+from .map_initial_population import MapInitialPopulation
 from .map_selection import MapSelection
 from .map_crossover import MapCrossover
 from .map_mutation import MapMutation
@@ -13,16 +13,16 @@ class AreasGA:
 
     best_solution = {"population": None, "fitness": 0}
 
-    def run(self, total_block_dict: dict, total_surface_dict: dict, areas: List[List[tuple]]) -> dict:
+    def run(self, areas: List[List[tuple]]) -> dict:
         populations = []
         # Generate initial population
         for i in range(0, POPULATION_SIZE):
-            initial_population = InitialPopulation().create(areas)
+            initial_population = MapInitialPopulation().create(areas)
             populations.append({"population": initial_population})
         # repeat fitness calculation and select the best solution overall
         for i in range(0, GENERATION_AMOUNT):
             print(f"Current generation: {i}")
-            MapFitness().calculate_fitness_for_all(populations, total_surface_dict, total_block_dict)
+            MapFitness().calculate_fitness_for_all(populations)
             self.check_for_new_best_solution(populations)
             if i != GENERATION_AMOUNT - 1:
                 parents_no_fitness = MapSelection().select_best_solutions(populations)

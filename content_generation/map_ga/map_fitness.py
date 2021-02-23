@@ -10,7 +10,7 @@ class MapFitness:
     mass_center = (0, 0)
     avg_y = 0
 
-    def calculate_fitness_for_all(self, population_list: List[dict], surface_dict: dict, blocks_dict: dict):
+    def calculate_fitness_for_all(self, population_list: List[dict]):
         for population in population_list:
             self.calculate_individual_fitness(population)
 

@@ -1,6 +1,7 @@
 import map_analysis
 from variables.map_variables import *
 from map_ga.map_main import AreasGA
+from type_ga.type_main import TypesGA
 import minecraft_pb2_grpc
 import grpc
 import time
@@ -17,8 +18,7 @@ class Main:
         # if reset:
         #     self.grass_surface(surface_dict=total_surface_dict)
         first_time = time.time()
-        result = AreasGA().run(total_block_dict=total_block_dict, total_surface_dict=total_surface_dict,
-                               areas=district_areas)
+        result = AreasGA().run(areas=district_areas)
         print(f"GA - Time: {time.time() - first_time}")
         print(len(result['population']))
         for area in result['population']:
