@@ -6,7 +6,7 @@ from variables.ga_type_variables import *
 
 class TypeSelection:
 
-    def select_best_solutions(self, population_list: List[dict]):
+    def select_best_solutions(self, population_list: List[Solution]):
         parent_list = []
         total_fitness = self.create_weighted_wheel(population=population_list)
         for i in range(0, TYPE_AMOUNT_OF_PARENTS_CHOSEN):
@@ -19,10 +19,10 @@ class TypeSelection:
             x += 1
         return parent_list
 
-    def create_weighted_wheel(self, population: List[dict]) -> float:
+    def create_weighted_wheel(self, population: List[Solution]) -> float:
         total_fitness = 0
         for solution in population:
-            total_fitness += solution['fitness']
+            total_fitness += solution.fitness
         return total_fitness
 
     def select_solution_for_parent(self, population_list: List[dict], total_fitness: float) -> List[tuple]:
