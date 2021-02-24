@@ -12,7 +12,7 @@ class MapMutation:
     def mutate_populations(self, population_list: List[dict], areas: List[List[tuple]]):
         self.areas = areas
         for population in population_list:
-            if random.randint(1, 100) > MUTATION_PERCENTAGE:
+            if random.randint(1, 100) > MAP_MUTATION_PERCENTAGE:
                 if random.randint(1, 2) == 1:
                     if len(population['population']) < MAX_AREAS_IN_CITY:
                         self.increase_size(population)

@@ -14,18 +14,20 @@ class MapCrossover:
         ordered_population_list = copy.deepcopy(population_list)
         ordered_population_list.sort(key=lambda x: x['fitness'], reverse=True)
         # pick top x
-        for i in ordered_population_list:
-            new_population.append({"population": i['population']})
-            if i == ELITISM_AMOUNT:
+        i = 0
+        for dictionary in ordered_population_list:
+            if i == MAP_ELITISM_AMOUNT:
                 break
-        while len(new_population) > POPULATION_SIZE:
+            i += 1
+            new_population.append({"population": dictionary['population']})
+        while len(new_population) > MAP_POPULATION_SIZE:
             parents = self.find_two_parents()
             result = self.create_offspring(parents['p1'], parents['p2'])
             new_population.append({"population": result['c1']})
-            if len(new_population) > POPULATION_SIZE:
+            if len(new_population) > MAP_POPULATION_SIZE:
                 new_population.append({"population": result['c2']})
-        for a in new_population:
-            if len(a['population']) > MAX_AREAS_IN_CITY:
+        for dictionary in new_population:
+            if len(dictionary['population']) > MAX_AREAS_IN_CITY:
                 print("cross problem")
         return new_population
 
