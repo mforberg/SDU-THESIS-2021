@@ -6,6 +6,8 @@ from multiprocessing import Pool
 import time
 import grpc
 from variables.map_variables import *
+from variable.work_node import *
+from variable.block import *
 import tqdm
 
 
@@ -13,9 +15,9 @@ options = [('grpc.max_send_message_length', 512 * 1024 * 1024), ('grpc.max_recei
 channel = grpc.insecure_channel('localhost:5001', options=options)
 client = minecraft_pb2_grpc.MinecraftServiceStub(channel)
 
-
 class MapAnalysis:
-    work = []
+    def __init__(self) -> None:
+        self.work = []
 
     def run(self) -> [dict, dict, List[dict]]:
         total_surface_dict = {}
@@ -33,10 +35,12 @@ class MapAnalysis:
 
     def create_area_for_work(self):
         for x in range(BOX_X_MIN, BOX_X_MAX + 1):
-            self.work.append({"x": x, "z_min": BOX_Z_MIN, "z_max": BOX_Z_MAX})
+            self.work.append(Work_Node(x, BOX_Z_MIN, BOX_Z_MAX))
+                #{"x": x, "z_min": BOX_Z_MIN, "z_max": BOX_Z_MAX}
+                
 
     def work_log(self, work_data):
-        result = self.read_part_of_world(work_data["x"], work_data["x"], work_data["z_min"], work_data["z_max"])
+        result = self.read_part_of_world(work_data.x, work_data.x, work_data.z_min, work_data.z_max)
         return result
 
     def pool_handler(self):
@@ -61,9 +65,11 @@ class MapAnalysis:
             # block_dict[x, y, z] = {"type": block.type}
             if block.type not in SKIP_LIST:
                 if (x, z) not in surface_dict:
-                    surface_dict[x, z] = {"y": y, "type": block.type, "block": block}
+                    #surface_dict[x, z] = {"y": y, "type": block.type, "block": block}
+                    surface_dict[x, z] = Block(y, block.type, block)
                 elif surface_dict[x, z]["y"] < y:
-                    surface_dict[x, z] = {"y": y, "type": block.type, "block": block}
+                    #surface_dict[x, z] = {"y": y, "type": block.type, "block": block}
+                    surface_dict[x, z] = Block(y, block.type, block)
         return {'surface_dict': surface_dict, 'block_dict': block_dict}
 
     def find_areas_for_districts(self, surface_dict: dict) -> list:
@@ -77,7 +83,8 @@ class MapAnalysis:
             if node not in checked_nodes:
                 area, mass_coordinate, min_max_values, area_set = self.find_area(surface_dict, node[0], node[1], checked_nodes)
                 if len(area) >= MIN_SIZE_OF_AREA:
-                    height = surface_dict[node[0], node[1]]['y']
+                    #Did change on line below
+                    height = surface_dict[node[0], node[1]].y
                     areas.append({"area": area, "mass_coordinate": mass_coordinate, "height": height,
                                   "min_max_values": min_max_values, "area_set": area_set})
         print(f"End of while time: {time.time() - start}")
@@ -102,13 +109,14 @@ class MapAnalysis:
             current_node = nodes_to_be_checked.pop()
             x = current_node[0]
             z = current_node[1]
-            if surface_dict[current_node]['type'] not in FLUID_LIST:
+            if surface_dict[current_node].type not in FLUID_LIST:
                 current_area.append(current_node)
                 current_area_set.add(current_node)
                 neighbors = self.get_neighbors(surface_dict, x, z)
                 for neighbor in neighbors:
+                    #line below had changes made to it ['y'] -> .y
                     if neighbor not in checked_nodes and neighbor not in checked_neighbors \
-                            and surface_dict[current_node]['y'] == surface_dict[neighbor]['y']:
+                            and surface_dict[current_node].y == surface_dict[neighbor].y:
                         checked_neighbors.append(neighbor)
                         nodes_to_be_checked.append(neighbor)
                         amount += 1

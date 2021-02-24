@@ -35,7 +35,7 @@ class Main:
 
         blocks = []
         for value in list_of_x_z_coordinates:
-            block = copy.deepcopy(surface_dict[value]['block'])
+            block = copy.deepcopy(surface_dict[value].block)
             block.type = DIAMOND_ORE
             blocks.append(block)
         client.spawnBlocks(Blocks(blocks=blocks))
