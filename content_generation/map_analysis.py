@@ -9,7 +9,6 @@ from variables.map_variables import *
 from variable.work_node import *
 from variable.block import *
 import tqdm
-from util.logger import *
 
 
 options = [('grpc.max_send_message_length', 512 * 1024 * 1024), ('grpc.max_receive_message_length', 512 * 1024 * 1024)]
@@ -19,7 +18,7 @@ client = minecraft_pb2_grpc.MinecraftServiceStub(channel)
 class MapAnalysis:
     def __init__(self) -> None:
         self.work = []
-    @time_logger
+
     def run(self) -> [dict, dict, List[dict]]:
         total_surface_dict = {}
         total_block_dict = {}
