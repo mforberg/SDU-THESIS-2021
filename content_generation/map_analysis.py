@@ -6,14 +6,25 @@ from multiprocessing import Pool
 import time
 import grpc
 from variables.map_variables import *
-from variable.work_node import *
-from variable.block import *
 import tqdm
 
 
 options = [('grpc.max_send_message_length', 512 * 1024 * 1024), ('grpc.max_receive_message_length', 512 * 1024 * 1024)]
 channel = grpc.insecure_channel('localhost:5001', options=options)
 client = minecraft_pb2_grpc.MinecraftServiceStub(channel)
+
+
+class Work_Node:
+    def __init__(self, x:int, z_min:int, z_max:int) -> None:
+        self.x = x
+        self.z_min = z_min
+        self.z_max = z_max
+
+class Block:
+    def __init__(self, y:int, type_of_block, block) -> None:
+        self.type = type_of_block
+        self.block = block
+        self.y = y
 
 class MapAnalysis:
     def __init__(self) -> None:
