@@ -15,6 +15,7 @@ options = [('grpc.max_send_message_length', 512 * 1024 * 1024), ('grpc.max_recei
 channel = grpc.insecure_channel('localhost:5001', options=options)
 client = minecraft_pb2_grpc.MinecraftServiceStub(channel)
 
+
 class MapAnalysis:
     def __init__(self) -> None:
         self.work = []
