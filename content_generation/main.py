@@ -17,10 +17,11 @@ class Main:
         # reset = input("reset surface? y/N - type anything and it will reset, aka. put grass :))")
         # if reset:
         #     self.grass_surface(surface_dict=total_surface_dict)
-        # first_time = time.time()
-        # result = AreasGA().run(areas=district_areas)
-        # print(f"GA - Time: {time.time() - first_time}")
-        # print(len(result['population']))
+        first_time = time.time()
+        result = AreasGA().run(areas=district_areas)
+        print(f"GA - Time: {time.time() - first_time}")
+        print(len(result['population']))
+        TypesGA().run(surface_dict=total_surface_dict, areas=result['population'])
         # for area in result['population']:
         #     self.build_surface(surface_dict=total_surface_dict, list_of_x_z_coordinates=area['area'])
         # rollback = input("reset surface? Y/n - type anything and it will not rollback")
