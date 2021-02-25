@@ -8,17 +8,18 @@ from .type_selection import TypeSelection
 
 class TypesGA:
 
-    best_solution = {"solution": [{"population": None, "type": None}], "fitness": 0}
+    best_solution = None
 
     def run(self, surface_dict: dict, areas: List[List[tuple]]):
 
-        populations = []
+        population = []
         # Generate initial population
         for i in range(0, TYPE_POPULATION_SIZE):
-            initial_population = TypeInitialPopulation().create(areas=areas)
-            populations.append(initial_population)
+            initial_population = TypeInitialPopulation().create(districts=areas)
+            population.append(initial_population)
         # repeat fitness calculation and select the best solution overall
         for i in range(0, TYPE_GENERATION_AMOUNT):
             print(f"Current generation in Type_GA: {i}")
-            TypeFitness().calculate_fitness_for_all(populations=populations)
+            TypeFitness().calculate_fitness_for_all(population=population)
+            TypeSelection.select_best_solutions()
 
