@@ -1,3 +1,6 @@
+import copy
+from shared_variables import *
+
 # Map_GA variables
 MAP_POPULATION_SIZE = 100
 MAP_AMOUNT_OF_PARENTS_CHOSEN = 100  # if this is not the same as MAP_POP_SIZE randoms will be put into the parent list
@@ -26,3 +29,19 @@ FITNESS_AMOUNT_BONUS_PER_EXTRA = 10
 #  Pillar Fitness
 FITNESS_PILLAR_DIVIDE_AMOUNT = 2
 FITNESS_PILLAR_MAX_SCORE = 500
+
+
+class SolutionMap:
+    fitness = 0
+    population = []
+
+    def __init__(self, fitness, population: List[AreaMap]):
+        self.fitness = fitness
+        self.population = population
+
+    def __deepcopy__(self, memo):
+        copy_list = []
+        for x in self.population:
+            copy_list.append(copy.deepcopy(x, memo))
+        copy_object = SolutionMap(self.fitness, copy_list)
+        return copy_object

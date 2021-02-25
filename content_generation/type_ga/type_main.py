@@ -10,7 +10,7 @@ from .type_mutation import TypeMutation
 
 
 class TypesGA:
-    dummy_solution = Solution(0, [Area("dummy", [(0, 0), (1, 1)])])
+    dummy_solution = SolutionType(0, [AreaType("dummy", [(0, 0), (1, 1)])])
     best_solution = dummy_solution
 
     def run(self, surface_dict: dict, areas: List[List[tuple]]):

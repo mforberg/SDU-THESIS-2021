@@ -1,4 +1,5 @@
 from minecraft_pb2 import *
+from shared_variables import *
 
 # Box area (they are made to be inclusive)
 BOX_X_MIN = -15
@@ -21,3 +22,9 @@ SKIP_LIST = [DARK_OAK_DOOR, IRON_DOOR, BIRCH_DOOR, JUNGLE_DOOR, ACACIA_DOOR, SPR
              DOUBLE_PLANT, FIRE, COCOA, CARROTS, CACTUS, TORCH]
 
 FLUID_LIST = [WATER, FLOWING_WATER, LAVA, FLOWING_LAVA]
+
+
+# class SolutionAnalysis:
+#
+#     def __init__(self, areas: List[AreaMap]):
+#         self.areas = areas

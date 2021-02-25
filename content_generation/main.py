@@ -20,8 +20,7 @@ class Main:
         first_time = time.time()
         result = AreasGA().run(areas=district_areas)
         print(f"GA - Time: {time.time() - first_time}")
-        print(len(result['population']))
-        TypesGA().run(surface_dict=total_surface_dict, areas=result['population'])
+        # TypesGA().run(surface_dict=total_surface_dict, areas=result['population'])
         # for area in result['population']:
         #     self.build_surface(surface_dict=total_surface_dict, list_of_x_z_coordinates=area['area'])
         # rollback = input("reset surface? Y/n - type anything and it will not rollback")

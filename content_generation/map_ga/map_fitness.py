@@ -1,25 +1,23 @@
 import math
-from typing import List
-
 from variables.ga_map_variables import *
 from variables.map_variables import MIN_SIZE_OF_AREA
 
 
 class MapFitness:
 
-    mass_center = (0, 0)
     avg_y = 0
+    mass_center = {'x': 0, 'z': 0}
 
-    def calculate_fitness_for_all(self, population_list: List[dict]):
+    def calculate_fitness_for_all(self, population_list: List[SolutionMap]):
         for population in population_list:
             self.calculate_individual_fitness(population)
 
-    def calculate_individual_fitness(self, population_dict: dict):
-        self.mass_center = (0, 0)
+    def calculate_individual_fitness(self, solution: SolutionMap):
         self.avg_y = 0
-        population_dict['fitness'] = self.calculate_fitness_from_population(population_dict['population'])
+        self.mass_center = {'x': 0, 'z': 0}
+        solution.fitness = self.calculate_fitness_from_population(solution.population)
 
-    def calculate_fitness_from_population(self, population: list) -> float:
+    def calculate_fitness_from_population(self, population: List[AreaMap]) -> float:
         current_fitness = 0
         per_area_fitness = 0
         mass_centers = []
@@ -29,19 +27,19 @@ class MapFitness:
         total_y = 0
         duplicate_areas = {}  # key = mass_coordinate, value = [repetitions, length]
         for area in population:
-            if area['mass_coordinate'] in duplicate_areas:
-                duplicate_areas[area['mass_coordinate']]['repetitions'] += 1  # should increase repetitions with 1
+            if (area.mass_coordinate['x'], area.mass_coordinate['z']) in duplicate_areas:
+                duplicate_areas[(area.mass_coordinate['x'], area.mass_coordinate['z'])]['repetitions'] += 1  # should increase repetitions with 1
             else:
-                duplicate_areas[area['mass_coordinate']] = {'repetitions': 1, 'length': len(area['area'])}
-            per_area_fitness += self.size_fitness(area['area'])
-            per_area_fitness += self.pillar_fitness(area['area_set'], area['min_max_values'])
-            mass_centers.append(area['mass_coordinate'])
-            height_list.append(area['height'])
-            total_x += area['mass_coordinate'][0]
-            total_z += area['mass_coordinate'][1]
-            total_y += area['height']
+                duplicate_areas[(area.mass_coordinate['x'], area.mass_coordinate['z'])] = {'repetitions': 1, 'length': len(area.list_of_coordinates)}
+            per_area_fitness += self.size_fitness(area.list_of_coordinates)
+            per_area_fitness += self.pillar_fitness(area.area_set, area.min_max_values)
+            mass_centers.append(area.mass_coordinate)
+            height_list.append(area.height)
+            total_x += area.mass_coordinate['x']
+            total_z += area.mass_coordinate['z']
+            total_y += area.height
         population_len = len(population)
-        self.mass_center = (total_x / population_len, total_z / population_len)
+        self.mass_center = {'x': total_x / population_len, 'z': total_z / population_len}
         self.avg_y = total_y / population_len
         current_fitness += per_area_fitness / population_len
         current_fitness += self.duplicates_fitness(duplicate_areas)
@@ -83,12 +81,12 @@ class MapFitness:
             fitness += duplicate_combined_fitness / duplicates_amount
         return fitness
 
-    def distance_fitness(self, mass_centers: List[tuple]) -> float:
+    def distance_fitness(self, mass_centers: List[dict]) -> float:
         # Distance to each other (use mass center for all and check distance to average mass center)
         total_distance = 0
         for center in mass_centers:
-            x_distance = center[0] - self.mass_center[0]
-            z_distance = center[1] - self.mass_center[1]
+            x_distance = center['x'] - self.mass_center['x']
+            z_distance = center['z'] - self.mass_center['z']
             # a^2 + b^2 = c^2
             total_distance += math.sqrt(math.pow(x_distance, 2) + math.pow(z_distance, 2))
         avg_distance = total_distance / len(mass_centers)
