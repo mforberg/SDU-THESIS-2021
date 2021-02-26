@@ -1,5 +1,7 @@
 import map_analysis
 from variables.map_variables import *
+from variables.ga_map_variables import *
+from variables.ga_type_variables import *
 from map_ga.map_main import AreasGA
 from type_ga.type_main import TypesGA
 import minecraft_pb2_grpc
@@ -20,14 +22,15 @@ class Main:
         first_time = time.time()
         result = AreasGA().run(areas=district_areas)
         print(f"GA - Time: {time.time() - first_time}")
-        # TypesGA().run(surface_dict=total_surface_dict, areas=result['population'])
-        # for area in result['population']:
-        #     self.build_surface(surface_dict=total_surface_dict, list_of_x_z_coordinates=area['area'])
-        # rollback = input("reset surface? Y/n - type anything and it will not rollback")
-        # if not rollback:
-        #     self.rollback(surface_dict=total_surface_dict)
+        # TypesGA().run(surface_dict=total_surface_dict, areas=result)
+        for area in result.population:
+            self.build_surface(surface_dict=total_surface_dict, list_of_x_z_coordinates=area.list_of_coordinates)
+        rollback = input("reset surface? Y/n - type anything and it will not rollback")
+        if not rollback:
+            self.rollback(surface_dict=total_surface_dict)
 
     def build_surface(self, surface_dict, list_of_x_z_coordinates):
+        print(list_of_x_z_coordinates)
         options = [('grpc.max_send_message_length', 512 * 1024 * 1024),
                    ('grpc.max_receive_message_length', 512 * 1024 * 1024)]
         channel = grpc.insecure_channel('localhost:5001', options=options)

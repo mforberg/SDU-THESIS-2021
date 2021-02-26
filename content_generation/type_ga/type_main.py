@@ -1,7 +1,5 @@
-from typing import List
-import copy
-
 from variables.ga_type_variables import *
+from shared_variables import *
 from .type_initial_population import TypeInitialPopulation
 from .type_fitness import TypeFitness
 from .type_selection import TypeSelection
@@ -10,11 +8,11 @@ from .type_mutation import TypeMutation
 
 
 class TypesGA:
-    dummy_solution = SolutionType(0, [AreaType("dummy", [(0, 0), (1, 1)])])
+    dummy_solution = SolutionGA(0, [])
     best_solution = dummy_solution
 
-    def run(self, surface_dict: dict, areas: List[List[tuple]]):
-
+    def run(self, surface_dict: dict, areas: SolutionGA) -> SolutionGA:
+        areas.fitness = 0
         population_list = []
         # Generate initial population
         for i in range(0, TYPE_POPULATION_SIZE):
@@ -31,6 +29,7 @@ class TypesGA:
                 crossed_population_no_fitness = TypeCrossover().crossover(population_list, parents_no_fitness)
                 TypeMutation().mutate_populations(crossed_population_no_fitness)
                 population_list = crossed_population_no_fitness
+        return self.best_solution
 
     def check_for_new_best_solution(self, populations_list):
         for solution in populations_list:

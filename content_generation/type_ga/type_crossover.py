@@ -1,12 +1,13 @@
 import random
 from typing import Dict
 from variables.ga_type_variables import *
+from variables.shared_variables import *
 
 
 class TypeCrossover:
     parent_list = []
 
-    def crossover(self, population_list: List[SolutionType], parent_list: List[SolutionType]) -> List[SolutionType]:
+    def crossover(self, population_list: List[SolutionGA], parent_list: List[SolutionGA]) -> List[SolutionGA]:
         self.parent_list = parent_list
         new_population = []
         ordered_population_list = population_list
@@ -19,12 +20,12 @@ class TypeCrossover:
             i += 1
             solution.fitness = 0
             new_population.append(copy.deepcopy(solution))
-        while len(new_population) > TYPE_POPULATION_SIZE:
+        while len(new_population) < TYPE_POPULATION_SIZE:
             parents = self.find_two_parents()
             children_dict = self.create_offspring(parents['p1'], parents['p2'])
-            new_population.append(SolutionType(fitness=0, population=children_dict['c1']))
-            if len(new_population) > TYPE_POPULATION_SIZE:
-                new_population.append(SolutionType(fitness=0, population=children_dict['c2']))
+            new_population.append(SolutionGA(fitness=0, population=children_dict['c1']))
+            if len(new_population) < TYPE_POPULATION_SIZE:
+                new_population.append(SolutionGA(fitness=0, population=children_dict['c2']))
         return new_population
 
     def find_two_parents(self) -> dict:
@@ -32,11 +33,11 @@ class TypeCrossover:
         parent2 = self.get_parent()
         return {"p1": copy.deepcopy(parent1), "p2": copy.deepcopy(parent2)}
 
-    def get_parent(self) -> SolutionType:
+    def get_parent(self) -> SolutionGA:
         random_index = random.randint(0, len(self.parent_list) - 1)
         return copy.deepcopy(self.parent_list[random_index])
 
-    def create_offspring(self, parent1: SolutionType, parent2: SolutionType) -> Dict[str, List[AreaType]]:
+    def create_offspring(self, parent1: SolutionGA, parent2: SolutionGA) -> Dict[str, List[AreaMap]]:
         random.shuffle(parent1.population)
         random.shuffle(parent2.population)
         if len(parent1.population) > len(parent2.population):
@@ -44,7 +45,7 @@ class TypeCrossover:
         else:
             return self.single_point_crossover(shortest=parent1.population, longest=parent2.population)
 
-    def single_point_crossover(self, shortest: List[AreaType], longest: List[AreaType]) -> Dict[str, List[AreaType]]:
+    def single_point_crossover(self, shortest: List[AreaMap], longest: List[AreaMap]) -> Dict[str, List[AreaMap]]:
         point = random.randint(0, len(shortest)-1)
         child1 = []
         child2 = []
@@ -53,11 +54,11 @@ class TypeCrossover:
             if i == point:
                 flip = True
             if not flip:
-                if i < len(shortest) - 1:
+                if i < len(shortest):
                     child1.append(shortest[i])
-                child2.append(longest)
+                child2.append(longest[i])
             else:
-                if i < len(shortest) - 1:
+                if i < len(shortest):
                     child2.append(shortest[i])
                 child1.append(longest[i])
         return {"c1": child1, "c2": child2}

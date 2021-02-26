@@ -4,7 +4,7 @@ from multiprocessing import Pool
 import time
 import grpc
 from map_variables import *
-from ga_map_variables import *
+from shared_variables import *
 import tqdm
 
 
@@ -16,7 +16,7 @@ client = minecraft_pb2_grpc.MinecraftServiceStub(channel)
 class MapAnalysis:
     work = []
 
-    def run(self) -> [dict, dict, SolutionMap]:
+    def run(self) -> [dict, dict, SolutionGA]:
         total_surface_dict = {}
         total_block_dict = {}
         self.create_area_for_work()
@@ -64,8 +64,8 @@ class MapAnalysis:
                     surface_dict[x, z] = {"y": y, "type": block.type, "block": block}
         return {'surface_dict': surface_dict, 'block_dict': block_dict}
 
-    def find_areas_for_districts(self, surface_dict: dict) -> SolutionMap:
-        solution = SolutionMap(population=[], fitness=0)
+    def find_areas_for_districts(self, surface_dict: dict) -> SolutionGA:
+        solution = SolutionGA(population=[], fitness=0)
         surface_dict_iter = iter(surface_dict)
 
         checked_nodes = set()

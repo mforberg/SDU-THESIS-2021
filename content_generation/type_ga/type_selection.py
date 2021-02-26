@@ -1,10 +1,11 @@
 import random
 from variables.ga_type_variables import *
+from variables.shared_variables import *
 
 
 class TypeSelection:
 
-    def select_best_solutions(self, population_list: List[SolutionType]):
+    def select_best_solutions(self, population_list: List[SolutionGA]):
         parent_list = []
         total_fitness = self.create_weighted_wheel(population=population_list)
         for i in range(0, TYPE_AMOUNT_OF_PARENTS_CHOSEN):
@@ -17,13 +18,13 @@ class TypeSelection:
             x += 1
         return parent_list
 
-    def create_weighted_wheel(self, population: List[SolutionType]) -> float:
+    def create_weighted_wheel(self, population: List[SolutionGA]) -> float:
         total_fitness = 0
         for solution in population:
             total_fitness += solution.fitness
         return total_fitness
 
-    def select_solution_for_parent(self, population_list: List[SolutionType], total_fitness: float) -> SolutionType:
+    def select_solution_for_parent(self, population_list: List[SolutionGA], total_fitness: float) -> SolutionGA:
         random_float = random.random()
         fitness_left = random_float * total_fitness
         for i in population_list:

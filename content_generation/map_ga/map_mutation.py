@@ -1,28 +1,22 @@
 import random
-
-from typing import List
-
 from variables.ga_map_variables import *
+from variables.shared_variables import *
 
 
 class MapMutation:
 
     areas = []
 
-    def mutate_populations(self, population_list: List[List[AreaMap]], areas: SolutionMap) -> List[SolutionMap]:
+    def mutate_populations(self, population_list: List[SolutionGA], areas: SolutionGA):
         self.areas = areas
-        list_of_solutions = []
-        for population in population_list:
+        for solution in population_list:
             if random.randint(1, 100) > MAP_MUTATION_PERCENTAGE:
                 if random.randint(1, 2) == 1:
-                    if len(population) < MAX_AREAS_IN_CITY:
-                        self.increase_size(population)
+                    if len(solution.population) < MAX_AREAS_IN_CITY:
+                        self.increase_size(solution.population)
                 else:
-                    if len(population) > MIN_AREAS_IN_CITY:
-                        self.decrease_size(population)
-            list_of_solutions.append(SolutionMap(fitness=0, population=population))
-        return list_of_solutions
-
+                    if len(solution.population) > MIN_AREAS_IN_CITY:
+                        self.decrease_size(solution.population)
 
     def increase_size(self, population: List[AreaMap]):
         population.append(self.areas.population[random.randint(0, len(self.areas.population) - 1)])

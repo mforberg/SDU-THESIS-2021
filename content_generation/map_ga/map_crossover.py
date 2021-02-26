@@ -1,11 +1,12 @@
 import random
 from variables.ga_map_variables import *
+from variables.shared_variables import *
 
 
 class MapCrossover:
     parent_list = []
 
-    def crossover(self, population_list: List[SolutionMap], parent_list: List[List[AreaMap]]) -> List[List[AreaMap]]:
+    def crossover(self, population_list: List[SolutionGA], parent_list: List[List[AreaMap]]) -> List[SolutionGA]:
         self.parent_list = parent_list
         new_population = []
         ordered_population_list = population_list
@@ -16,13 +17,13 @@ class MapCrossover:
             if i == MAP_ELITISM_AMOUNT:
                 break
             i += 1
-            new_population.append(copy.deepcopy(solution.population))
-        while len(new_population) > MAP_POPULATION_SIZE:
+            new_population.append(copy.deepcopy(solution))
+        while len(new_population) < MAP_POPULATION_SIZE:
             parents = self.find_two_parents()
             result = self.create_offspring(parents['p1'], parents['p2'])
-            new_population.append(result['c1'])
-            if len(new_population) > MAP_POPULATION_SIZE:
-                new_population.append(result['c2'])
+            new_population.append(SolutionGA(fitness=0, population=result['c1']))
+            if len(new_population) < MAP_POPULATION_SIZE:
+                new_population.append(SolutionGA(fitness=0, population=result['c2']))
         return new_population
 
     def find_two_parents(self) -> dict:
@@ -51,11 +52,11 @@ class MapCrossover:
             if i == point:
                 flip = True
             if not flip:
-                if i < len(shortest) - 1:
+                if i < len(shortest):
                     child1.append(shortest[i])
-                child2.append(longest)
+                child2.append(longest[i])
             else:
-                if i < len(shortest) - 1:
+                if i < len(shortest):
                     child2.append(shortest[i])
                 child1.append(longest[i])
         return {"c1": child1, "c2": child2}
