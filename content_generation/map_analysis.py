@@ -65,7 +65,7 @@ class MapAnalysis:
         return {'surface_dict': surface_dict, 'block_dict': block_dict}
 
     def find_areas_for_districts(self, surface_dict: dict) -> SolutionGA:
-        solution = SolutionGA(population=[], fitness=0)
+        solution = SolutionGA(population=[], fitness=0, amount=1)
         surface_dict_iter = iter(surface_dict)
 
         checked_nodes = set()

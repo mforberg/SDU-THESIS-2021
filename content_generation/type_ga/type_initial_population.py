@@ -14,7 +14,7 @@ class TypeInitialPopulation:
                                    coordinates=district.list_of_coordinates, mass_coordinate=district.mass_coordinate,
                                    min_max_values=district.min_max_values)
             list_of_area.append(current_area)
-        return SolutionGA(fitness=0, population=list_of_area)
+        return SolutionGA(fitness=0, population=list_of_area, amount=1)
 
     def get_random_type(self) -> str:
         random_index = random.randint(0, len(DISTRICT_TYPES) - 1)

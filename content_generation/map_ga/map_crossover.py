@@ -21,9 +21,9 @@ class MapCrossover:
         while len(new_population) < MAP_POPULATION_SIZE:
             parents = self.find_two_parents()
             result = self.create_offspring(parents['p1'], parents['p2'])
-            new_population.append(SolutionGA(fitness=0, population=result['c1']))
+            new_population.append(SolutionGA(fitness=0, population=result['c1'], amount=1))
             if len(new_population) < MAP_POPULATION_SIZE:
-                new_population.append(SolutionGA(fitness=0, population=result['c2']))
+                new_population.append(SolutionGA(fitness=0, population=result['c2'], amount=1))
         return new_population
 
     def find_two_parents(self) -> dict:

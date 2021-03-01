@@ -37,6 +37,7 @@ class AreasGA:
                 crossed_population_no_fitness = MapCrossover().crossover(populations, parents_no_fitness)
                 MapMutation().mutate_populations(crossed_population_no_fitness, areas)
                 populations = crossed_population_no_fitness
+                self.clean_population_for_duplicates_in_solution(population=populations)
         return self.best_solution
 
     def check_for_new_best_solution(self, populations: List[SolutionGA]):
@@ -44,3 +45,12 @@ class AreasGA:
             if solution.fitness > self.best_solution.fitness:
                 self.best_solution = copy.deepcopy(solution)
                 print(f"New best {solution.fitness}")
+
+    def clean_population_for_duplicates_in_solution(self, population: List[SolutionGA]):
+        for solution in population:
+            unique_sets = set()
+            for area in solution.population:
+                if area in unique_sets:
+                    solution.population.remove(area)
+                else:
+                    unique_sets.add(area)

@@ -20,18 +20,17 @@ class AreaMap:
 
 
 class SolutionGA:
-    fitness = 0
-    population = []
 
-    def __init__(self, fitness, population: List[AreaMap]):
+    def __init__(self, fitness, population: List[AreaMap], amount):
         self.fitness = fitness
         self.population = population
+        self.amount = amount
 
     def __deepcopy__(self, memo):
         copy_list = []
         for x in self.population:
             copy_list.append(copy.deepcopy(x, memo))
-        copy_object = SolutionGA(self.fitness, copy_list)
+        copy_object = SolutionGA(self.fitness, copy_list, self.amount)
         return copy_object
 
     # def __repr__():
