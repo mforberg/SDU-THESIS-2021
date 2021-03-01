@@ -1,5 +1,6 @@
 import map_analysis
 from variables.map_variables import *
+from k_means.k_means_clustering import KMeansClustering
 from variables.ga_map_variables import *
 from variables.ga_type_variables import *
 from map_ga.map_main import AreasGA
@@ -23,11 +24,15 @@ class Main:
         first_time = time.time()
         result = AreasGA().run(areas=district_areas)
         print(f"GA - Time: {time.time() - first_time}")
+
+        KMeansClustering().run(first_ga_result=result)
+
+
         # TypesGA().run(surface_dict=total_surface_dict, areas=result)
         for area in result.population:
             self.build_surface(surface_dict=total_surface_dict, list_of_x_z_coordinates=area.list_of_coordinates)
         rollback = input("reset surface? Y/n - type anything and it will not rollback")
-        print("Okidoki")
+
         if not rollback:
             self.rollback(surface_dict=total_surface_dict)
 
