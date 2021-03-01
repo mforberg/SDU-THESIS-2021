@@ -3,12 +3,6 @@ import copy
 
 
 class AreaMap:
-    # area_type = ""
-    # list_of_coordinates = []
-    # mass_coordinate = None
-    # height = 0
-    # min_max_values = {}
-    # area_set = None
 
     def __init__(self, area_type: str, coordinates: List[tuple], mass_coordinate: dict, height: int,
                  min_max_values: dict, area_set: Set[tuple]):
