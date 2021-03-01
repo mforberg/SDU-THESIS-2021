@@ -45,8 +45,10 @@ class MapFitness:
         current_fitness += per_area_fitness / population_len
         current_fitness += self.distance_fitness(mass_centers)
         current_fitness += self.altitude_fitness(height_list)
-        # current_fitness += self.amount_fitness(population_len)
+        current_fitness += self.amount_fitness(population_len)
         # current_fitness += self.duplicates_fitness(duplicate_areas)
+        if current_fitness < 0:
+            current_fitness = 0
         return current_fitness
 
     def size_fitness(self, area_list: list) -> float:
@@ -108,6 +110,11 @@ class MapFitness:
         a = (-FITNESS_CORNERS_MAX_SCORE / FITNESS_ALTITUDE_MAX_ALLOWED_DIFFERENCE_BEFORE_MINUS)
         return a * distance + FITNESS_CORNERS_MAX_SCORE
 
+    def amount_fitness(self, population_len: int) -> float:
+        # Amount (should not always go for most districts, but smaller solutions can easily get max score in the other)
+        extra_populations = population_len - MIN_AREAS_IN_CITY
+        return extra_populations * FITNESS_AMOUNT_BONUS_PER_EXTRA
+
     # def duplicates_fitness(self, duplicate_areas: dict) -> float:
     #     # Duplicates? (good or bad depending on size)
     #     fitness = FITNESS_DUPLICATE_DEFAULT_SCORE
@@ -129,10 +136,6 @@ class MapFitness:
     #         fitness += duplicate_combined_fitness / duplicates_amount
     #     return fitness
     #
-    # def amount_fitness(self, population_len: int) -> float:
-    #     # Amount (should not always go for most districts, but smaller solutions can easily get max score in the other)
-    #     extra_populations = population_len - MIN_AREAS_IN_CITY
-    #     return extra_populations * FITNESS_AMOUNT_BONUS_PER_EXTRA
     #
     # def pillar_fitness(self, area_set: set, min_max_values: dict) -> float:
     #     min_x = min_max_values['min_x']

@@ -8,7 +8,7 @@ from .type_mutation import TypeMutation
 
 
 class TypesGA:
-    dummy_solution = SolutionGA(0, [])
+    dummy_solution = SolutionGA(0, [], 0)
     best_solution = dummy_solution
 
     def run(self, surface_dict: dict, areas: SolutionGA) -> SolutionGA:

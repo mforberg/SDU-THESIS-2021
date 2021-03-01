@@ -11,7 +11,8 @@ import copy
 class AreasGA:
 
     best_solution = SolutionGA(fitness=0, population=[AreaMap(area_type="None", area_set=None, coordinates=None,
-                                                              mass_coordinate=None, min_max_values=None, height=None)])
+                                                              mass_coordinate=None, min_max_values=None, height=None,)],
+                               amount=None)
     set_of_population = set()
 
     def run(self, areas: SolutionGA) -> SolutionGA:
@@ -21,13 +22,6 @@ class AreasGA:
             initial_population = MapInitialPopulation().create(areas)
             populations.append(initial_population)
         # repeat fitness calculation and select the best solution overall
-        for i in range(0, MAP_GENERATION_AMOUNT):
-            self.set_of_population = set()
-            for pop in populations:
-                if pop in self.set_of_population:
-                    print("oh no")
-                self.set_of_population.add(pop)
-
             print(f"Current generation in Map_GA: {i}, length: {len(populations)}")
             MapFitness().calculate_fitness_for_all(populations)
             self.check_for_new_best_solution(populations)
@@ -50,7 +44,8 @@ class AreasGA:
         for solution in population:
             unique_sets = set()
             for area in solution.population:
-                if area in unique_sets:
+                mass_coordinate = (area.mass_coordinate['x'], area.mass_coordinate['z'])
+                if mass_coordinate in unique_sets:
                     solution.population.remove(area)
                 else:
-                    unique_sets.add(area)
+                    unique_sets.add(mass_coordinate)
