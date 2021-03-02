@@ -12,4 +12,4 @@ jobs:
         with:
           project: Thesis
           column: In Progress
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ secrets.MY_TOKEN }}
