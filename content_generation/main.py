@@ -25,16 +25,35 @@ class Main:
         result = AreasGA().run(areas=district_areas)
         print(f"GA - Time: {time.time() - first_time}")
 
-        KMeansClustering().run(first_ga_result=result)
+        clusters = KMeansClustering().run(first_ga_result=result)
+        for cluster in clusters:
+            print(f"cluster contains: {len(cluster)}")
 
 
         # TypesGA().run(surface_dict=total_surface_dict, areas=result)
-        for area in result.population:
-            self.build_surface(surface_dict=total_surface_dict, list_of_x_z_coordinates=area.list_of_coordinates)
+        self.build_clusters(clusters=clusters, surface_dict=total_surface_dict)
+        # for area in result.population:
+        #     self.build_surface(surface_dict=total_surface_dict, list_of_x_z_coordinates=area.list_of_coordinates)
         rollback = input("reset surface? Y/n - type anything and it will not rollback")
-
+        print("continued")
         if not rollback:
             self.rollback(surface_dict=total_surface_dict)
+
+    def build_clusters(self, surface_dict, clusters):
+        options = [('grpc.max_send_message_length', 512 * 1024 * 1024),
+                   ('grpc.max_receive_message_length', 512 * 1024 * 1024)]
+        channel = grpc.insecure_channel('localhost:5001', options=options)
+        client = minecraft_pb2_grpc.MinecraftServiceStub(channel)
+        list_of_building_blocks = [DIAMOND_ORE, COAL_ORE, GOLD_BLOCK, OBSIDIAN, ICE, NETHER_BRICK, SANDSTONE, WOOL,
+                                   FURNACE, EMERALD_BLOCK]
+        blocks = []
+        for cluster in clusters:
+            current_building_block = list_of_building_blocks.pop(0)
+            for value in cluster:
+                block = copy.deepcopy(surface_dict[(value[0], value[1])]['block'])
+                block.type = current_building_block
+                blocks.append(block)
+        client.spawnBlocks(Blocks(blocks=blocks))
 
     def build_surface(self, surface_dict, list_of_x_z_coordinates):
         print(list_of_x_z_coordinates)
