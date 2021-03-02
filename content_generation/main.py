@@ -29,7 +29,6 @@ class Main:
         for cluster in clusters:
             print(f"cluster contains: {len(cluster)}")
 
-
         # TypesGA().run(surface_dict=total_surface_dict, areas=result)
         self.build_clusters(clusters=clusters, surface_dict=total_surface_dict)
         # for area in result.population:
