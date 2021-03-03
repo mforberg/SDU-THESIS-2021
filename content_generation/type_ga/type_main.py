@@ -12,7 +12,6 @@ class TypesGA:
     best_solution = dummy_solution
 
     def run(self, surface_dict: dict, clusters: List[List[list]]) -> SolutionType:
-        clusters.fitness = 0
         population_list = []
         # Generate initial population
         for i in range(0, TYPE_POPULATION_SIZE):
