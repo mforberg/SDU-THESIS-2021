@@ -4,15 +4,14 @@ from .map_selection import MapSelection
 from .map_crossover import MapCrossover
 from .map_mutation import MapMutation
 from variables.ga_map_variables import *
-from variables.shared_variables import *
+from variables.map_shared_variables import *
 import copy
 
 
 class AreasGA:
 
-    best_solution = SolutionGA(fitness=0, population=[AreaMap(area_type="None", area_set=None, coordinates=None,
-                                                              mass_coordinate=None, min_max_values=None, height=None,)],
-                               amount=None)
+    best_solution = SolutionGA(fitness=0, population=[AreaMap(area_set=None, coordinates=None, mass_coordinate=None,
+                                                              min_max_values=None, height=None,)])
     set_of_population = set()
 
     def run(self, areas: SolutionGA) -> SolutionGA:
@@ -22,6 +21,7 @@ class AreasGA:
             initial_population = MapInitialPopulation().create(areas)
             populations.append(initial_population)
         # repeat fitness calculation and select the best solution overall
+        for i in range(0, MAP_GENERATION_AMOUNT):
             print(f"Current generation in Map_GA: {i}, length: {len(populations)}")
             MapFitness().calculate_fitness_for_all(populations)
             self.check_for_new_best_solution(populations)

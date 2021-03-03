@@ -1,8 +1,7 @@
 import map_analysis
 from variables.map_variables import *
+from variables.map_shared_variables import *
 from k_means.k_means_clustering import KMeansClustering
-from variables.ga_map_variables import *
-from variables.ga_type_variables import *
 from map_ga.map_main import AreasGA
 from type_ga.type_main import TypesGA
 import minecraft_pb2_grpc
@@ -25,18 +24,24 @@ class Main:
         result = AreasGA().run(areas=district_areas)
         print(f"GA - Time: {time.time() - first_time}")
 
+        for area in result.population:
+            print(f"list of areas from first GA: {area.list_of_coordinates}")
+
         clusters = KMeansClustering().run(first_ga_result=result)
         for cluster in clusters:
             print(f"cluster contains: {len(cluster)}")
 
-        # TypesGA().run(surface_dict=total_surface_dict, areas=result)
         self.build_clusters(clusters=clusters, surface_dict=total_surface_dict)
-        # for area in result.population:
-        #     self.build_surface(surface_dict=total_surface_dict, list_of_x_z_coordinates=area.list_of_coordinates)
         rollback = input("reset surface? Y/n - type anything and it will not rollback")
         print("continued")
         if not rollback:
             self.rollback(surface_dict=total_surface_dict)
+
+        # TypesGA().run(surface_dict=total_surface_dict, clusters=clusters)
+
+        # for area in result.population:
+        #     self.build_surface(surface_dict=total_surface_dict, list_of_x_z_coordinates=area.list_of_coordinates)
+
 
     def build_clusters(self, surface_dict, clusters):
         options = [('grpc.max_send_message_length', 512 * 1024 * 1024),

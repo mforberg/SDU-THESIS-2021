@@ -1,6 +1,6 @@
 import random
 from variables.ga_map_variables import *
-from variables.shared_variables import *
+from variables.map_shared_variables import *
 
 
 class MapSelection:
@@ -15,7 +15,6 @@ class MapSelection:
         random.shuffle(population_list)
         counter = 0
         while len(parent_list) < len(population_list):
-            # parent_list.append(copy.deepcopy(population_list[counter]['population']))
             parent_list.append(population_list[counter].population)
             counter += 1
         return parent_list
@@ -29,7 +28,6 @@ class MapSelection:
         fitness_left = random_float * self.total_fitness
         for population in population_list:
             if population.fitness >= fitness_left:
-                # return copy.deepcopy(population['population'])
                 return population.population
             else:
                 fitness_left -= population.fitness

@@ -1,5 +1,5 @@
 from variables.ga_type_variables import *
-from shared_variables import *
+from map_shared_variables import *
 from .type_initial_population import TypeInitialPopulation
 from .type_fitness import TypeFitness
 from .type_selection import TypeSelection
@@ -8,15 +8,15 @@ from .type_mutation import TypeMutation
 
 
 class TypesGA:
-    dummy_solution = SolutionGA(0, [], 0)
+    dummy_solution = SolutionType(fitness=0, population=[AreaType(area_type="None", coordinates=[])], amount=0)
     best_solution = dummy_solution
 
-    def run(self, surface_dict: dict, areas: SolutionGA) -> SolutionGA:
-        areas.fitness = 0
+    def run(self, surface_dict: dict, clusters: List[List[list]]) -> SolutionType:
+        clusters.fitness = 0
         population_list = []
         # Generate initial population
         for i in range(0, TYPE_POPULATION_SIZE):
-            initial_population = TypeInitialPopulation().create(districts=areas)
+            initial_population = TypeInitialPopulation().create(clusters=clusters)
             population_list.append(initial_population)
         # repeat fitness calculation and select the best solution overall
         for i in range(0, TYPE_GENERATION_AMOUNT):

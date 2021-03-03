@@ -4,7 +4,7 @@ from multiprocessing import Pool
 import time
 import grpc
 from map_variables import *
-from shared_variables import *
+from map_shared_variables import *
 import tqdm
 
 
@@ -65,7 +65,7 @@ class MapAnalysis:
         return {'surface_dict': surface_dict, 'block_dict': block_dict}
 
     def find_areas_for_districts(self, surface_dict: dict) -> SolutionGA:
-        solution = SolutionGA(population=[], fitness=0, amount=1)
+        solution = SolutionGA(population=[], fitness=0)
         surface_dict_iter = iter(surface_dict)
 
         checked_nodes = set()
@@ -121,8 +121,8 @@ class MapAnalysis:
             checked_nodes.add(current_node)
         mass_x = total_x / amount
         mass_z = total_z / amount
-        return AreaMap(area_type="None", mass_coordinate={'x': mass_x, 'z': mass_z}, height=height,
-                       area_set=current_area_set, coordinates=current_area,
+        return AreaMap(mass_coordinate={'x': mass_x, 'z': mass_z}, height=height, area_set=current_area_set,
+                       coordinates=current_area,
                        min_max_values={"min_x": min_x, "max_x": max_x, "min_z": min_z, "max_z": max_z})
 
     def get_neighbors(self, surface_dict: dict, block_x: int, block_z: int) -> List[tuple]:
