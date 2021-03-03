@@ -28,19 +28,19 @@ class KMeansClustering:
                                                           skip_set=skip_indexes)
                 remove_index.append(x)
                 skip_indexes.add(x)
-                print(f"{len(current_centroid)} + {len(centroids[index])}")
                 centroids[index].extend(current_centroid)
-                print(f"= {len(centroids[index])}")
         for index in remove_index[::-1]:
-            print(index)
             centroids.pop(index)
 
-    def calculate_minimum_length_of_centroid(self, centroids: List[List[list]]): # [len(list), len(list), ...]
+    def calculate_minimum_length_of_centroid(self, centroids: List[List[list]]):
         length_list = []
+        max_length = 0
         for index in centroids:
             length_list.append(len(index))
-        self.minimum_length_of_centroid = statistics.median(length_list)
-        print(self.minimum_length_of_centroid)
+            if len(index) > max_length:
+                max_length = len(index)
+        median = statistics.median(length_list)
+        self.minimum_length_of_centroid = median + math.floor((max_length - median)/2)
 
     def find_nearest_centroid_center(self, centroid_centers: List[list], current_index: int, skip_set: set) -> int:
         closest = None

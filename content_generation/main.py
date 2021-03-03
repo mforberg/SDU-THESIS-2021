@@ -15,7 +15,6 @@ class Main:
     def run(self):
         first_time = time.time()
         total_block_dict, total_surface_dict, district_areas = map_analysis.MapAnalysis().run()
-        print(len(district_areas.population))
         print(f"Map analysis - Time: {time.time() - first_time}")
         # reset = input("reset surface? y/N - type anything and it will reset, aka. put grass :))")
         # if reset:
@@ -29,7 +28,7 @@ class Main:
 
         clusters = KMeansClustering().run(first_ga_result=result)
         for cluster in clusters:
-            print(f"cluster contains: {len(cluster)}")
+            print(f"cluster contains: {len(cluster)} blocks")
 
         self.build_clusters(clusters=clusters, surface_dict=total_surface_dict)
         rollback = input("reset surface? Y/n - type anything and it will not rollback")
