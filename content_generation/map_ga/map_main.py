@@ -6,13 +6,16 @@ from .map_mutation import MapMutation
 from variables.ga_map_variables import *
 from variables.map_shared_variables import *
 import copy
+from statistics import mean
+from pprint import pprint
 
 
 class AreasGA:
-
     best_solution = SolutionGA(fitness=0, population=[AreaMap(area_set=None, coordinates=None, mass_coordinate=None,
-                                                              min_max_values=None, height=None,)])
+                                                              min_max_values=None, height=None, )])
     set_of_population = set()
+    population_averages = []
+    print_averages = False
 
     def run(self, areas: SolutionGA) -> SolutionGA:
         populations = []
@@ -32,13 +35,20 @@ class AreasGA:
                 MapMutation().mutate_populations(crossed_population_no_fitness, areas)
                 populations = crossed_population_no_fitness
                 self.clean_population_for_duplicates_in_solution(population=populations)
+        # print population average fitness scores
+        if self.print_averages:
+            pprint(self.population_averages)
         return self.best_solution
 
     def check_for_new_best_solution(self, populations: List[SolutionGA]):
+        pop_average = []
         for solution in populations:
             if solution.fitness > self.best_solution.fitness:
                 self.best_solution = copy.deepcopy(solution)
                 print(f"New best {solution.fitness}")
+            pop_average.append(solution.fitness)
+
+        self.population_averages.append(mean(pop_average))
 
     def clean_population_for_duplicates_in_solution(self, population: List[SolutionGA]):
         for solution in population:
