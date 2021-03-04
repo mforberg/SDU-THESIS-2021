@@ -20,9 +20,9 @@ class SolutionArea:
         return copy_object
 
     def __repr__(self):
-        return f"<AreaMap: Coordinate Count: {len(self.list_of_coordinates)},\n" \
-               f"Mass Coordinate: {pprint(self.mass_coordinate)}],\n" \
-               f"Min Max: {pprint(self.min_max_values)}>"
+        return f"<{self.__class__.__name__} ({hex(id(self))}): Coordinate Count: {len(self.list_of_coordinates)}, " \
+               f"Mass Coordinate: {self.mass_coordinate}, " \
+               f"Min Max: {self.min_max_values}>\n"
 
 
 class SolutionGA:
@@ -39,4 +39,4 @@ class SolutionGA:
         return copy_object
 
     def __repr__(self):
-        return f"<SolutionGA: Solution Fitness: {self.fitness:.4f}, Population:{pprint(self.population)}>"
+        return f"<{self.__class__.__name__} ({hex(id(self))}): {self.fitness:.2f}, Population:\n {self.population}>"

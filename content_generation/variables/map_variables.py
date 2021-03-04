@@ -6,9 +6,9 @@ from minecraft_pb2 import *
 # BOX_Z_MIN = 426
 # BOX_Z_MAX = 525
 BOX_X_MIN = -153 #-245
-BOX_X_MAX = 96   #4
+BOX_X_MAX = -103 #96   #4
 BOX_Z_MIN = 1411 #1483
-BOX_Z_MAX = 1661 #1733
+BOX_Z_MAX = 1461 #1661 #1733
 
 # Map analysis
 MIN_SIZE_OF_AREA = 50
