@@ -1,5 +1,6 @@
 from typing import List
 import copy
+from pprint import pprint
 
 
 class SolutionArea:
@@ -18,6 +19,11 @@ class SolutionArea:
                                    type_of_district=self.type_of_district)
         return copy_object
 
+    def __repr__(self):
+        return f"<AreaMap: Coordinate Count: {len(self.list_of_coordinates)},\n" \
+               f"Mass Coordinate: {pprint(self.mass_coordinate)}],\n" \
+               f"Min Max: {pprint(self.min_max_values)}>"
+
 
 class SolutionGA:
 
@@ -32,4 +38,5 @@ class SolutionGA:
         copy_object = SolutionGA(self.fitness, copy_list)
         return copy_object
 
-    # def __repr__():
+    def __repr__(self):
+        return f"<SolutionGA: Solution Fitness: {self.fitness:.4f}, Population:{pprint(self.population)}>"

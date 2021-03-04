@@ -4,6 +4,7 @@ from variables.shared_variables import *
 from k_means.k_means_clustering import KMeansClustering
 from map_ga.map_main import AreasGA
 from type_ga.type_main import TypesGA
+from wfc.preprocessing.wfc_preprocessing import *
 import minecraft_pb2_grpc
 import grpc
 import time
@@ -36,10 +37,15 @@ class Main:
         if not rollback:
             self.rollback(surface_dict=total_surface_dict)
 
-        TypesGA().run(surface_dict=total_surface_dict, clusters=clusters)
+        result = TypesGA().run(surface_dict=total_surface_dict, clusters=clusters)
 
         # for area in result.population:
         #     self.build_surface(surface_dict=total_surface_dict, list_of_x_z_coordinates=area.list_of_coordinates)
+
+        # WFC Start
+        result = wfc_preprocessing(result)
+
+        # WFC End
 
 
     def build_clusters(self, surface_dict, clusters):
