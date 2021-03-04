@@ -8,6 +8,8 @@ class MapFitness:
 
     avg_y = 0
     mass_center = {'x': 0, 'z': 0}
+    x_and_z = math.sqrt(MIN_SIZE_OF_AREA)
+    min_value_for_fitness_distance = (x_and_z * x_and_z) / math.sqrt(math.pow(x_and_z, 2) + math.pow(x_and_z, 2))
 
     def calculate_fitness_for_all(self, population_list: List[SolutionGA]):
         for population in population_list:
@@ -32,8 +34,7 @@ class MapFitness:
                 duplicate_areas[(area.mass_coordinate['x'], area.mass_coordinate['z'])]['repetitions'] += 1  # should increase repetitions with 1
             else:
                 duplicate_areas[(area.mass_coordinate['x'], area.mass_coordinate['z'])] = {'repetitions': 1, 'length': len(area.list_of_coordinates)}
-            per_area_fitness += self.size_fitness(area.list_of_coordinates)
-            per_area_fitness += self.distance_from_min_to_max_corners(area.min_max_values)
+            per_area_fitness += self.size_fitness(area.list_of_coordinates, area.min_max_values)
             mass_centers.append(area.mass_coordinate)
             height_list.append(area.height)
             total_x += area.mass_coordinate['x']
@@ -46,22 +47,22 @@ class MapFitness:
         current_fitness += self.distance_fitness(mass_centers)
         current_fitness += self.altitude_fitness(height_list)
         current_fitness += self.amount_fitness(population_len)
-        # current_fitness += self.duplicates_fitness(duplicate_areas)
         if current_fitness < 0:
             current_fitness = 0
         return current_fitness
 
-    def size_fitness(self, area_list: list) -> float:
-        # Size (dont pick small areas)
-        length = len(area_list)
-        if length >= FITNESS_PERFECT_LENGTH:
-            return FITNESS_SIZE_MAX_SCORE
+    def size_fitness(self, area_list: list, min_max_values: dict) -> float:
+        # Size (dont pick small areas, but also avoid "long small" ones)
+        amount_of_blocks = len(area_list)
+        # a^2 + b^2 = c^2
+        x_distance = min_max_values['max_x'] - min_max_values['min_x']
+        z_distance = min_max_values['max_z'] - min_max_values['min_z']
+        distance = math.sqrt(math.pow(x_distance, 2) + math.pow(z_distance, 2))
+        value = (amount_of_blocks/distance) - self.min_value_for_fitness_distance
+        if value <= 0:
+            return 0
         else:
-            # y = a*x + b
-            # a = y2 - y1 / x2 - x1 (y1 and x1 is 0, as the formula crosses the coordinate 0,0)
-            # b = 0
-            # x = length - size that gives 0 point (aka minimum allowed size of an area)
-            return (FITNESS_SIZE_MAX_SCORE / FITNESS_PERFECT_LENGTH) * (length - MIN_SIZE_OF_AREA)
+            return value * FITNESS_SIZE_VALUE_MULTIPLIER
 
     def distance_fitness(self, mass_centers: List[dict]) -> float:
         # Distance to each other (use mass center for all and check distance to average mass center)
@@ -91,24 +92,6 @@ class MapFitness:
         # x = average_distance
         a = -FITNESS_ALTITUDE_MAX_SCORE / FITNESS_ALTITUDE_MAX_ALLOWED_DIFFERENCE_BEFORE_MINUS
         return a * average_difference + FITNESS_ALTITUDE_MAX_SCORE
-
-    def distance_from_min_to_max_corners(self, min_max_values: dict) -> float:
-        min_x = min_max_values['min_x']
-        max_x = min_max_values['max_x']
-        min_z = min_max_values['min_z']
-        max_z = min_max_values['max_z']
-        # a^2 + b^2 = c^2
-        x_distance = max_x - min_x
-        z_distance = max_z - min_z
-        distance = math.sqrt(math.pow(x_distance, 2) + math.pow(z_distance, 2)) - FITNESS_CORNERS_DISTANCE_FOR_MAX_SCORE
-        if distance <= 0:
-            return FITNESS_CORNERS_MAX_SCORE
-        # y = a*x + b
-        # a = y2 - y1 / x2 - x1 (y1 is max score, x1 is 0, y2 is 0, x2 is the max cut for 0 points)
-        # b = max score
-        # x = distance
-        a = (-FITNESS_CORNERS_MAX_SCORE / FITNESS_ALTITUDE_MAX_ALLOWED_DIFFERENCE_BEFORE_MINUS)
-        return a * distance + FITNESS_CORNERS_MAX_SCORE
 
     def amount_fitness(self, population_len: int) -> float:
         # Amount (should not always go for most districts, but smaller solutions can easily get max score in the other)
@@ -153,3 +136,21 @@ class MapFitness:
     #             total_possible_pillars += 1
     #     fitness = (FITNESS_PILLAR_MAX_SCORE / total_possible_pillars) * amount_of_pillars_found
     #     return fitness
+
+    # def distance_from_min_to_max_corners(self, min_max_values: dict) -> float:
+    #     min_x = min_max_values['min_x']
+    #     max_x = min_max_values['max_x']
+    #     min_z = min_max_values['min_z']
+    #     max_z = min_max_values['max_z']
+    #     # a^2 + b^2 = c^2
+    #     x_distance = max_x - min_x
+    #     z_distance = max_z - min_z
+    #     distance = math.sqrt(math.pow(x_distance, 2) + math.pow(z_distance, 2)) - FITNESS_CORNERS_DISTANCE_FOR_MAX_SCORE
+    #     if distance <= 0:
+    #         return FITNESS_CORNERS_MAX_SCORE
+    #     # y = a*x + b
+    #     # a = y2 - y1 / x2 - x1 (y1 is max score, x1 is 0, y2 is 0, x2 is the max cut for 0 points)
+    #     # b = max score
+    #     # x = distance
+    #     a = (-FITNESS_CORNERS_MAX_SCORE / FITNESS_ALTITUDE_MAX_ALLOWED_DIFFERENCE_BEFORE_MINUS)
+    #     return a * distance + FITNESS_CORNERS_MAX_SCORE
