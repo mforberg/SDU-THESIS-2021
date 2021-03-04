@@ -1,4 +1,4 @@
-from variables.map_shared_variables import *
+from variables.shared_variables import *
 import random
 
 

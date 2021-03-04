@@ -1,7 +1,7 @@
 import math
 from variables.ga_map_variables import *
 from variables.map_variables import MIN_SIZE_OF_AREA
-from variables.map_shared_variables import *
+from variables.shared_variables import *
 
 
 class MapFitness:
@@ -20,7 +20,7 @@ class MapFitness:
         self.mass_center = {'x': 0, 'z': 0}
         solution.fitness = self.calculate_fitness_from_population(solution.population)
 
-    def calculate_fitness_from_population(self, population: List[AreaMap]) -> float:
+    def calculate_fitness_from_population(self, population: List[SolutionArea]) -> float:
         current_fitness = 0
         per_area_fitness = 0
         mass_centers = []

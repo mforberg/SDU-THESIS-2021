@@ -1,6 +1,6 @@
 import map_analysis
 from variables.map_variables import *
-from variables.map_shared_variables import *
+from variables.shared_variables import *
 from k_means.k_means_clustering import KMeansClustering
 from map_ga.map_main import AreasGA
 from type_ga.type_main import TypesGA
@@ -36,7 +36,7 @@ class Main:
         if not rollback:
             self.rollback(surface_dict=total_surface_dict)
 
-        # TypesGA().run(surface_dict=total_surface_dict, clusters=clusters)
+        TypesGA().run(surface_dict=total_surface_dict, clusters=clusters)
 
         # for area in result.population:
         #     self.build_surface(surface_dict=total_surface_dict, list_of_x_z_coordinates=area.list_of_coordinates)
@@ -77,9 +77,15 @@ class Main:
                    ('grpc.max_receive_message_length', 512 * 1024 * 1024)]
         channel = grpc.insecure_channel('localhost:5001', options=options)
         client = minecraft_pb2_grpc.MinecraftServiceStub(channel)
+        list_of_building_blocks = [DIAMOND_ORE, COAL_ORE, GOLD_BLOCK, OBSIDIAN, ICE, NETHER_BRICK, SANDSTONE, WOOL,
+                                   FURNACE, EMERALD_BLOCK]
         blocks = []
         for value in surface_dict.values():
             block = copy.deepcopy(value['block'])
+            if block.type == SPONGE:
+                block.type = AIR
+            if block.type in list_of_building_blocks:
+                block.type = GRASS
             blocks.append(block)
         client.spawnBlocks(Blocks(blocks=blocks))
 

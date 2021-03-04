@@ -1,7 +1,7 @@
 import random
 from typing import Dict
 from variables.ga_type_variables import *
-from variables.map_shared_variables import *
+from variables.shared_variables import *
 
 
 class TypeCrossover:
@@ -37,7 +37,7 @@ class TypeCrossover:
         random_index = random.randint(0, len(self.parent_list) - 1)
         return copy.deepcopy(self.parent_list[random_index])
 
-    def create_offspring(self, parent1: SolutionGA, parent2: SolutionGA) -> Dict[str, List[AreaMap]]:
+    def create_offspring(self, parent1: SolutionGA, parent2: SolutionGA) -> Dict[str, List[SolutionArea]]:
         random.shuffle(parent1.population)
         random.shuffle(parent2.population)
         if len(parent1.population) > len(parent2.population):
@@ -45,7 +45,7 @@ class TypeCrossover:
         else:
             return self.single_point_crossover(shortest=parent1.population, longest=parent2.population)
 
-    def single_point_crossover(self, shortest: List[AreaMap], longest: List[AreaMap]) -> Dict[str, List[AreaMap]]:
+    def single_point_crossover(self, shortest: List[SolutionArea], longest: List[SolutionArea]) -> Dict[str, List[SolutionArea]]:
         point = random.randint(0, len(shortest)-1)
         child1 = []
         child2 = []

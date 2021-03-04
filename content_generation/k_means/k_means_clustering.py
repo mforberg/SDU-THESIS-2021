@@ -1,4 +1,4 @@
-from variables.map_shared_variables import *
+from variables.shared_variables import *
 # pip install -U scikit-learn
 from sklearn.cluster import KMeans
 # https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html

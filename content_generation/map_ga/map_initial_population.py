@@ -1,5 +1,5 @@
 from variables.ga_map_variables import *
-from variables.map_shared_variables import *
+from variables.shared_variables import *
 import random
 import copy
 
@@ -12,6 +12,6 @@ class MapInitialPopulation:
             result.population.append(self.pick_random_area(areas.population))
         return result
 
-    def pick_random_area(self, areas: List[AreaMap]) -> AreaMap:
+    def pick_random_area(self, areas: List[SolutionArea]) -> SolutionArea:
         area = copy.deepcopy(areas[random.randint(0, len(areas)-1)])
         return area

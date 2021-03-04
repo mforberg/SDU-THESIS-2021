@@ -1,6 +1,6 @@
 import random
 from variables.ga_map_variables import *
-from variables.map_shared_variables import *
+from variables.shared_variables import *
 
 
 class MapMutation:
@@ -18,10 +18,10 @@ class MapMutation:
                     if len(solution.population) > MIN_AREAS_IN_CITY:
                         self.decrease_size(solution.population)
 
-    def increase_size(self, population: List[AreaMap]):
+    def increase_size(self, population: List[SolutionArea]):
         population.append(self.areas.population[random.randint(0, len(self.areas.population) - 1)])
         random.shuffle(population)
 
-    def decrease_size(self, population: List[AreaMap]):
+    def decrease_size(self, population: List[SolutionArea]):
         random.shuffle(population)
         population.pop(0)

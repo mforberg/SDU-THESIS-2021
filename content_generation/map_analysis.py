@@ -1,10 +1,12 @@
+from typing import Set
+
 import minecraft_pb2_grpc
 import multiprocessing
 from multiprocessing import Pool
 import time
 import grpc
 from map_variables import *
-from map_shared_variables import *
+from shared_variables import *
 import tqdm
 
 
@@ -80,7 +82,7 @@ class MapAnalysis:
         print(f"Length of checked nodes {len(checked_nodes)}")
         return solution
 
-    def find_area(self, surface_dict: dict, block_x: int, block_z: int, checked_nodes: Set[tuple]) -> AreaMap:
+    def find_area(self, surface_dict: dict, block_x: int, block_z: int, checked_nodes: Set[tuple]) -> SolutionArea:
         nodes_to_be_checked = []
         min_x = block_x
         max_x = block_x
@@ -92,7 +94,6 @@ class MapAnalysis:
         height = surface_dict[block_x, block_z]['y']
         checked_neighbors = []
         current_area = []
-        current_area_set = set()
         nodes_to_be_checked.append((block_x, block_z))
         while nodes_to_be_checked:
             current_node = nodes_to_be_checked.pop()
@@ -100,7 +101,6 @@ class MapAnalysis:
             z = current_node[1]
             if surface_dict[current_node]['type'] not in FLUID_LIST:
                 current_area.append(current_node)
-                current_area_set.add(current_node)
                 neighbors = self.get_neighbors(surface_dict, x, z)
                 for neighbor in neighbors:
                     if neighbor not in checked_nodes and neighbor not in checked_neighbors \
@@ -121,9 +121,9 @@ class MapAnalysis:
             checked_nodes.add(current_node)
         mass_x = total_x / amount
         mass_z = total_z / amount
-        return AreaMap(mass_coordinate={'x': mass_x, 'z': mass_z}, height=height, area_set=current_area_set,
-                       coordinates=current_area,
-                       min_max_values={"min_x": min_x, "max_x": max_x, "min_z": min_z, "max_z": max_z})
+        return SolutionArea(mass_coordinate={'x': mass_x, 'z': mass_z}, height=height, coordinates=current_area,
+                            min_max_values={"min_x": min_x, "max_x": max_x, "min_z": min_z, "max_z": max_z},
+                            type_of_district="no")
 
     def get_neighbors(self, surface_dict: dict, block_x: int, block_z: int) -> List[tuple]:
         neighbors = []  # [[x1, z1], [x2, z2]]

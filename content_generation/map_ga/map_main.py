@@ -4,15 +4,16 @@ from .map_selection import MapSelection
 from .map_crossover import MapCrossover
 from .map_mutation import MapMutation
 from variables.ga_map_variables import *
-from variables.map_shared_variables import *
+from variables.shared_variables import *
 import copy
 from statistics import mean
 from pprint import pprint
 
 
 class AreasGA:
-    best_solution = SolutionGA(fitness=0, population=[AreaMap(area_set=None, coordinates=None, mass_coordinate=None,
-                                                              min_max_values=None, height=None, )])
+    best_solution = SolutionGA(fitness=0, population=[SolutionArea(coordinates=None, mass_coordinate=None,
+                                                                   min_max_values=None, height=None,
+                                                                   type_of_district="no")])
     set_of_population = set()
     population_averages = []
     print_averages = False

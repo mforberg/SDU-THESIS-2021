@@ -1,12 +1,12 @@
 import random
 from variables.ga_map_variables import *
-from variables.map_shared_variables import *
+from variables.shared_variables import *
 
 
 class MapCrossover:
     parent_list = []
 
-    def crossover(self, population_list: List[SolutionGA], parent_list: List[List[AreaMap]]) -> List[SolutionGA]:
+    def crossover(self, population_list: List[SolutionGA], parent_list: List[List[SolutionArea]]) -> List[SolutionGA]:
         self.parent_list = parent_list
         new_population = []
         ordered_population_list = population_list
@@ -31,11 +31,11 @@ class MapCrossover:
         parent2 = self.get_parent()
         return {"p1": copy.deepcopy(parent1), "p2": copy.deepcopy(parent2)}
 
-    def get_parent(self) -> List[AreaMap]:
+    def get_parent(self) -> List[SolutionArea]:
         random_index = random.randint(0, len(self.parent_list) - 1)
         return copy.deepcopy(self.parent_list[random_index])
 
-    def create_offspring(self, parent1: List[AreaMap], parent2: List[AreaMap]) -> dict:
+    def create_offspring(self, parent1: List[SolutionArea], parent2: List[SolutionArea]) -> dict:
         random.shuffle(parent1)
         random.shuffle(parent2)
         if len(parent1) > len(parent2):
@@ -43,7 +43,7 @@ class MapCrossover:
         else:
             return self.single_point_crossover(shortest=parent1, longest=parent2)
 
-    def single_point_crossover(self, shortest: List[AreaMap], longest: List[AreaMap]) -> dict:
+    def single_point_crossover(self, shortest: List[SolutionArea], longest: List[SolutionArea]) -> dict:
         point = random.randint(0, len(shortest)-1)
         child1 = []
         child2 = []

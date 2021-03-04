@@ -1,6 +1,6 @@
 import random
 from variables.ga_type_variables import *
-from variables.map_shared_variables import *
+from variables.shared_variables import *
 
 
 class TypeMutation:
@@ -12,5 +12,5 @@ class TypeMutation:
                     if random.randint(1, 100) > TYPE_MUTATION_AREA_PERCENTAGE:
                         self.mutate_solution(area)
 
-    def mutate_solution(self, area: AreaMap):
+    def mutate_solution(self, area: SolutionArea):
         area.area_type = DISTRICT_TYPES[random.randint(0, len(DISTRICT_TYPES) - 1)]

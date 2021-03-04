@@ -1,12 +1,12 @@
 import random
 from variables.ga_map_variables import *
-from variables.map_shared_variables import *
+from variables.shared_variables import *
 
 
 class MapSelection:
     total_fitness = 0
 
-    def select_best_solutions(self, population_list: List[SolutionGA]) -> List[List[AreaMap]]:
+    def select_best_solutions(self, population_list: List[SolutionGA]) -> List[List[SolutionArea]]:
         self.total_fitness = 0
         self.create_weighted_wheel(population_list)
         parent_list = []
@@ -23,7 +23,7 @@ class MapSelection:
         for solution in total_pop:
             self.total_fitness += solution.fitness
 
-    def select_solution_for_parent(self, population_list: List[SolutionGA]) -> List[AreaMap]:
+    def select_solution_for_parent(self, population_list: List[SolutionGA]) -> List[SolutionArea]:
         random_float = random.random()
         fitness_left = random_float * self.total_fitness
         for population in population_list:
