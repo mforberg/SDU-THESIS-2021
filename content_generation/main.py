@@ -12,6 +12,8 @@ import copy
 
 
 class Main:
+    global_dict_of_used_coordinates = {}
+    global_dict_of_types = {}
 
     def run(self):
         first_time = time.time()
@@ -28,8 +30,8 @@ class Main:
             print(f"list of areas from first GA: {area.list_of_coordinates}")
 
         clusters = KMeansClustering().run(first_ga_result=result)
-        for cluster in clusters:
-            print(f"cluster contains: {len(cluster)} blocks")
+        for cluster in clusters.population:
+            print(f"cluster contains: {len(cluster.list_of_coordinates)} blocks")
 
         self.build_clusters(clusters=clusters, surface_dict=total_surface_dict)
         rollback = input("reset surface? Y/n - type anything and it will not rollback")
@@ -37,7 +39,8 @@ class Main:
         if not rollback:
             self.rollback(surface_dict=total_surface_dict)
 
-        result = TypesGA().run(surface_dict=total_surface_dict, clusters=clusters)
+        result = TypesGA().run(surface_dict=total_surface_dict, clusters=clusters,
+                               global_district_types_dict=self.global_dict_of_types)
 
         # for area in result.population:
         #     self.build_surface(surface_dict=total_surface_dict, list_of_x_z_coordinates=area.list_of_coordinates)
@@ -47,8 +50,7 @@ class Main:
 
         # WFC End
 
-
-    def build_clusters(self, surface_dict, clusters):
+    def build_clusters(self, surface_dict: dict, clusters: SolutionGA):
         options = [('grpc.max_send_message_length', 512 * 1024 * 1024),
                    ('grpc.max_receive_message_length', 512 * 1024 * 1024)]
         channel = grpc.insecure_channel('localhost:5001', options=options)
@@ -56,9 +58,9 @@ class Main:
         list_of_building_blocks = [DIAMOND_ORE, COAL_ORE, GOLD_BLOCK, OBSIDIAN, ICE, NETHER_BRICK, SANDSTONE, WOOL,
                                    FURNACE, EMERALD_BLOCK]
         blocks = []
-        for cluster in clusters:
+        for cluster in clusters.population:
             current_building_block = list_of_building_blocks.pop(0)
-            for value in cluster:
+            for value in cluster.list_of_coordinates:
                 block = copy.deepcopy(surface_dict[(value[0], value[1])]['block'])
                 block.type = current_building_block
                 blocks.append(block)
