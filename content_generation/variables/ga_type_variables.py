@@ -26,9 +26,6 @@ class AreaType:
 
 
 class SolutionType:
-    fitness = 0
-    amount = 0
-    population = []
 
     def __init__(self, fitness, population: List[AreaType], amount):
         self.fitness = fitness
