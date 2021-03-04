@@ -13,7 +13,7 @@ class TypesGA:
                                                                     mass_coordinate={"no": True}, height=-1)])
     best_solution = dummy_solution
 
-    def run(self, surface_dict: dict, clusters: List[List[list]]) -> SolutionGA:
+    def run(self, surface_dict: dict, clusters: SolutionGA, global_district_types_dict: dict) -> SolutionGA:
         population_list = []
         # Generate initial population
         for i in range(0, TYPE_POPULATION_SIZE):
@@ -22,7 +22,8 @@ class TypesGA:
         # repeat fitness calculation and select the best solution overall
         for i in range(0, TYPE_GENERATION_AMOUNT):
             print(f"Current generation in Type_GA: {i}")
-            TypeFitness().calculate_fitness_for_all(population_list=population_list)
+            TypeFitness().calculate_fitness_for_all(population_list=population_list, surface_dict=surface_dict,
+                                                    global_dict_of_used_types=global_district_types_dict)
             self.check_for_new_best_solution(populations_list=population_list)
             # as long as it is not the last generation, find parents, do crossover, and mutate
             if i != TYPE_GENERATION_AMOUNT - 1:
@@ -30,7 +31,16 @@ class TypesGA:
                 crossed_population_no_fitness = TypeCrossover().crossover(population_list, parents_no_fitness)
                 TypeMutation().mutate_populations(crossed_population_no_fitness)
                 population_list = crossed_population_no_fitness
+        self.update_global_dict_of_types(solution=self.best_solution,
+                                         global_dict_of_used_types=global_district_types_dict)
         return self.best_solution
+
+    def update_global_dict_of_types(self, solution: SolutionGA, global_dict_of_used_types: dict):
+        for area in solution.population:
+            if area.type_of_district in global_dict_of_used_types:
+                global_dict_of_used_types[area.type_of_district] += 1
+            else:
+                global_dict_of_used_types[area.type_of_district] = 0
 
     def check_for_new_best_solution(self, populations_list):
         for solution in populations_list:

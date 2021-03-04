@@ -4,7 +4,13 @@ import random
 
 class TypeFitness:
 
-    def calculate_fitness_for_all(self, population_list: List[SolutionGA]):
+    surface_dict = {}
+    global_dict_of_used_types = {}
+
+    def calculate_fitness_for_all(self, population_list: List[SolutionGA], surface_dict: dict,
+                                  global_dict_of_used_types: dict):
+        self.surface_dict = surface_dict
+        self.global_dict_of_used_types = global_dict_of_used_types
         for solution in population_list:
             self.calculate_individual_fitness(solution=solution)
 
