@@ -4,7 +4,8 @@ from variables.shared_variables import *
 from k_means.k_means_clustering import KMeansClustering
 from map_ga.map_main import AreasGA
 from type_ga.type_main import TypesGA
-from wfc.preprocessing.wfc_preprocessing import *
+from wfc.preprocessing.wfc_preprocessing import WFCPreprocessing as WFC_PP
+from builder.wfc_builder import WFCBuilder as WFCB
 import minecraft_pb2_grpc
 import grpc
 import time
@@ -46,8 +47,10 @@ class Main:
         #     self.build_surface(surface_dict=total_surface_dict, list_of_x_z_coordinates=area.list_of_coordinates)
 
         # WFC Start
-        result = wfc_preprocessing(result)
-
+        print("- - - - WFC RELATED GARBAGE KEEP SCROLLING - - - -")
+        result = WFC_PP().create_tiles(result=result, n=2)
+        WFCB().build_tiles(surface_dict=total_surface_dict, tiles=result)
+        print("- - - - WFC RELATED GARBAGE STOPPED - - - -")
         # WFC End
 
     def build_clusters(self, surface_dict: dict, clusters: SolutionGA):
