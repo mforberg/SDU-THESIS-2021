@@ -25,3 +25,6 @@ class WFCBuilder:
             max=Point(x=20, y=50, z=20)
         ))
         print("DUMMY BUILD TILES")
+
+    def build_solution(self, result):
+        pass

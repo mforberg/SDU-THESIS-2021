@@ -47,7 +47,7 @@ class Main:
         #     self.build_surface(surface_dict=total_surface_dict, list_of_x_z_coordinates=area.list_of_coordinates)
 
         # WFC Start
-        result = WFC_PP().create_tiles(result=result)
+        result = WFC_PP().create_tiles(result=result, n=2)
         WFCB().build_tiles(surface_dict=total_surface_dict, tiles=result)
 
         # WFC End
