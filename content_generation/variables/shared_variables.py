@@ -8,6 +8,7 @@ class SolutionArea:
     def __init__(self, coordinates: List[tuple], mass_coordinate: dict, height: int, type_of_district: str,
                  min_max_values: dict):
         self.list_of_coordinates = coordinates
+        self.set_of_coordinates = set(coordinates)
         self.mass_coordinate = mass_coordinate
         self.height = height
         self.min_max_values = min_max_values

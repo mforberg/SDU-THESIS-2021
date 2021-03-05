@@ -31,7 +31,8 @@ class WFCPreprocessing:
                 if coordinate[1] == min_z:
                     temp[max_x] += 1
             counters.append(temp)
-
+        # TODO: If you check min / max x / z, and you know the edge with most duplicates (e.g. max_x)
+        #  you can find direction by adding / subtracting 1 to x by looking at min_X
         print(f"Counters: max_x | min_x | max_z | min_z")
         print(counters)
         # If there are cases where X|Z % N != find the column or row with least blocks in it then absorb/delete
