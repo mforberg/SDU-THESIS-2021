@@ -1,5 +1,6 @@
 from variables.ga_type_variables import *
 from variables.shared_variables import *
+from .type_preprocess import run_preprocess
 from .type_initial_population import TypeInitialPopulation
 from .type_fitness import TypeFitness
 from .type_selection import TypeSelection
@@ -13,7 +14,9 @@ class TypesGA:
                                                                     mass_coordinate={"no": True}, height=-1)])
     best_solution = dummy_solution
 
-    def run(self, surface_dict: dict, clusters: SolutionGA, global_district_types_dict: dict) -> SolutionGA:
+    def run(self, surface_dict: dict, clusters: SolutionGA, global_district_types_dict: dict,
+            fluid_set: set) -> SolutionGA:
+        preprocess_dict = run_preprocess(solution=clusters, surface_dict=surface_dict, fluid_set=fluid_set)
         population_list = []
         # Generate initial population
         for i in range(0, TYPE_POPULATION_SIZE):
@@ -23,7 +26,8 @@ class TypesGA:
         for i in range(0, TYPE_GENERATION_AMOUNT):
             print(f"Current generation in Type_GA: {i}")
             TypeFitness().calculate_fitness_for_all(population_list=population_list, surface_dict=surface_dict,
-                                                    global_dict_of_used_types=global_district_types_dict)
+                                                    global_dict_of_used_types=global_district_types_dict,
+                                                    preprocess_dict=preprocess_dict)
             self.check_for_new_best_solution(populations_list=population_list)
             # as long as it is not the last generation, find parents, do crossover, and mutate
             if i != TYPE_GENERATION_AMOUNT - 1:
@@ -40,7 +44,7 @@ class TypesGA:
             if area.type_of_district in global_dict_of_used_types:
                 global_dict_of_used_types[area.type_of_district] += 1
             else:
-                global_dict_of_used_types[area.type_of_district] = 0
+                global_dict_of_used_types[area.type_of_district] = 1
 
     def check_for_new_best_solution(self, populations_list):
         for solution in populations_list:

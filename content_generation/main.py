@@ -17,7 +17,7 @@ class Main:
 
     def run(self):
         first_time = time.time()
-        total_block_dict, total_surface_dict, district_areas = map_analysis.MapAnalysis().run()
+        total_block_dict, total_surface_dict, district_areas, set_of_fluids = map_analysis.MapAnalysis().run()
         print(f"Map analysis - Time: {time.time() - first_time}")
         # reset = input("reset surface? y/N - type anything and it will reset, aka. put grass :))")
         # if reset:
@@ -40,7 +40,7 @@ class Main:
             self.rollback(surface_dict=total_surface_dict)
 
         result = TypesGA().run(surface_dict=total_surface_dict, clusters=clusters,
-                               global_district_types_dict=self.global_dict_of_types)
+                               global_district_types_dict=self.global_dict_of_types, fluid_set=set_of_fluids)
 
         # for area in result.population:
         #     self.build_surface(surface_dict=total_surface_dict, list_of_x_z_coordinates=area.list_of_coordinates)
@@ -105,7 +105,7 @@ class Main:
         blocks = []
         for value in surface_dict.values():
             block = copy.deepcopy(value['block'])
-            if block.type in FLUID_LIST:
+            if block.type in FLUID_SET:
                 continue
             block.type = GRASS
             blocks.append(block)

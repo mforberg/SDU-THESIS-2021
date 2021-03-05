@@ -29,7 +29,9 @@ class MapAnalysis:
             total_block_dict.update(dictionary['block_dict'])
             total_surface_dict.update(dictionary['surface_dict'])
         result = self.find_areas_for_districts(total_surface_dict)
-        return total_block_dict, total_surface_dict, result
+        areas_for_districts = result[0]
+        set_of_fluid_coordinates = result[1]
+        return total_block_dict, total_surface_dict, areas_for_districts, set_of_fluid_coordinates
 
     def create_area_for_work(self):
         for x in range(BOX_X_MIN, BOX_X_MAX + 1):
@@ -46,7 +48,7 @@ class MapAnalysis:
             result.append(i)
         return result
 
-    def read_part_of_world(self, min_x: int, max_x: int, min_z: int, max_z: int, min_y=30, max_y=160) -> [dict, dict]:
+    def read_part_of_world(self, min_x: int, max_x: int, min_z: int, max_z: int, min_y=30, max_y=160) -> dict:
         cube_result = client.readCube(Cube(
             min=Point(x=min_x, y=min_y, z=min_z),
             max=Point(x=max_x, y=max_y, z=max_z)
@@ -59,30 +61,31 @@ class MapAnalysis:
         for block in cube_result.blocks:
             x, y, z = block.position.x, block.position.y, block.position.z
             # block_dict[x, y, z] = {"type": block.type}
-            if block.type not in SKIP_LIST:
+            if block.type not in SKIP_SET:
                 if (x, z) not in surface_dict:
                     surface_dict[x, z] = {"y": y, "type": block.type, "block": block}
                 elif surface_dict[x, z]["y"] < y:
                     surface_dict[x, z] = {"y": y, "type": block.type, "block": block}
         return {'surface_dict': surface_dict, 'block_dict': block_dict}
 
-    def find_areas_for_districts(self, surface_dict: dict) -> SolutionGA:
+    def find_areas_for_districts(self, surface_dict: dict) -> (SolutionGA, set):
         solution = SolutionGA(population=[], fitness=0)
         surface_dict_iter = iter(surface_dict)
-
+        fluid_blocks_set = set()
         checked_nodes = set()
         start = time.time()
         while len(checked_nodes) < len(surface_dict):
             node = next(surface_dict_iter)
             if node not in checked_nodes:
-                area = self.find_area(surface_dict, node[0], node[1], checked_nodes)
+                area = self.find_area(surface_dict, node[0], node[1], checked_nodes, fluid_blocks_set)
                 if len(area.list_of_coordinates) >= MIN_SIZE_OF_AREA:
                     solution.population.append(area)
         print(f"End of while time: {time.time() - start}")
         print(f"Length of checked nodes {len(checked_nodes)}")
-        return solution
+        return solution, fluid_blocks_set
 
-    def find_area(self, surface_dict: dict, block_x: int, block_z: int, checked_nodes: Set[tuple]) -> SolutionArea:
+    def find_area(self, surface_dict: dict, block_x: int, block_z: int, checked_nodes: Set[tuple],
+                  fluid_blocks_set: set) -> SolutionArea:
         nodes_to_be_checked = []
         min_x = block_x
         max_x = block_x
@@ -99,7 +102,7 @@ class MapAnalysis:
             current_node = nodes_to_be_checked.pop()
             x = current_node[0]
             z = current_node[1]
-            if surface_dict[current_node]['type'] not in FLUID_LIST:
+            if surface_dict[current_node]['type'] not in FLUID_SET:
                 current_area.append(current_node)
                 neighbors = self.get_neighbors(surface_dict, x, z)
                 for neighbor in neighbors:
@@ -118,6 +121,8 @@ class MapAnalysis:
                     max_z = z
                 if z < min_z:
                     min_z = z
+            else:
+                fluid_blocks_set.add((x, z))
             checked_nodes.add(current_node)
         mass_x = total_x / amount
         mass_z = total_z / amount
