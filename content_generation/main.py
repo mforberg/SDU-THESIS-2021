@@ -5,7 +5,7 @@ from k_means.k_means_clustering import KMeansClustering
 from map_ga.map_main import AreasGA
 from type_ga.type_main import TypesGA
 from wfc.preprocessing.wfc_preprocessing import WFCPreprocessing as WFC_PP
-from build.wfc_builder import WFCBuilder as WFCB
+from builder.wfc_builder import WFCBuilder as WFCB
 import minecraft_pb2_grpc
 import grpc
 import time
