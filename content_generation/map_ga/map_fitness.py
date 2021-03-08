@@ -13,29 +13,25 @@ class MapFitness:
 
     def calculate_fitness_for_all(self, population_list: List[SolutionGA]):
         for population in population_list:
-            self.calculate_individual_fitness(population)
+            self.__calculate_individual_fitness(population)
 
-    def calculate_individual_fitness(self, solution: SolutionGA):
+    def __calculate_individual_fitness(self, solution: SolutionGA):
         self.avg_y = 0
         self.mass_center = {'x': 0, 'z': 0}
-        solution.fitness = self.calculate_fitness_from_population(solution.population)
+        solution.fitness = self.__calculate_fitness_from_population(solution.population)
 
-    def calculate_fitness_from_population(self, population: List[SolutionArea]) -> float:
-        current_fitness = 0
-        per_area_fitness = 0
+    def __calculate_fitness_from_population(self, population: List[SolutionArea]) -> float:
         mass_centers = []
         height_list = []
         area_masses = []
-        total_x = 0
-        total_z = 0
-        total_y = 0
+        total_x = total_z = total_y = current_fitness = per_area_fitness = 0
         duplicate_areas = {}  # key = mass_coordinate, value = [repetitions, length]
         for area in population:
             if (area.mass_coordinate['x'], area.mass_coordinate['z']) in duplicate_areas:
                 duplicate_areas[(area.mass_coordinate['x'], area.mass_coordinate['z'])]['repetitions'] += 1  # should increase repetitions with 1
             else:
                 duplicate_areas[(area.mass_coordinate['x'], area.mass_coordinate['z'])] = {'repetitions': 1, 'length': len(area.list_of_coordinates)}
-            per_area_fitness += self.size_fitness(area.list_of_coordinates, area.min_max_values)
+            per_area_fitness += self.__size_fitness(area.list_of_coordinates, area.min_max_values)
             mass_centers.append(area.mass_coordinate)
             height_list.append(area.height)
             total_x += area.mass_coordinate['x']
@@ -46,14 +42,14 @@ class MapFitness:
         self.mass_center = {'x': total_x / population_len, 'z': total_z / population_len}
         self.avg_y = total_y / population_len
         current_fitness += per_area_fitness / population_len
-        current_fitness += self.distance_fitness(mass_centers, area_masses)
-        current_fitness += self.altitude_fitness(height_list)
-        current_fitness += self.amount_fitness(population_len)
+        current_fitness += self.__distance_fitness(mass_centers, area_masses)
+        current_fitness += self.__altitude_fitness(height_list)
+        current_fitness += self.__amount_fitness(population_len)
         if current_fitness < 0:
             current_fitness = 0
         return current_fitness
 
-    def size_fitness(self, area_list: list, min_max_values: dict) -> float:
+    def __size_fitness(self, area_list: list, min_max_values: dict) -> float:
         # Size (dont pick small areas, but also avoid "long small" ones)
         amount_of_blocks = len(area_list)
         # a^2 + b^2 = c^2
@@ -66,7 +62,7 @@ class MapFitness:
         else:
             return value * FITNESS_SIZE_VALUE_MULTIPLIER
 
-    def distance_fitness(self, mass_centers: List[dict], mass_of_areas: List[int]) -> float:
+    def __distance_fitness(self, mass_centers: List[dict], mass_of_areas: List[int]) -> float:
         # Distance to each other (use mass center for all and check distance to average mass center)
         total_distance = 0
         for center, areas_len in zip(mass_centers, mass_of_areas):
@@ -82,7 +78,7 @@ class MapFitness:
         a = -FITNESS_DISTANCE_MAX_SCORE / FITNESS_DISTANCE_MAX_ALLOWED_DISTANCE_BEFORE_MINUS
         return a * avg_distance
 
-    def altitude_fitness(self, height_list: list) -> float:
+    def __altitude_fitness(self, height_list: list) -> float:
         # Altitude difference (too much too bad)
         total_difference = 0
         for y in height_list:
@@ -95,7 +91,7 @@ class MapFitness:
         a = -FITNESS_ALTITUDE_MAX_SCORE / FITNESS_ALTITUDE_MAX_ALLOWED_DIFFERENCE_BEFORE_MINUS
         return a * average_difference + FITNESS_ALTITUDE_MAX_SCORE
 
-    def amount_fitness(self, population_len: int) -> float:
+    def __amount_fitness(self, population_len: int) -> float:
         # Amount (should not always go for most districts, but smaller solutions can easily get max score in the other)
         extra_populations = population_len - MIN_AREAS_IN_CITY
         return extra_populations * FITNESS_AMOUNT_BONUS_PER_EXTRA

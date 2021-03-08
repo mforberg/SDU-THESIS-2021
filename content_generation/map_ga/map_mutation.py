@@ -13,12 +13,12 @@ class MapMutation:
             if random.randint(1, 100) > MAP_MUTATION_PERCENTAGE:
                 if random.randint(1, 2) == 1:
                     if len(solution.population) < MAX_AREAS_IN_CITY:
-                        self.increase_size(solution.population)
+                        self.__increase_size(solution.population)
                 else:
                     if len(solution.population) > MIN_AREAS_IN_CITY:
                         self.decrease_size(solution.population)
 
-    def increase_size(self, population: List[SolutionArea]):
+    def __increase_size(self, population: List[SolutionArea]):
         population.append(self.areas.population[random.randint(0, len(self.areas.population) - 1)])
         random.shuffle(population)
 

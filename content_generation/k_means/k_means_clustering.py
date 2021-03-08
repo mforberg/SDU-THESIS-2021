@@ -13,27 +13,27 @@ class KMeansClustering:
     minimum_length_of_centroid = 0
 
     def run(self, first_ga_result: SolutionGA) -> SolutionGA:
-        converted_coordinates = self.combine_the_lists_and_convert_to_list_of_list(first_ga_result)
-        centroids, centroid_centers = self.find_centroids(list_of_points=converted_coordinates)
-        self.calculate_minimum_length_of_centroid(centroids=centroids)
-        self.combine_small_centroid_to_others(centroids=centroids, centroid_centers=centroid_centers)
+        converted_coordinates = self.__combine_the_lists_and_convert_to_list_of_list(first_ga_result)
+        centroids, centroid_centers = self.__find_centroids(list_of_points=converted_coordinates)
+        self.__calculate_minimum_length_of_centroid(centroids=centroids)
+        self.__combine_small_centroid_to_others(centroids=centroids, centroid_centers=centroid_centers)
         return recalculate_to_solution_ga(clusters=centroids)
 
-    def combine_small_centroid_to_others(self, centroids: List[List[list]], centroid_centers: List[list]):
+    def __combine_small_centroid_to_others(self, centroids: List[List[list]], centroid_centers: List[list]):
         skip_indexes = set()
         remove_index = []
         for x in range(0, len(centroids)):
             current_centroid = centroids[x]
             if len(current_centroid) < self.minimum_length_of_centroid:
-                index = self.find_nearest_centroid_center(centroid_centers=centroid_centers, current_index=x,
-                                                          skip_set=skip_indexes)
+                index = self.__find_nearest_centroid_center(centroid_centers=centroid_centers, current_index=x,
+                                                            skip_set=skip_indexes)
                 remove_index.append(x)
                 skip_indexes.add(x)
                 centroids[index].extend(current_centroid)
         for index in remove_index[::-1]:
             centroids.pop(index)
 
-    def calculate_minimum_length_of_centroid(self, centroids: List[List[list]]):
+    def __calculate_minimum_length_of_centroid(self, centroids: List[List[list]]):
         length_list = []
         max_length = 0
         for index in centroids:
@@ -43,7 +43,7 @@ class KMeansClustering:
         median = statistics.median(length_list)
         self.minimum_length_of_centroid = median + math.floor((max_length - median)/2)
 
-    def find_nearest_centroid_center(self, centroid_centers: List[list], current_index: int, skip_set: set) -> int:
+    def __find_nearest_centroid_center(self, centroid_centers: List[list], current_index: int, skip_set: set) -> int:
         closest = None
         shortest_distance = 100000
         center = [centroid_centers[current_index][0], centroid_centers[current_index][1]]
@@ -58,15 +58,15 @@ class KMeansClustering:
                 closest = i
         return closest
 
-    def combine_the_lists_and_convert_to_list_of_list(self, ga_solution: SolutionGA) -> List[list]:
+    def __combine_the_lists_and_convert_to_list_of_list(self, ga_solution: SolutionGA) -> List[list]:
         total_list_of_coordinates = []
         for area in ga_solution.population:
             for index in area.list_of_coordinates:
                 total_list_of_coordinates.append([index[0], index[1]])
         return total_list_of_coordinates
 
-    def find_centroids(self, list_of_points: List[list]) -> (List[List[list]], List[list]):
-        k = self.elbow_method(list_of_points=list_of_points)
+    def __find_centroids(self, list_of_points: List[list]) -> (List[List[list]], List[list]):
+        k = self.__elbow_method(list_of_points=list_of_points)
         k_means = KMeans(n_clusters=k).fit(list_of_points)
         cluster_association = k_means.labels_  # array([1, 1, 1, 0, 0, 0]
 
@@ -78,7 +78,7 @@ class KMeansClustering:
         cluster_centers = k_means.cluster_centers_
         return list_of_clusters, cluster_centers
 
-    def elbow_method(self, list_of_points: List[list]) -> int:
+    def __elbow_method(self, list_of_points: List[list]) -> int:
         wcss = []  # Within-Cluster-Sum-of-Squares
         max_cluster = 11
         if len(list_of_points) < max_cluster:
