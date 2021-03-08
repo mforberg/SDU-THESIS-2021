@@ -25,6 +25,7 @@ class MapFitness:
         per_area_fitness = 0
         mass_centers = []
         height_list = []
+        area_masses = []
         total_x = 0
         total_z = 0
         total_y = 0
@@ -40,11 +41,12 @@ class MapFitness:
             total_x += area.mass_coordinate['x']
             total_z += area.mass_coordinate['z']
             total_y += area.height
+            area_masses.append(len(area.set_of_coordinates))
         population_len = len(population)
         self.mass_center = {'x': total_x / population_len, 'z': total_z / population_len}
         self.avg_y = total_y / population_len
         current_fitness += per_area_fitness / population_len
-        current_fitness += self.distance_fitness(mass_centers)
+        current_fitness += self.distance_fitness(mass_centers, area_masses)
         current_fitness += self.altitude_fitness(height_list)
         current_fitness += self.amount_fitness(population_len)
         if current_fitness < 0:
@@ -64,14 +66,14 @@ class MapFitness:
         else:
             return value * FITNESS_SIZE_VALUE_MULTIPLIER
 
-    def distance_fitness(self, mass_centers: List[dict]) -> float:
+    def distance_fitness(self, mass_centers: List[dict], mass_of_areas: List[int]) -> float:
         # Distance to each other (use mass center for all and check distance to average mass center)
         total_distance = 0
-        for center in mass_centers:
+        for center, areas_len in zip(mass_centers, mass_of_areas):
             x_distance = center['x'] - self.mass_center['x']
             z_distance = center['z'] - self.mass_center['z']
             # a^2 + b^2 = c^2
-            total_distance += math.sqrt(math.pow(x_distance, 2) + math.pow(z_distance, 2))
+            total_distance += (math.sqrt(math.pow(x_distance, 2) + math.pow(z_distance, 2)))/areas_len
         avg_distance = total_distance / len(mass_centers)
         # y = a*x + b
         # a = y2 - y1 / x2 - x1 (y1 is max score, x1 is 0, y2 is 0, x2 is the max distance from each other unless minus)
