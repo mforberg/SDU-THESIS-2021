@@ -1,7 +1,6 @@
 from minecraft_pb2 import *
 
 # Box area (they are made to be inclusive)
-
 # BOX_X_MIN = 385
 # BOX_X_MAX = 585
 # BOX_Z_MIN = 1500
