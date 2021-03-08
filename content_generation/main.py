@@ -40,15 +40,17 @@ class Main:
         if not rollback:
             self.rollback(surface_dict=total_surface_dict)
 
+        first = time.time()
         result = TypesGA().run(surface_dict=total_surface_dict, clusters=clusters,
                                global_district_types_dict=self.global_dict_of_types, fluid_set=set_of_fluids)
+        print(f"TYPE GA: {time.time()-first}")
 
         # for area in result.population:
         #     self.build_surface(surface_dict=total_surface_dict, list_of_x_z_coordinates=area.list_of_coordinates)
 
         # WFC Start
         print("- - - - WFC RELATED GARBAGE KEEP SCROLLING - - - -")
-        result = WFC_PP().create_tiles(result=result, n=2)
+        result = WFC_PP().create_tiles(result=result, tile_size=2)
         WFCB().build_tiles(surface_dict=total_surface_dict, tiles=result)
         print("- - - - WFC RELATED GARBAGE STOPPED - - - -")
         # WFC End

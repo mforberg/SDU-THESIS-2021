@@ -1,6 +1,7 @@
 from typing import List
 import copy
 from pprint import pprint
+import uuid
 
 
 class SolutionArea:
@@ -13,6 +14,7 @@ class SolutionArea:
         self.height = height
         self.min_max_values = min_max_values
         self.type_of_district = type_of_district
+        self.id = str(uuid.uuid4())
 
     def __deepcopy__(self, memo):
         copy_object = SolutionArea(coordinates=self.list_of_coordinates, mass_coordinate=self.mass_coordinate,
