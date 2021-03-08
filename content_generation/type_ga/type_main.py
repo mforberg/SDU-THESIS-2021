@@ -9,10 +9,9 @@ from .type_mutation import TypeMutation
 
 
 class TypesGA:
-    dummy_solution = SolutionGA(fitness=0, population=[SolutionArea(coordinates=[], type_of_district="no",
-                                                                    min_max_values={"no": True},
-                                                                    mass_coordinate={"no": True}, height=-1)])
-    best_solution = dummy_solution
+    best_solution = SolutionGA(fitness=0, population=[SolutionArea(coordinates=[], mass_coordinate={},
+                                                                   min_max_values={}, height=0,
+                                                                   type_of_district="no")])
 
     def run(self, surface_dict: dict, clusters: SolutionGA, global_district_types_dict: dict,
             fluid_set: set) -> SolutionGA:

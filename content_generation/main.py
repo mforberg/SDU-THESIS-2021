@@ -43,8 +43,12 @@ class Main:
         result = TypesGA().run(surface_dict=total_surface_dict, clusters=clusters,
                                global_district_types_dict=self.global_dict_of_types, fluid_set=set_of_fluids)
 
-        # for area in result.population:
-        #     self.build_surface(surface_dict=total_surface_dict, list_of_x_z_coordinates=area.list_of_coordinates)
+        self.build_type_ga(surface_dict=total_surface_dict, type_ga_result=result)
+        rollback = input("reset surface? Y/n - type anything and it will not rollback")
+        print("continued")
+        if not rollback:
+            self.rollback(surface_dict=total_surface_dict)
+
 
         # WFC Start
         print("- - - - WFC RELATED GARBAGE KEEP SCROLLING - - - -")
@@ -52,6 +56,24 @@ class Main:
         WFCB().build_tiles(surface_dict=total_surface_dict, tiles=result)
         print("- - - - WFC RELATED GARBAGE STOPPED - - - -")
         # WFC End
+
+    def build_type_ga(self, surface_dict: dict, type_ga_result: SolutionGA):
+        options = [('grpc.max_send_message_length', 512 * 1024 * 1024),
+                   ('grpc.max_receive_message_length', 512 * 1024 * 1024)]
+        channel = grpc.insecure_channel('localhost:5001', options=options)
+        client = minecraft_pb2_grpc.MinecraftServiceStub(channel)
+        # ["Fishing", "Trade", "Royal", "Farms", "Crafts", "Village"]
+        list_of_building_blocks = {"Fishing": DIAMOND_ORE, "Trade": COAL_ORE, "Royal": GOLD_BLOCK, "Farms": OBSIDIAN,
+                                   "Crafts": ICE, "Village": WOOL}
+        blocks = []
+        for district in type_ga_result.population:
+            print(district.type_of_district)
+            current_building_block = list_of_building_blocks[district.type_of_district]
+            for coordinate in district.list_of_coordinates:
+                block = copy.deepcopy(surface_dict[(coordinate[0], coordinate[1])]['block'])
+                block.type = current_building_block
+                blocks.append(block)
+        client.spawnBlocks(Blocks(blocks=blocks))
 
     def build_clusters(self, surface_dict: dict, clusters: SolutionGA):
         options = [('grpc.max_send_message_length', 512 * 1024 * 1024),
