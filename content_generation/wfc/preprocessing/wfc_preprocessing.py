@@ -48,7 +48,7 @@ class WFCPreprocessing:
                                 solution.list_of_coordinates.remove(coord)
                                 count += 1
                     print(f"del count | min_x <= max_x: {count}")
-        print(f"Create Tiles Time: {start-time.time()}")
+        print(f"Create Tiles Time: {time.time() - start}")
         if self.max_z - self.min_z % n != 0:
             # Determine delete z max or min
             # if edge_nodes[self.max_z] > edge_nodes[self.min_z]:
