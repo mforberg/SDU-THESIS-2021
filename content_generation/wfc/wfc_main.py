@@ -1,14 +1,21 @@
 
 class Wfc:
-    def create_wave():
+    def create_wave(self):
         pass
-    def create_adjacency():
+
+    def create_adjacency(self):
         pass
-    def find_lowest_entropy():
+
+    def find_lowest_entropy(self):
         pass
-    def calc_entropy():
+
+    def calc_entropy(self):
         pass
-    def visualise():
+
+    def visualise(self):
         pass
-    def run():
+
+    def run(self):
         pass
+if __name__ == "__main__":
+    Wfc.run()
