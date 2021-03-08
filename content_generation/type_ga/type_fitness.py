@@ -25,12 +25,18 @@ class TypeFitness:
                 per_area_fitness += self.fishing_should_be_near_water(area=area, preprocess_dict=preprocess_dict)
             elif area.type_of_district == "Royal":
                 per_area_fitness += self.royal_should_be_close_to_center(area=area, preprocess_dict=preprocess_dict)
+            elif area.type_of_district == "Crafts":
+                per_area_fitness += self.crafting_has_resources_nearby(area=area, preprocess_dict=preprocess_dict)
             else:
                 per_area_fitness += FITNESS_TYPE_DEFAULT_SCORE
         score += per_area_fitness / len(solution.population)
         solution.fitness = score
 
-    def royal_should_be_close_to_center(self, area: SolutionArea, preprocess_dict: dict):
+    def crafting_has_resources_nearby(self, area: SolutionArea, preprocess_dict: dict) -> float:
+        resource_amount = preprocess_dict[(area.mass_coordinate['x'], area.mass_coordinate['z'])].resource_amount
+        return resource_amount * FITNESS_TYPE_CRAFTING_BONUS_FOR_RESOURCE_BLOCKS
+
+    def royal_should_be_close_to_center(self, area: SolutionArea, preprocess_dict: dict) -> float:
         x_difference = area.mass_coordinate['x'] - preprocess_dict['city_center']['x']
         z_difference = area.mass_coordinate['z'] - preprocess_dict['city_center']['z']
         distance = math.sqrt(math.pow(x_difference, 2) + math.pow(z_difference, 2))
@@ -41,8 +47,8 @@ class TypeFitness:
         a = -FITNESS_TYPE_ROYAL_MAX_SCORE / FITNESS_TYPE_ROYAL_DISTANCE_FROM_CITY_CENTER_BEFORE_MINUS
         return (a * distance) + FITNESS_TYPE_ROYAL_MAX_SCORE
 
-    def fishing_should_be_near_water(self, area: SolutionArea, preprocess_dict: dict):
-        water_amount = preprocess_dict[(area.mass_coordinate['x'], area.mass_coordinate['z'])]
+    def fishing_should_be_near_water(self, area: SolutionArea, preprocess_dict: dict) -> float:
+        water_amount = preprocess_dict[(area.mass_coordinate['x'], area.mass_coordinate['z'])].water_amount
         fitness = water_amount * FITNESS_TYPE_FISHING_BONUS_FOR_WATER_BLOCKS
         return fitness
 
