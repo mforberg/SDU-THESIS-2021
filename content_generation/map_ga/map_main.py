@@ -11,8 +11,8 @@ from pprint import pprint
 
 
 class AreasGA:
-    best_solution = SolutionGA(fitness=0, population=[SolutionArea(coordinates=None, mass_coordinate=None,
-                                                                   min_max_values=None, height=None,
+    best_solution = SolutionGA(fitness=0, population=[SolutionArea(coordinates=[], mass_coordinate={},
+                                                                   min_max_values={}, height=0,
                                                                    type_of_district="no")])
     set_of_population = set()
     population_averages = []

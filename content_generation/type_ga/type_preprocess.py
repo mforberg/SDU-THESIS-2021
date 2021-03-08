@@ -5,9 +5,15 @@ from minecraft_pb2 import *
 
 def run_preprocess(solution: SolutionGA, surface_dict: dict, fluid_set: set) -> dict:
     preprocess_dict = {}
+    city_center_x = 0
+    city_center_z = 0
     for area in solution.population:
         water_amount = find_amount_of_water(area=area, fluid_set=fluid_set)
         preprocess_dict[(area.mass_coordinate['x'], area.mass_coordinate['z'])] = water_amount
+        city_center_x += area.mass_coordinate['x']
+        city_center_z += area.mass_coordinate['z']
+    preprocess_dict['city_center'] = {'x': city_center_x/len(solution.population),
+                                      'z': city_center_z/len(solution.population)}
     return preprocess_dict
 
 
