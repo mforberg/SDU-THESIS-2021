@@ -28,20 +28,20 @@ class AreasGA:
         for i in range(0, MAP_GENERATION_AMOUNT):
             print(f"Current generation in Map_GA: {i}, length: {len(populations)}")
             MapFitness().calculate_fitness_for_all(populations)
-            self.check_for_new_best_solution(populations)
+            self.__check_for_new_best_solution(populations)
             # as long as it is not the last generation, find parents, do crossover, and mutate
             if i != MAP_GENERATION_AMOUNT - 1:
                 parents_no_fitness = MapSelection().select_best_solutions(populations)
                 crossed_population_no_fitness = MapCrossover().crossover(populations, parents_no_fitness)
                 MapMutation().mutate_populations(crossed_population_no_fitness, areas)
                 populations = crossed_population_no_fitness
-                self.clean_population_for_duplicates_in_solution(population=populations)
+                self.__clean_population_for_duplicates_in_solution(population=populations)
         # print population average fitness scores
         if self.print_averages:
             pprint(self.population_averages)
         return self.best_solution
 
-    def check_for_new_best_solution(self, populations: List[SolutionGA]):
+    def __check_for_new_best_solution(self, populations: List[SolutionGA]):
         pop_average = []
         for solution in populations:
             if solution.fitness > self.best_solution.fitness:
@@ -51,7 +51,7 @@ class AreasGA:
 
         self.population_averages.append(mean(pop_average))
 
-    def clean_population_for_duplicates_in_solution(self, population: List[SolutionGA]):
+    def __clean_population_for_duplicates_in_solution(self, population: List[SolutionGA]):
         for solution in population:
             unique_sets = set()
             for area in solution.population:

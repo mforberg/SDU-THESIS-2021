@@ -21,31 +21,31 @@ class TypeCrossover:
             solution.fitness = 0
             new_population.append(copy.deepcopy(solution))
         while len(new_population) < TYPE_POPULATION_SIZE:
-            parents = self.find_two_parents()
-            children_dict = self.create_offspring(parents['p1'], parents['p2'])
+            parents = self.__find_two_parents()
+            children_dict = self.__create_offspring(parents['p1'], parents['p2'])
             new_population.append(SolutionGA(fitness=0, population=children_dict['c1']))
             if len(new_population) < TYPE_POPULATION_SIZE:
                 new_population.append(SolutionGA(fitness=0, population=children_dict['c2']))
         return new_population
 
-    def find_two_parents(self) -> dict:
-        parent1 = self.get_parent()
-        parent2 = self.get_parent()
+    def __find_two_parents(self) -> dict:
+        parent1 = self.__get_parent()
+        parent2 = self.__get_parent()
         return {"p1": copy.deepcopy(parent1), "p2": copy.deepcopy(parent2)}
 
-    def get_parent(self) -> SolutionGA:
+    def __get_parent(self) -> SolutionGA:
         random_index = random.randint(0, len(self.parent_list) - 1)
         return copy.deepcopy(self.parent_list[random_index])
 
-    def create_offspring(self, parent1: SolutionGA, parent2: SolutionGA) -> Dict[str, List[SolutionArea]]:
+    def __create_offspring(self, parent1: SolutionGA, parent2: SolutionGA) -> Dict[str, List[SolutionArea]]:
         random.shuffle(parent1.population)
         random.shuffle(parent2.population)
         if len(parent1.population) > len(parent2.population):
-            return self.single_point_crossover(shortest=parent2.population, longest=parent1.population)
+            return self.__single_point_crossover(shortest=parent2.population, longest=parent1.population)
         else:
-            return self.single_point_crossover(shortest=parent1.population, longest=parent2.population)
+            return self.__single_point_crossover(shortest=parent1.population, longest=parent2.population)
 
-    def single_point_crossover(self, shortest: List[SolutionArea], longest: List[SolutionArea]) -> Dict[str, List[SolutionArea]]:
+    def __single_point_crossover(self, shortest: List[SolutionArea], longest: List[SolutionArea]) -> Dict[str, List[SolutionArea]]:
         point = random.randint(0, len(shortest)-1)
         child1 = shortest
         child2 = longest

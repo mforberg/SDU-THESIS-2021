@@ -10,7 +10,7 @@ class TypeMutation:
             if random.randint(1, 100) > TYPE_MUTATION_SOLUTION_PERCENTAGE:
                 for area in solution.population:
                     if random.randint(1, 100) > TYPE_MUTATION_AREA_PERCENTAGE:
-                        self.mutate_solution(area)
+                        self.__mutate_solution(area)
 
-    def mutate_solution(self, area: SolutionArea):
+    def __mutate_solution(self, area: SolutionArea):
         area.area_type = DISTRICT_TYPES[random.randint(0, len(DISTRICT_TYPES) - 1)]

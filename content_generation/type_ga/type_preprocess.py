@@ -8,7 +8,7 @@ def run_preprocess(solution: SolutionGA, surface_dict: dict, fluid_set: set) -> 
     city_center_x = 0
     city_center_z = 0
     for area in solution.population:
-        amount_dict = find_amount_of_water_stone_and_wood(area=area, fluid_set=fluid_set, surface_dict=surface_dict)
+        amount_dict = __find_amount_of_water_stone_and_wood(area=area, fluid_set=fluid_set, surface_dict=surface_dict)
         preprocess_dict[(area.mass_coordinate['x'], area.mass_coordinate['z'])] = amount_dict
         city_center_x += area.mass_coordinate['x']
         city_center_z += area.mass_coordinate['z']
@@ -17,7 +17,7 @@ def run_preprocess(solution: SolutionGA, surface_dict: dict, fluid_set: set) -> 
     return preprocess_dict
 
 
-def find_amount_of_water_stone_and_wood(area: SolutionArea, fluid_set: set, surface_dict: dict) -> PreProcessData:
+def __find_amount_of_water_stone_and_wood(area: SolutionArea, fluid_set: set, surface_dict: dict) -> PreProcessData:
     min_x = area.min_max_values['min_x']
     max_x = area.min_max_values['max_x']
     min_z = area.min_max_values['min_z']
