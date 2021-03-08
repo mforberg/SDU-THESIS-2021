@@ -8,6 +8,7 @@ from variables.shared_variables import *
 import copy
 from statistics import mean
 from pprint import pprint
+from tqdm import trange
 
 
 class AreasGA:
@@ -17,6 +18,7 @@ class AreasGA:
     set_of_population = set()
     population_averages = []
     print_averages = False
+    new_best_prints = []
 
     def run(self, areas: SolutionGA) -> SolutionGA:
         populations = []
@@ -25,28 +27,34 @@ class AreasGA:
             initial_population = MapInitialPopulation().create(areas)
             populations.append(initial_population)
         # repeat fitness calculation and select the best solution overall
-        for i in range(0, MAP_GENERATION_AMOUNT):
-            print(f"Current generation in Map_GA: {i}, length: {len(populations)}")
+        t = trange(MAP_GENERATION_AMOUNT, desc='GA for finding areas', leave=True)
+        for i in t:
+            #  Fitness
             MapFitness().calculate_fitness_for_all(populations)
-            self.__check_for_new_best_solution(populations)
+            self.__check_for_new_best_solution(populations=populations, current_gen=i)
             # as long as it is not the last generation, find parents, do crossover, and mutate
             if i != MAP_GENERATION_AMOUNT - 1:
+                #  Select
                 parents_no_fitness = MapSelection().select_best_solutions(populations)
+                #  Crossover
                 crossed_population_no_fitness = MapCrossover().crossover(populations, parents_no_fitness)
+                #  Mutation
                 MapMutation().mutate_populations(crossed_population_no_fitness, areas)
+                #  set population and clean it
                 populations = crossed_population_no_fitness
                 self.__clean_population_for_duplicates_in_solution(population=populations)
-        # print population average fitness scores
+        for string in self.new_best_prints:
+            print(string)
         if self.print_averages:
             pprint(self.population_averages)
         return self.best_solution
 
-    def __check_for_new_best_solution(self, populations: List[SolutionGA]):
+    def __check_for_new_best_solution(self, populations: List[SolutionGA], current_gen: int):
         pop_average = []
         for solution in populations:
             if solution.fitness > self.best_solution.fitness:
                 self.best_solution = copy.deepcopy(solution)
-                print(f"New best {solution.fitness}")
+                self.new_best_prints.append(f"New best {solution.fitness} at gen {current_gen}")
             pop_average.append(solution.fitness)
 
         self.population_averages.append(mean(pop_average))

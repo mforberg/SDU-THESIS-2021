@@ -4,6 +4,7 @@ from map_ga.map_main import AreasGA
 from type_ga.type_main import TypesGA
 from wfc.preprocessing.wfc_preprocessing import WFCPreprocessing as WFC_PP
 from builder.wfc_builder import WFCBuilder as WFCB
+from builder.surface_builder import SurfaceBuilder
 import minecraft_pb2_grpc
 import grpc
 import time
@@ -24,11 +25,11 @@ class Main:
         #  K-means clustering
         clusters = KMeansClustering().run(first_ga_result=result)
 
-        WFCB().build_clusters(clusters=clusters, surface_dict=total_surface_dict)
+        SurfaceBuilder().build_clusters(clusters=clusters, surface_dict=total_surface_dict)
         rollback = input("reset surface? Y/n - type anything and it will not rollback")
         print("continued")
         if not rollback:
-            WFCB().rollback(surface_dict=total_surface_dict)
+            SurfaceBuilder().rollback(surface_dict=total_surface_dict)
 
         #  Type GA
         first = time.time()
@@ -36,11 +37,11 @@ class Main:
                                global_district_types_dict=self.global_dict_of_types, fluid_set=set_of_fluids)
         print(f"TYPE GA: {time.time()-first}")
 
-        WFCB().build_type_ga(surface_dict=total_surface_dict, type_ga_result=result)
+        SurfaceBuilder().build_type_ga(surface_dict=total_surface_dict, type_ga_result=result)
         rollback = input("reset surface? Y/n - type anything and it will not rollback")
         print("continued")
         if not rollback:
-            WFCB().rollback(surface_dict=total_surface_dict)
+            SurfaceBuilder().rollback(surface_dict=total_surface_dict)
 
 
         # WFC Start
