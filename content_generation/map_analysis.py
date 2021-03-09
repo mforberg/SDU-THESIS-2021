@@ -18,7 +18,7 @@ client = minecraft_pb2_grpc.MinecraftServiceStub(channel)
 class MapAnalysis:
     work = []
 
-    def run(self) -> [dict, dict, SolutionGA]:
+    def run(self) -> [dict, dict, SolutionGA, set]:
         total_surface_dict = {}
         total_block_dict = {}
         self.create_area_for_work()
@@ -87,12 +87,8 @@ class MapAnalysis:
     def find_area(self, surface_dict: dict, block_x: int, block_z: int, checked_nodes: Set[tuple],
                   fluid_blocks_set: set) -> SolutionArea:
         nodes_to_be_checked = []
-        min_x = block_x
-        max_x = block_x
-        min_z = block_z
-        max_z = block_z
-        total_x = block_x
-        total_z = block_z
+        min_x = max_x = total_x = block_x
+        min_z = max_z = total_z = block_z
         amount = 1
         height = surface_dict[block_x, block_z]['y']
         checked_neighbors = []
