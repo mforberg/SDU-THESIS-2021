@@ -69,6 +69,17 @@ class Main:
                     data['set_of_fluids'] = set_of_fluids
                     with open('block_dicts.pkl', 'wb') as output:
                         pickle.dump(data, output)
+        else:
+            total_block_dict, total_surface_dict, district_areas, set_of_fluids = map_analysis.MapAnalysis().run()
+            data = {}
+            data['x_range'] = [BOX_X_MIN, BOX_X_MAX]
+            data['z_range'] = [BOX_Z_MIN, BOX_Z_MAX]
+            data['total_block_dict'] = total_block_dict
+            data['total_surface_dict'] = total_surface_dict
+            data['district_areas'] = district_areas
+            data['set_of_fluids'] = set_of_fluids
+            with open('block_dicts.pkl', 'wb') as output:
+                pickle.dump(data, output)
 
         #  Map GA
         result = AreasGA().run(areas=district_areas)
