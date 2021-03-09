@@ -9,15 +9,60 @@ import minecraft_pb2_grpc
 import grpc
 import time
 import copy
+import json
+import pickle
+from map_variables import *
+import os.path
 
 
 class Main:
     global_dict_of_used_coordinates = {}
     global_dict_of_types = {}
 
+    def check_range(self, file):
+        x_range = file['x_range']
+        z_range = file['z_range']
+
+        if x_range[0] == BOX_X_MIN and x_range[1] == BOX_X_MAX and z_range[0] == BOX_Z_MIN and z_range[1] == BOX_Z_MAX:
+            return True
+        else:
+            return False
+
     def run(self):
         #  Map analysis
-        total_block_dict, total_surface_dict, district_areas, set_of_fluids = map_analysis.MapAnalysis().run()
+        total_block_dict, total_surface_dict, district_areas, set_of_fluids = None, None, None, None
+        block_file = None
+        if os.path.exists('block_dicts.pkl'):
+            block_file = open('block_dicts.pkl', 'rb')
+
+        if os.path.exists('block_dicts.pkl'):
+            unpickled_block_file = pickle.load(block_file)
+            if self.check_range(unpickled_block_file):
+                total_block_dict, total_surface_dict, district_areas, set_of_fluids =\
+                    unpickled_block_file['total_block_dict'], unpickled_block_file['total_surface_dict'], unpickled_block_file['district_areas'],\
+                    unpickled_block_file['set_of_fluids']
+            else:
+                total_block_dict, total_surface_dict, district_areas, set_of_fluids = map_analysis.MapAnalysis().run()
+                data = {}
+                data['x_range'] = [BOX_X_MIN, BOX_X_MAX]
+                data['z_range'] = [BOX_Z_MIN, BOX_Z_MAX]
+                data['total_block_dict'] = total_block_dict
+                data['total_surface_dict'] = total_surface_dict
+                data['district_areas'] = district_areas
+                data['set_of_fluids'] = set_of_fluids
+                with open('block_dicts.pkl', 'wb') as output:
+                    pickle.dump(data, output)
+        else:
+            total_block_dict, total_surface_dict, district_areas, set_of_fluids = map_analysis.MapAnalysis().run()
+            data = {}
+            data['x_range'] = [BOX_X_MIN, BOX_X_MAX]
+            data['z_range'] = [BOX_Z_MIN, BOX_Z_MAX]
+            data['total_block_dict'] = total_block_dict
+            data['total_surface_dict'] = total_surface_dict
+            data['district_areas'] = district_areas
+            data['set_of_fluids'] = set_of_fluids
+            with open('block_dicts.pkl', 'wb') as output:
+                pickle.dump(data, output)
 
         #  Map GA
         result = AreasGA().run(areas=district_areas)
