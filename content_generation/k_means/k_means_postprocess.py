@@ -19,7 +19,8 @@ def __check_for_and_consume_digestible_areas(solution: SolutionGA, area: Solutio
                 checked_nodes.add((x, z))
                 if not __is_coordinate_part_of_another_area(x=x, z=z, solution=solution):
                     found_area = MapAnalysis().find_area(surface_dict, x, z, checked_nodes, fluid_blocks_set)
-                    if __check_if_digest(min_max_values=area.min_max_values, area=found_area):
+                    if __check_if_digest(min_max_values=area.min_max_values, area=found_area,
+                                         surface_dict=surface_dict, reference_height=area.height):
                         __consume_area(consumer=area, consumed=found_area)
 
 
@@ -28,10 +29,12 @@ def __consume_area(consumer: SolutionArea, consumed: SolutionArea):
         consumer.list_of_coordinates.append(coordinate)
 
 
-def __check_if_digest(min_max_values: dict, area: SolutionArea) -> bool:
+def __check_if_digest(min_max_values: dict, area: SolutionArea, surface_dict: dict, reference_height: float) -> bool:
     for coordinate in area.list_of_coordinates:
         if coordinate[0] < min_max_values['min_x'] or coordinate[0] > min_max_values['max_x'] or \
-                coordinate[1] < min_max_values['min_z'] or coordinate[1] > min_max_values['max_z']:
+                coordinate[1] < min_max_values['min_z'] or coordinate[1] > min_max_values['max_z'] \
+                or abs(surface_dict[coordinate]['y'] - reference_height) > 5 \
+                or len(area.list_of_coordinates) < 5:
             return False
     return True
 

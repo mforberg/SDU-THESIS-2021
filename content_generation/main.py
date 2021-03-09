@@ -85,7 +85,7 @@ class Main:
         result = AreasGA().run(areas=district_areas)
 
         #  K-means clustering
-        clusters = KMeansClustering().run(first_ga_result=result)
+        clusters = KMeansClustering().run(first_ga_result=result, surface_dict=total_surface_dict)
 
         SurfaceBuilder().build_clusters(clusters=clusters, surface_dict=total_surface_dict)
         rollback = input("reset surface? Y/n - type anything and it will not rollback")
