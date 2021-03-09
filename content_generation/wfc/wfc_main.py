@@ -1,3 +1,5 @@
+from wfc_preprocessing import WFCPreprocessing
+
 
 class Wfc:
     def create_wave(self):
@@ -17,5 +19,7 @@ class Wfc:
 
     def run(self):
         pass
+
+
 if __name__ == "__main__":
     Wfc.run()

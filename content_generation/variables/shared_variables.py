@@ -41,8 +41,8 @@ class SolutionArea:
                 min_z = z
             elif z > max_z:
                 max_z = z
-        total_x += x
-        total_z += z
+            total_x += x
+            total_z += z
         mass_x, mass_z = total_x / len(self.list_of_coordinates), total_z / len(self.list_of_coordinates)
         self.mass_coordinate = {"x": mass_x, "z": mass_z}
         self.min_max_values = {"min_x": min_x, "max_x": max_x, "min_z": min_z, "max_z": max_z}
