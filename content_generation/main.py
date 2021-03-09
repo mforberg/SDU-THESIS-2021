@@ -13,7 +13,7 @@ import json
 import pickle
 from map_variables import *
 import os.path
-
+import uuid
 
 class Main:
     global_dict_of_used_coordinates = {}
@@ -34,35 +34,41 @@ class Main:
         block_file = None
         if os.path.exists('block_dicts.pkl'):
             block_file = open('block_dicts.pkl', 'rb')
-
         if os.path.exists('block_dicts.pkl'):
-            unpickled_block_file = pickle.load(block_file)
-            if self.check_range(unpickled_block_file):
-                total_block_dict, total_surface_dict, district_areas, set_of_fluids =\
-                    unpickled_block_file['total_block_dict'], unpickled_block_file['total_surface_dict'], unpickled_block_file['district_areas'],\
-                    unpickled_block_file['set_of_fluids']
+            print('Do you want to run on save file? 1 or 2')
+            user_input_for_test = int(input())
+            if user_input_for_test == 1:
+                unpickled_block_file = pickle.load(block_file)
+                if self.check_range(unpickled_block_file):
+                    total_block_dict, total_surface_dict, district_areas, set_of_fluids =\
+                        unpickled_block_file['total_block_dict'], unpickled_block_file['total_surface_dict'], unpickled_block_file['district_areas'],\
+                        unpickled_block_file['set_of_fluids']
             else:
-                total_block_dict, total_surface_dict, district_areas, set_of_fluids = map_analysis.MapAnalysis().run()
-                data = {}
-                data['x_range'] = [BOX_X_MIN, BOX_X_MAX]
-                data['z_range'] = [BOX_Z_MIN, BOX_Z_MAX]
-                data['total_block_dict'] = total_block_dict
-                data['total_surface_dict'] = total_surface_dict
-                data['district_areas'] = district_areas
-                data['set_of_fluids'] = set_of_fluids
-                with open('block_dicts.pkl', 'wb') as output:
-                    pickle.dump(data, output)
-        else:
-            total_block_dict, total_surface_dict, district_areas, set_of_fluids = map_analysis.MapAnalysis().run()
-            data = {}
-            data['x_range'] = [BOX_X_MIN, BOX_X_MAX]
-            data['z_range'] = [BOX_Z_MIN, BOX_Z_MAX]
-            data['total_block_dict'] = total_block_dict
-            data['total_surface_dict'] = total_surface_dict
-            data['district_areas'] = district_areas
-            data['set_of_fluids'] = set_of_fluids
-            with open('block_dicts.pkl', 'wb') as output:
-                pickle.dump(data, output)
+                print('Do you want to save the old file before creating a new one? 1 or 2')
+                user_input_for_old_file_saving = int(input())
+                if user_input_for_old_file_saving == 1:
+                    uuid_for_file = uuid.uuid4()
+                    total_block_dict, total_surface_dict, district_areas, set_of_fluids = map_analysis.MapAnalysis().run()
+                    data = {}
+                    data['x_range'] = [BOX_X_MIN, BOX_X_MAX]
+                    data['z_range'] = [BOX_Z_MIN, BOX_Z_MAX]
+                    data['total_block_dict'] = total_block_dict
+                    data['total_surface_dict'] = total_surface_dict
+                    data['district_areas'] = district_areas
+                    data['set_of_fluids'] = set_of_fluids
+                    with open(f'{uuid_for_file}block_dicts.pkl', 'wb') as output:
+                        pickle.dump(data, output)
+                else:
+                    total_block_dict, total_surface_dict, district_areas, set_of_fluids = map_analysis.MapAnalysis().run()
+                    data = {}
+                    data['x_range'] = [BOX_X_MIN, BOX_X_MAX]
+                    data['z_range'] = [BOX_Z_MIN, BOX_Z_MAX]
+                    data['total_block_dict'] = total_block_dict
+                    data['total_surface_dict'] = total_surface_dict
+                    data['district_areas'] = district_areas
+                    data['set_of_fluids'] = set_of_fluids
+                    with open('block_dicts.pkl', 'wb') as output:
+                        pickle.dump(data, output)
 
         #  Map GA
         result = AreasGA().run(areas=district_areas)
