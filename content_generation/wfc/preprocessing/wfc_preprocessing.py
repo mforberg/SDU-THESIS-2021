@@ -1,3 +1,5 @@
+import time
+
 from shared_variables import SolutionGA
 
 
@@ -22,34 +24,37 @@ class WFCPreprocessing:
         #  you can find direction by adding / subtracting 1 to x by looking at opposite value (e.g. min_X)
         print(f"Counters: max_x | min_x | max_z | min_z")
         print(edge_nodes)
-
+        start = time.time()
         if self.max_x - self.min_x % n != 0:
             # Determine delete x max or min
-            if edge_nodes[self.max_x] > edge_nodes[self.min_x]:
-                # Remove illegalness
-                count = 0
-                for solution in result.population:
-                    for coord in solution.list_of_coordinates:
-                        if coord[1] == self.min_x:
-                            del solution.list_of_coordinates[coord]
-                            count += 1
-                print(f"max_x > min_x: {count}")
-            elif edge_nodes[self.max_x] <= edge_nodes[self.min_x]:
-                # Remove illegalness
-                count = 0
-                for solution in result.population:
-                    for coord in solution.list_of_coordinates:
-                        if coord[0] == self.max_x:
-                            del solution.list_of_coordinates[coord]
-                            count += 1
-                print(f"min_x => max_x: {count}")
-
+            for item in edge_nodes:
+                if item[self.max_x] > item[self.min_x]:
+                    # Remove illegalness
+                    print(f"max_x > min_x: {item[self.max_x]} > {item[self.min_x]}")
+                    count = 0
+                    for solution in result.population:
+                        for coord in solution.list_of_coordinates:
+                            if coord[1] == self.min_x:
+                                solution.list_of_coordinates.remove(coord)
+                                count += 1
+                    print(f"del count | max_x > min_x: {count}")
+                elif item[self.max_x] <= item[self.min_x]:
+                    # Remove illegalness
+                    print(f"max_x < min_x: {item[self.max_x]} < {item[self.min_x]}")
+                    count = 0
+                    for solution in result.population:
+                        for coord in solution.list_of_coordinates:
+                            if coord[0] == self.max_x:
+                                solution.list_of_coordinates.remove(coord)
+                                count += 1
+                    print(f"del count | min_x <= max_x: {count}")
+        print(f"Create Tiles Time: {time.time() - start}")
         if self.max_z - self.min_z % n != 0:
             # Determine delete z max or min
-            if edge_nodes[self.max_z] > edge_nodes[self.min_z]:
-                pass
-            else:
-                pass
+            # if edge_nodes[self.max_z] > edge_nodes[self.min_z]:
+            #     pass
+            # else:
+            #     pass
 
             # Remove illegalness
             for solution in result.population:
