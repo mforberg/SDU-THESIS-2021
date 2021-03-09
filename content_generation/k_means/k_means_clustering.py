@@ -6,18 +6,18 @@ import numpy as np
 from numpy import linalg
 import math
 import statistics
-from k_means.k_means_postprocess import recalculate_to_solution_ga
+from k_means.k_means_postprocess import run_postprocess
 
 
 class KMeansClustering:
     minimum_length_of_centroid = 0
 
-    def run(self, first_ga_result: SolutionGA) -> SolutionGA:
+    def run(self, first_ga_result: SolutionGA, surface_dict: dict) -> SolutionGA:
         converted_coordinates = self.__combine_the_lists_and_convert_to_list_of_list(first_ga_result)
         centroids, centroid_centers = self.__find_centroids(list_of_points=converted_coordinates)
         self.__calculate_minimum_length_of_centroid(centroids=centroids)
         self.__combine_small_centroid_to_others(centroids=centroids, centroid_centers=centroid_centers)
-        return recalculate_to_solution_ga(clusters=centroids)
+        return run_postprocess(centroids=centroids, surface_dict=surface_dict)
 
     def __combine_small_centroid_to_others(self, centroids: List[List[list]], centroid_centers: List[list]):
         skip_indexes = set()

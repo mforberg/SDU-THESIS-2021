@@ -1,7 +1,7 @@
 from variables.ga_type_variables import *
 from variables.shared_variables import *
 from .type_preprocess import run_preprocess
-from .type_postprocess import run_postprocess
+# from .type_postprocess import run_postprocess
 from .type_initial_population import TypeInitialPopulation
 from .type_fitness import TypeFitness
 from .type_selection import TypeSelection
@@ -41,7 +41,7 @@ class TypesGA:
                                            global_dict_of_used_types=global_district_types_dict)
         for string in self.new_best_prints:
             print(string)
-        run_postprocess(solution=self.best_solution, surface_dict=surface_dict)
+        # run_postprocess(solution=self.best_solution, surface_dict=surface_dict)
         return self.best_solution
 
     def __update_global_dict_of_types(self, solution: SolutionGA, global_dict_of_used_types: dict):
