@@ -4,6 +4,7 @@ from map_analysis import MapAnalysis
 
 def run_postprocess(centroids: List[list], surface_dict: dict) -> SolutionGA:
     solution = __recalculate_to_solution_ga(clusters=centroids, surface_dict=surface_dict)
+    solution.population.sort(key=lambda x: len(x.list_of_coordinates))
     for area in solution.population:
         __check_for_and_consume_digestible_areas(surface_dict=surface_dict, area=area, solution=solution)
         area.recalculate()
@@ -13,15 +14,46 @@ def run_postprocess(centroids: List[list], surface_dict: dict) -> SolutionGA:
 def __check_for_and_consume_digestible_areas(solution: SolutionGA, area: SolutionArea, surface_dict: dict):
     checked_nodes = set()
     fluid_blocks_set = set()
+    found_areas = []
     for x in range(area.min_max_values['min_x'], area.min_max_values['max_x']):
         for z in range(area.min_max_values['min_z'], area.min_max_values['max_z']):
             if (x, z) in surface_dict and (x, z) not in checked_nodes:
                 checked_nodes.add((x, z))
                 if not __is_coordinate_part_of_another_area(x=x, z=z, solution=solution):
-                    found_area = MapAnalysis().find_area(surface_dict, x, z, checked_nodes, fluid_blocks_set)
-                    if __check_if_digest(min_max_values=area.min_max_values, area=found_area,
-                                         surface_dict=surface_dict, reference_height=area.height):
-                        __consume_area(consumer=area, consumed=found_area)
+                    found_areas.append(MapAnalysis().find_area(surface_dict, x, z, checked_nodes, fluid_blocks_set))
+    # __let_consumers_consume_each_other(surface_dict=surface_dict, area_list=found_areas)
+    found_areas.sort(key=lambda consumed_area: consumed_area.distance_to_mass_coordinate(x=area.mass_coordinate['x'],
+                                                                                         z=area.mass_coordinate['z']))
+    for found_area in found_areas:
+        if __check_if_digest(consumer=area, consumed=found_area):
+            if __check_if_area_is_connected_to_consumer(consumer=area, consumed=found_area, surface_dict=surface_dict):
+                __consume_area(consumer=area, consumed=found_area)
+
+
+# def __let_consumers_consume_each_other(area_list: List[SolutionArea], surface_dict: dict):
+#     skip_set = set()
+#     remove_index = []
+#     for x in range(0, len(area_list)):
+#         skip_set.add(x)
+#         current_area = area_list[x]
+#         for y in range(x, len(area_list)):
+#             if y not in skip_set:
+#                 area = area_list[y]
+#                 if __check_if_area_is_connected_to_consumer(consumer=current_area, consumed=area,
+#                                                             surface_dict=surface_dict):
+#                     __consume_area(consumer=current_area, consumed=area)
+#                     skip_set.add(y)
+#                     remove_index.append(y)
+#     for index in remove_index[::-1]:
+#         area_list.pop(index)
+
+
+def __check_if_area_is_connected_to_consumer(consumer: SolutionArea, consumed: SolutionArea,
+                                             surface_dict: dict) -> bool:
+    for coordinate in consumer.list_of_coordinates:
+        if consumed.check_if_neighbor_to_coordinate(x=coordinate[0], z=coordinate[1], surface_dict=surface_dict):
+            return True
+    return False
 
 
 def __consume_area(consumer: SolutionArea, consumed: SolutionArea):
@@ -29,12 +61,12 @@ def __consume_area(consumer: SolutionArea, consumed: SolutionArea):
         consumer.list_of_coordinates.append(coordinate)
 
 
-def __check_if_digest(min_max_values: dict, area: SolutionArea, surface_dict: dict, reference_height: float) -> bool:
-    for coordinate in area.list_of_coordinates:
+def __check_if_digest(consumer: SolutionArea, consumed: SolutionArea) -> bool:
+    min_max_values = consumer.min_max_values
+    for coordinate in consumed.list_of_coordinates:
         if coordinate[0] < min_max_values['min_x'] or coordinate[0] > min_max_values['max_x'] or \
                 coordinate[1] < min_max_values['min_z'] or coordinate[1] > min_max_values['max_z'] \
-                or abs(surface_dict[coordinate]['y'] - reference_height) > 5 \
-                or len(area.list_of_coordinates) < 5:
+                or abs(consumer.height - consumed.height) > 3:
             return False
     return True
 

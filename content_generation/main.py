@@ -92,6 +92,7 @@ class Main:
         print("continued")
         if not rollback:
             SurfaceBuilder().rollback(surface_dict=total_surface_dict)
+        # return
 
         #  Type GA
         first = time.time()

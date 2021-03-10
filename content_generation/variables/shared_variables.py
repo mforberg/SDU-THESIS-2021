@@ -2,6 +2,7 @@ from typing import List
 import copy
 from pprint import pprint
 import uuid
+import math
 
 
 class SolutionArea:
@@ -22,6 +23,17 @@ class SolutionArea:
                                    type_of_district=self.type_of_district)
         return copy_object
 
+    def distance_to_mass_coordinate(self, x, z) -> float:
+        return math.sqrt((math.pow(x - self.mass_coordinate['x'], 2) + math.pow(z - self.mass_coordinate['z'], 2)))
+
+    def check_if_neighbor_to_coordinate(self, x: int, z: int, surface_dict: dict) -> bool:
+        y = surface_dict[(x, z)]['y']
+        for coordinate in self.list_of_coordinates:
+            amount = abs(coordinate[0] - x) + abs(coordinate[1] - z)
+            if amount <= 1 and abs(surface_dict[(coordinate[0], coordinate[1])]['y'] - y) <= 1:
+                return True
+        return False
+
     def __repr__(self):
         return f"<{self.__class__.__name__} ({hex(id(self))}): Coordinate Count: {len(self.list_of_coordinates)}, " \
                f"Mass Coordinate: {self.mass_coordinate}, " \
@@ -41,8 +53,8 @@ class SolutionArea:
                 min_z = z
             elif z > max_z:
                 max_z = z
-        total_x += x
-        total_z += z
+            total_x += x
+            total_z += z
         mass_x, mass_z = total_x / len(self.list_of_coordinates), total_z / len(self.list_of_coordinates)
         self.mass_coordinate = {"x": mass_x, "z": mass_z}
         self.min_max_values = {"min_x": min_x, "max_x": max_x, "min_z": min_z, "max_z": max_z}
