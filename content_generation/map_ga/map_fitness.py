@@ -1,4 +1,4 @@
-import math
+import statistics
 from variables.ga_map_variables import *
 from variables.map_variables import MIN_SIZE_OF_AREA
 from variables.shared_variables import *
@@ -6,7 +6,7 @@ from variables.shared_variables import *
 
 class MapFitness:
 
-    avg_y = 0
+    median_y = 0
     mass_center = {'x': 0, 'z': 0}
     x_and_z = math.sqrt(MIN_SIZE_OF_AREA)
     min_value_for_fitness_distance = (x_and_z * x_and_z) / math.sqrt(math.pow(x_and_z, 2) + math.pow(x_and_z, 2))
@@ -16,7 +16,7 @@ class MapFitness:
             self.__calculate_individual_fitness(population)
 
     def __calculate_individual_fitness(self, solution: SolutionGA):
-        self.avg_y = 0
+        self.median_y = 0
         self.mass_center = {'x': 0, 'z': 0}
         solution.fitness = self.__calculate_fitness_from_population(solution.population)
 
@@ -28,19 +28,19 @@ class MapFitness:
         duplicate_areas = {}  # key = mass_coordinate, value = [repetitions, length]
         for area in population:
             if (area.mass_coordinate['x'], area.mass_coordinate['z']) in duplicate_areas:
-                duplicate_areas[(area.mass_coordinate['x'], area.mass_coordinate['z'])]['repetitions'] += 1  # should increase repetitions with 1
+                duplicate_areas[(area.mass_coordinate['x'], area.mass_coordinate['z'])]['repetitions'] += 1
             else:
-                duplicate_areas[(area.mass_coordinate['x'], area.mass_coordinate['z'])] = {'repetitions': 1, 'length': len(area.list_of_coordinates)}
+                duplicate_areas[(area.mass_coordinate['x'], area.mass_coordinate['z'])] = \
+                    {'repetitions': 1, 'length': len(area.list_of_coordinates)}
             per_area_fitness += self.__size_fitness(area.list_of_coordinates, area.min_max_values)
             mass_centers.append(area.mass_coordinate)
             height_list.append(area.height)
             total_x += area.mass_coordinate['x']
             total_z += area.mass_coordinate['z']
-            total_y += area.height
             area_masses.append(len(area.set_of_coordinates))
         population_len = len(population)
         self.mass_center = {'x': total_x / population_len, 'z': total_z / population_len}
-        self.avg_y = total_y / population_len
+        self.median_y = statistics.median(height_list)
         current_fitness += per_area_fitness / population_len
         current_fitness += self.__distance_fitness(mass_centers, area_masses)
         current_fitness += self.__altitude_fitness(height_list)
@@ -82,7 +82,7 @@ class MapFitness:
         # Altitude difference (too much too bad)
         total_difference = 0
         for y in height_list:
-            total_difference += self.avg_y - y
+            total_difference += abs(self.median_y - y)
         average_difference = total_difference / len(height_list)
         # y = a*x + b
         # a = y2 - y1 / x2 - x1 (y1 is max score, x1 is 0, y2 is 0, x2 is the max y-diff unless minus)

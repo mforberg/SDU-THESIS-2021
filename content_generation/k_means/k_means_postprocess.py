@@ -7,7 +7,8 @@ def run_postprocess(centroids: List[list], surface_dict: dict) -> SolutionGA:
     solution.population.sort(key=lambda x: len(x.list_of_coordinates))
     for area in solution.population:
         __check_for_and_consume_digestible_areas(surface_dict=surface_dict, area=area, solution=solution)
-        area.recalculate()
+        area.recalculate_min_max_mass()
+        area.recalculate_height(surface_dict=surface_dict)
     return solution
 
 
@@ -66,7 +67,7 @@ def __check_if_digest(consumer: SolutionArea, consumed: SolutionArea) -> bool:
     for coordinate in consumed.list_of_coordinates:
         if coordinate[0] < min_max_values['min_x'] or coordinate[0] > min_max_values['max_x'] or \
                 coordinate[1] < min_max_values['min_z'] or coordinate[1] > min_max_values['max_z'] \
-                or abs(consumer.height - consumed.height) > 3:
+                or abs(consumer.height - consumed.height) > 5:
             return False
     return True
 

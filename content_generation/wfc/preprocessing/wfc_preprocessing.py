@@ -115,7 +115,7 @@ class WFCPreprocessing:
         min_x, min_z = 9999999, 9999999
         max_x, max_z = -9999999, -9999999
         for population in result.population:
-            population.recalculate()
+            population.recalculate_min_max_mass()
             min_max_dict = population.min_max_values
             max_x, max_z, min_x, min_z = self.__compare_min_max_values(min_max_dict, max_x, max_z, min_x, min_z)
         return max_x, max_z, min_x, min_z
