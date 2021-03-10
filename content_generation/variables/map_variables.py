@@ -1,14 +1,18 @@
 from minecraft_pb2 import *
 
 # Box area (they are made to be inclusive)
-# BOX_X_MIN = 385
-# BOX_X_MAX = 585
-# BOX_Z_MIN = 1500
-# BOX_Z_MAX = 1700
 BOX_X_MIN = -153 #-245
 BOX_X_MAX = 96   #4
 BOX_Z_MIN = 1411 #1483
 BOX_Z_MAX = 1661 #1733
+#BOX_X_MIN = 10000
+#BOX_X_MAX = 10050
+#BOX_Z_MIN = 2000
+#BOX_Z_MAX = 2050
+# BOX_X_MIN = -153 #-245
+# BOX_X_MAX = 96   #4
+# BOX_Z_MIN = 1411 #1483
+# BOX_Z_MAX = 1661 #1733
 
 # Map analysis
 MIN_SIZE_OF_AREA = 50
@@ -26,6 +30,8 @@ SKIP_SET = {DARK_OAK_DOOR, IRON_DOOR, BIRCH_DOOR, JUNGLE_DOOR, ACACIA_DOOR, SPRU
 
 FLUID_SET = {WATER, FLOWING_WATER, LAVA, FLOWING_LAVA}
 
+save_file_dir = '../data/'
+save_file_path = 'block_dicts.pkl'
 
 # class SolutionAnalysis:
 #
