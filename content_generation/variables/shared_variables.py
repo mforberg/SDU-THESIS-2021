@@ -39,7 +39,7 @@ class SolutionArea:
                f"Mass Coordinate: {self.mass_coordinate}, " \
                f"Min Max: {self.min_max_values}>\n"
 
-    def recalculate(self):
+    def recalculate_min_max_mass(self):
         min_x = min_z = 999999999999999999999999999999999999999999999
         max_x = max_z = -99999999999999999999999999999999999999999999
         total_x = total_z = 0
@@ -58,6 +58,12 @@ class SolutionArea:
         mass_x, mass_z = total_x / len(self.list_of_coordinates), total_z / len(self.list_of_coordinates)
         self.mass_coordinate = {"x": mass_x, "z": mass_z}
         self.min_max_values = {"min_x": min_x, "max_x": max_x, "min_z": min_z, "max_z": max_z}
+
+    def recalculate_height(self, surface_dict: dict):
+        total_y = 0
+        for coordinate in self.list_of_coordinates:
+            total_y += surface_dict[coordinate]['y']
+        self.height = total_y / len(self.list_of_coordinates)
 
 
 class SolutionGA:

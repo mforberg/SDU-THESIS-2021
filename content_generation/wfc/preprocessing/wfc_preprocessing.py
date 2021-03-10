@@ -114,7 +114,7 @@ class WFCPreprocessing:
     def __get_min_max_values(self, max_x: int, max_z: int, min_x: int, min_z: int, result: SolutionGA):
         # TODO: find out why the fuck stupid shit no update min max x z
         for population in result.population:
-            population.recalculate()
+            population.recalculate_min_max_mass()
             min_max_dict = population.min_max_values
             max_x, max_z, min_x, min_z = self.__compare_min_max_values(min_max_dict, max_x, max_z, min_x, min_z)
         return max_x, max_z, min_x, min_z

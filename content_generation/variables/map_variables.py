@@ -2,10 +2,10 @@ from minecraft_pb2 import *
 
 # Box area (they are made to be inclusive)
 """Nicolai's coordinates"""
-#BOX_X_MIN = 10000
-#BOX_X_MAX = 10050
-#BOX_Z_MIN = 2000
-#BOX_Z_MAX = 2050
+# BOX_X_MIN = 10000
+# BOX_X_MAX = 10050
+# BOX_Z_MIN = 2000
+# BOX_Z_MAX = 2050
 """Jonas' coordinates"""
 BOX_X_MIN = 385
 BOX_X_MAX = 585
