@@ -49,7 +49,7 @@ class Main:
                 unpickled_block_file = pickle.load(block_file)
                 if self.check_range(unpickled_block_file):
                     total_block_dict, surface_dict, district_areas, set_of_fluids =\
-                        unpickled_block_file['total_block_dict'], unpickled_block_file['surface_dict'], unpickled_block_file['district_areas'],\
+                        unpickled_block_file['total_block_dict'], unpickled_block_file['total_surface_dict'], unpickled_block_file['district_areas'],\
                         unpickled_block_file['set_of_fluids']
             else:
                 print('Do you want to save the old file before creating a new one? 1 or 2')
@@ -86,7 +86,6 @@ class Main:
         print("continued")
         if rollback == 1:
             SurfaceBuilder().rollback(surface_dict=surface_dict)
-        return
 
         #  Type GA
         first = time.time()

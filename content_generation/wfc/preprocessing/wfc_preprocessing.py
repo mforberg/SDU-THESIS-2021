@@ -7,8 +7,8 @@ class WFCPreprocessing:
 
     def __init__(self):
         # this is needed to draw grid over the whole solution so that it can be divided into tiles
-        self.min_x, self.min_z = 9999999, 9999999
-        self.max_x, self.max_z = -9999999, -9999999
+        self.__min_x, self.__min_z = 9999999, 9999999
+        self.__max_x, self.__max_z = -9999999, -9999999
 
     def create_tiles(self, result: SolutionGA, tile_size: int):
 
@@ -20,29 +20,30 @@ class WFCPreprocessing:
         # TODO: If you check min / max x / z, and you know the edge with most duplicates (e.g. max_x)
         #  you can find direction by adding / subtracting 1 to x by looking at opposite value (e.g. min_X)
 
-        print(f"max_x: {self.max_x} min_x: {self.min_x} max_z: {self.max_z} min_z: {self.min_z}")
+        print(f"max_x: {self.__max_x} min_x: {self.__min_x} max_z: {self.__max_z} min_z: {self.__min_z}")
         self.__prune_edges(n, result)
-
         self.__set_min_max_values(self.__get_min_max_values(result))
         self.__print_modulo_n(n)
 
     def __prune_edges(self, n: int, result: SolutionGA):
         dicts = []
-        while (self.max_x - self.min_x) % n != 0:
+        while (self.__max_x - self.__min_x) % n != 0:
             edge_nodes = self.__find_edge_node_count(result)
-            dicts.append(self.__prune_single_edge(edge_nodes, n, result, self.min_x, self.max_x, 'x'))
+            dicts.append(self.__prune_single_edge(edge_nodes, n, result, self.__min_x, self.__max_x, 'x'))
             self.__set_min_max_values(self.__get_min_max_values(result))
-        while (self.max_z - self.min_z) % n != 0:
+        while (self.__max_z - self.__min_z) % n != 0:
             edge_nodes = self.__find_edge_node_count(result)
-            dicts.append(self.__prune_single_edge(edge_nodes, n, result, self.min_z, self.max_z, 'z'))
+            dicts.append(self.__prune_single_edge(edge_nodes, n, result, self.__min_z, self.__max_z, 'z'))
             self.__set_min_max_values(self.__get_min_max_values(result))
         delete_counter = {'min_x': 0, 'max_x': 0, 'min_z': 0, 'max_z': 0}
         for d in dicts:
             for key in d:
                 value = d[key]
                 delete_counter[key] += value
+        for v in result.population:
+            print(len(v.set_of_coordinates))
         result.update_sets()
-        print(delete_counter)
+        print(f"deleted nodes: {delete_counter}")
 
     def __prune_single_edge(self, edge_nodes, n, result, min_value, max_value, edge: str) -> dict:
         if (max_value - min_value) % n != 0:
@@ -83,31 +84,31 @@ class WFCPreprocessing:
             return delete_counter
 
     def __print_modulo_n(self, n):
-        print(f"width (X):{self.max_x - self.min_x}, height (Z): {self.max_z - self.min_z}")
-        print(f"(N={n}) X%N: {(self.max_x - self.min_x) % n}, Z%N: {(self.max_z - self.min_z) % n}")
+        print(f"width (X):{self.__max_x - self.__min_x}, height (Z): {self.__max_z - self.__min_z}")
+        print(f"(N={n}) X%N: {(self.__max_x - self.__min_x) % n}, Z%N: {(self.__max_z - self.__min_z) % n}")
 
     def __find_edge_node_count(self, result: SolutionGA) -> List[dict]:
         counters = []
         for solution_area in result.population:
-            temp = {self.min_x: 0, self.max_x: 0, self.min_z: 0, self.max_z: 0}
+            temp = {self.__min_x: 0, self.__max_x: 0, self.__min_z: 0, self.__max_z: 0}
             for coordinate in solution_area.list_of_coordinates:
                 # (x, y)
-                if coordinate[0] == self.max_x:
-                    temp[self.max_x] += 1
-                if coordinate[0] == self.min_x:
-                    temp[self.min_x] += 1
-                if coordinate[1] == self.max_z:
-                    temp[self.max_z] += 1
-                if coordinate[1] == self.min_z:
-                    temp[self.min_z] += 1
+                if coordinate[0] == self.__max_x:
+                    temp[self.__max_x] += 1
+                if coordinate[0] == self.__min_x:
+                    temp[self.__min_x] += 1
+                if coordinate[1] == self.__max_z:
+                    temp[self.__max_z] += 1
+                if coordinate[1] == self.__min_z:
+                    temp[self.__min_z] += 1
             counters.append(temp)
         return counters
 
     def __set_min_max_values(self, values: (int, int, int, int)):
-        self.max_x = values[0]
-        self.max_z = values[1]
-        self.min_x = values[2]
-        self.min_z = values[3]
+        self.__max_x = values[0]
+        self.__max_z = values[1]
+        self.__min_x = values[2]
+        self.__min_z = values[3]
 
     def __get_min_max_values(self, result: SolutionGA) -> (int, int, int, int):
         min_x, min_z = 9999999, 9999999
