@@ -18,13 +18,13 @@ class MapFitness:
     def __calculate_individual_fitness(self, solution: SolutionGA):
         self.median_y = 0
         self.mass_center = {'x': 0, 'z': 0}
-        solution.fitness = self.__calculate_fitness_from_population(solution.population)
+        solution.fitness = self.calculate_fitness_from_population(solution.population)
 
-    def __calculate_fitness_from_population(self, population: List[SolutionArea]) -> float:
+    def calculate_fitness_from_population(self, population: List[SolutionArea]) -> float:
         mass_centers = []
         height_list = []
         area_masses = []
-        total_x = total_z = total_y = current_fitness = per_area_fitness = 0
+        total_x = total_z = current_fitness = per_area_fitness = 0
         duplicate_areas = {}  # key = mass_coordinate, value = [repetitions, length]
         for area in population:
             if (area.mass_coordinate['x'], area.mass_coordinate['z']) in duplicate_areas:
