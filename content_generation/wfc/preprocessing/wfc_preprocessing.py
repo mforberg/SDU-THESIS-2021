@@ -46,7 +46,6 @@ class WFCPreprocessing:
 
     def __prune_single_edge(self, edge_nodes, n, result, min_value, max_value, edge: str) -> dict:
         if (max_value - min_value) % n != 0:
-            print(f"edge is broken {(max_value - min_value) % n} (N={n})")
             deleted_edge = max_value
             count_min, count_max = 0, 0
 
@@ -57,7 +56,6 @@ class WFCPreprocessing:
             if count_max > count_min:
                 deleted_edge = min_value
 
-            print(f"{count_max} > {count_min}?")
             count = 0
             for pop in result.population:
                 for coord in reversed(pop.list_of_coordinates):
