@@ -12,32 +12,18 @@ class WFCPreprocessing:
 
     def create_tiles(self, result: SolutionGA, tile_size: int):
 
-        # TODO: use n instead of hardcoded values (2, 3)
         n = 2  # tile_size
 
-        # FIND global min+max x, z
-        print(result)
-        self.__set_min_max_values(self.__get_min_max_values(self.max_x, self.max_z, self.min_x, self.min_z, result))
-        self.__print_modulo_n()
+        self.__set_min_max_values(self.__get_min_max_values(result))
+        self.__print_modulo_n(n)
         edge_nodes = self.find_edge_node_count(result)
-        print(self.min_x, self.max_x, self.min_z, self.max_z)
         # TODO: Handle cases in rectangle where delta X|Z % N != 0
         # TODO: If you check min / max x / z, and you know the edge with most duplicates (e.g. max_x)
         #  you can find direction by adding / subtracting 1 to x by looking at opposite value (e.g. min_X)
-        print(f"Counters: max_x | min_x | max_z | min_z")
-        print(edge_nodes)
-
-        # N = 2
-        # TODO: should just use n, but need to test both even and uneven cases
-        if (self.max_x - self.min_x) % n != 0:
-            print(f"x axis is broken {(self.max_x - self.min_x) % n} (N={n})")
-
-        if (self.max_z - self.min_z) % n != 0:
-            print(f"z axis is broken {(self.max_z - self.min_z) % n} (N={n})")
 
         # N = 3
-        if (self.max_x - self.min_x) % (n+1) != 0:
-            print(f"x axis is broken {(self.max_x - self.min_x) % n} (N={n+1})")
+        if (self.max_x - self.min_x) % n != 0:
+            print(f"x axis is broken {(self.max_x - self.min_x) % n} (N={n})")
             x_deleted_edge = self.max_x
             x_count_min, x_count_max = 0, 0
 
@@ -47,7 +33,6 @@ class WFCPreprocessing:
 
             if x_count_max > x_count_min:
                 x_deleted_edge = self.min_x
-            print(f"x count_min: {x_count_min}, x count_max: {x_count_max}")
             count = 0
             for pop in result.population:
                 for coord in reversed(pop.list_of_coordinates):
@@ -55,8 +40,8 @@ class WFCPreprocessing:
                         count += 1
                         pop.list_of_coordinates.remove(coord)
             print(f"x deleted: {count}")
-        if (self.max_z - self.min_z) % (n+1) != 0:
-            print(f"z axis is broken {(self.max_z - self.min_z) % n} (N={n+1})")
+        if (self.max_z - self.min_z) % (n) != 0:
+            print(f"z axis is broken {(self.max_z - self.min_z) % n} (N={n})")
             z_deleted_edge = self.max_z
             z_count_min, z_count_max = 0, 0
 
@@ -73,20 +58,13 @@ class WFCPreprocessing:
                         count += 1
                         pop.list_of_coordinates.remove(coord)
             print(f"z deleted: {count}")
-            print(f"z count_min: {z_count_min}, z count_max: {z_count_max}")
 
-        self.__set_min_max_values(self.__get_min_max_values(self.max_x, self.max_z, self.min_x, self.min_z, result))
-        self.__print_modulo_n()
-        edge_nodes2 = self.find_edge_node_count(result)
-        print(f"Counters: max_x | min_x | max_z | min_z")
-        print(edge_nodes2)
-        print(self.min_x, self.max_x, self.min_z, self.max_z)
-        # If there are cases where X|Z % N != find the column or row with least blocks in it then absorb/delete
+        self.__set_min_max_values(self.__get_min_max_values(result))
+        self.__print_modulo_n(n)
 
-    def __print_modulo_n(self):
+    def __print_modulo_n(self, n):
         print(f"width (X):{self.max_x - self.min_x}, height (Z): {self.max_z - self.min_z}")
-        print(f"X%N = 2: {(self.max_x - self.min_x) % 2}, Z%N = 2: {(self.max_z - self.min_z) % 2}")
-        print(f"X%N = 3: {(self.max_x - self.min_x) % 3}, Z%N = 3: {(self.max_z - self.min_z) % 3}")
+        print(f"(N={n}) X%N: {(self.max_x - self.min_x) % n}, Z%N: {(self.max_z - self.min_z) % n}")
 
     def find_edge_node_count(self, result: SolutionGA) -> [int]:
         counters = []
@@ -111,8 +89,9 @@ class WFCPreprocessing:
         self.min_x = values[2]
         self.min_z = values[3]
 
-    def __get_min_max_values(self, max_x: int, max_z: int, min_x: int, min_z: int, result: SolutionGA):
-        # TODO: find out why the fuck stupid shit no update min max x z
+    def __get_min_max_values(self, result: SolutionGA):
+        min_x, min_z = 9999999, 9999999
+        max_x, max_z = -9999999, -9999999
         for population in result.population:
             population.recalculate()
             min_max_dict = population.min_max_values
