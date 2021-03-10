@@ -8,7 +8,6 @@ from builder.surface_builder import SurfaceBuilder
 import minecraft_pb2_grpc
 import grpc
 import time
-import copy
 import json
 from block_file_loader import BlockFileLoader
 from map_variables import *
