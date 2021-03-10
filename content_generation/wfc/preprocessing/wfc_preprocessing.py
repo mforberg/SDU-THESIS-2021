@@ -1,5 +1,5 @@
 import time
-
+from typing import List
 from shared_variables import SolutionGA
 
 
@@ -12,61 +12,83 @@ class WFCPreprocessing:
 
     def create_tiles(self, result: SolutionGA, tile_size: int):
 
-        n = 2  # tile_size
+        n = tile_size
 
         self.__set_min_max_values(self.__get_min_max_values(result))
         self.__print_modulo_n(n)
-        edge_nodes = self.find_edge_node_count(result)
-        # TODO: Handle cases in rectangle where delta X|Z % N != 0
+
         # TODO: If you check min / max x / z, and you know the edge with most duplicates (e.g. max_x)
         #  you can find direction by adding / subtracting 1 to x by looking at opposite value (e.g. min_X)
 
-        # N = 3
-        if (self.max_x - self.min_x) % n != 0:
-            print(f"x axis is broken {(self.max_x - self.min_x) % n} (N={n})")
-            x_deleted_edge = self.max_x
-            x_count_min, x_count_max = 0, 0
-
-            for item in edge_nodes:
-                x_count_min += item[self.min_x]
-                x_count_max += item[self.max_x]
-
-            if x_count_max > x_count_min:
-                x_deleted_edge = self.min_x
-            count = 0
-            for pop in result.population:
-                for coord in reversed(pop.list_of_coordinates):
-                    if coord[0] == x_deleted_edge:
-                        count += 1
-                        pop.list_of_coordinates.remove(coord)
-            print(f"x deleted: {count}")
-        if (self.max_z - self.min_z) % (n) != 0:
-            print(f"z axis is broken {(self.max_z - self.min_z) % n} (N={n})")
-            z_deleted_edge = self.max_z
-            z_count_min, z_count_max = 0, 0
-
-            for item in edge_nodes:
-                z_count_min += item[self.min_z]
-                z_count_max += item[self.max_z]
-
-            if z_count_max > z_count_min:
-                z_deleted_edge = self.min_z
-            count = 0
-            for pop in result.population:
-                for coord in reversed(pop.list_of_coordinates):
-                    if coord[1] == z_deleted_edge:
-                        count += 1
-                        pop.list_of_coordinates.remove(coord)
-            print(f"z deleted: {count}")
+        print(f"max_x: {self.max_x} min_x: {self.min_x} max_z: {self.max_z} min_z: {self.min_z}")
+        self.__prune_edges(n, result)
 
         self.__set_min_max_values(self.__get_min_max_values(result))
         self.__print_modulo_n(n)
+
+    def __prune_edges(self, n: int, result: SolutionGA):
+        dicts = []
+        while (self.max_x - self.min_x) % n != 0:
+            edge_nodes = self.__find_edge_node_count(result)
+            dicts.append(self.__prune_single_edge(edge_nodes, n, result, self.min_x, self.max_x, 'x'))
+            self.__set_min_max_values(self.__get_min_max_values(result))
+        while (self.max_z - self.min_z) % n != 0:
+            edge_nodes = self.__find_edge_node_count(result)
+            dicts.append(self.__prune_single_edge(edge_nodes, n, result, self.min_z, self.max_z, 'z'))
+            self.__set_min_max_values(self.__get_min_max_values(result))
+        delete_counter = {'min_x': 0, 'max_x': 0, 'min_z': 0, 'max_z': 0}
+        for d in dicts:
+            for key in d:
+                value = d[key]
+                delete_counter[key] += value
+        result.update_sets()
+        print(delete_counter)
+
+    def __prune_single_edge(self, edge_nodes, n, result, min_value, max_value, edge: str) -> dict:
+        if (max_value - min_value) % n != 0:
+            print(f"edge is broken {(max_value - min_value) % n} (N={n})")
+            deleted_edge = max_value
+            count_min, count_max = 0, 0
+
+            for item in edge_nodes:
+                count_min += item[min_value]
+                count_max += item[max_value]
+
+            if count_max > count_min:
+                deleted_edge = min_value
+
+            print(f"{count_max} > {count_min}?")
+            count = 0
+            for pop in result.population:
+                for coord in reversed(pop.list_of_coordinates):
+                    if edge == 'x':
+                        if coord[0] == deleted_edge:
+                            count += 1
+                            pop.list_of_coordinates.remove(coord)
+                    if edge == 'z':
+                        if coord[1] == deleted_edge:
+                            count += 1
+                            pop.list_of_coordinates.remove(coord)
+
+            delete_counter = {'min_x': 0, 'max_x': 0, 'min_z': 0, 'max_z': 0}
+
+            if edge == 'x':
+                if deleted_edge == min_value:
+                    delete_counter['min_x'] += count
+                else:
+                    delete_counter['max_x'] += count
+            elif edge == 'z':
+                if deleted_edge == min_value:
+                    delete_counter['min_z'] += count
+                else:
+                    delete_counter['max_z'] += count
+            return delete_counter
 
     def __print_modulo_n(self, n):
         print(f"width (X):{self.max_x - self.min_x}, height (Z): {self.max_z - self.min_z}")
         print(f"(N={n}) X%N: {(self.max_x - self.min_x) % n}, Z%N: {(self.max_z - self.min_z) % n}")
 
-    def find_edge_node_count(self, result: SolutionGA) -> [int]:
+    def __find_edge_node_count(self, result: SolutionGA) -> List[dict]:
         counters = []
         for solution_area in result.population:
             temp = {self.min_x: 0, self.max_x: 0, self.min_z: 0, self.max_z: 0}
@@ -89,7 +111,7 @@ class WFCPreprocessing:
         self.min_x = values[2]
         self.min_z = values[3]
 
-    def __get_min_max_values(self, result: SolutionGA):
+    def __get_min_max_values(self, result: SolutionGA) -> (int, int, int, int):
         min_x, min_z = 9999999, 9999999
         max_x, max_z = -9999999, -9999999
         for population in result.population:
@@ -99,7 +121,7 @@ class WFCPreprocessing:
         return max_x, max_z, min_x, min_z
 
     # noinspection PyMethodMayBeStatic
-    def __compare_min_max_values(self, min_max_dict, max_x, max_z, min_x, min_z):
+    def __compare_min_max_values(self, min_max_dict, max_x, max_z, min_x, min_z) -> (int, int, int, int):
         if min_max_dict['min_x'] < min_x:
             min_x = min_max_dict['min_x']
         if min_max_dict['max_x'] > max_x:

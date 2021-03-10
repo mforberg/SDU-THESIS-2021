@@ -66,6 +66,10 @@ class SolutionGA:
         self.fitness = fitness
         self.population = population
 
+    def update_sets(self):
+        for value in self.population:
+            value.set_of_coordinates = set(value.list_of_coordinates)
+
     def __deepcopy__(self, memo):
         copy_list = []
         for x in self.population:
