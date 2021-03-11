@@ -1,4 +1,4 @@
-import copy
+import shared_variables
 from typing import List
 
 DISTRICT_TYPES = ["Fishing", "Trade", "Royal", "Farms", "Crafts", "Village"]
@@ -19,21 +19,25 @@ TYPE_AREA_AROUND_DISTRICT_TO_BE_CHECKED = 10
 FITNESS_TYPE_DUPLICATES_MAX_SCORE = 100
 FITNESS_TYPE_DUPLICATES_AMOUNT_BEFORE_MINUS = 2
 #  Fishing district:
-FITNESS_TYPE_FISHING_BONUS_FOR_WATER_BLOCKS = 2
+FITNESS_TYPE_FISHING_MAX_SCORE = 100
+FITNESS_TYPE_FISHING_PERFECT_WATER_PER_BLOCK = 0.4
 #  Royal district:
 FITNESS_TYPE_ROYAL_MAX_SCORE = 100
 FITNESS_TYPE_ROYAL_DISTANCE_FROM_CITY_CENTER_BEFORE_MINUS = 50
 #  Crafting district:
-FITNESS_TYPE_CRAFTING_BONUS_FOR_RESOURCE_BLOCKS = 2
+FITNESS_TYPE_CRAFTING_MAX_SCORE = 100
+FITNESS_TYPE_CRAFTING_PERFECT_RESOURCE_PER_BLOCK = 0.2
 #  Default districts: (as to avoid the other types to dominate)
 FITNESS_TYPE_DEFAULT_SCORE = 50
 
 
 class PreProcessData:
 
-    def __init__(self, water_amount: int, resource_amount: int):
-        self.water_amount = water_amount
-        self.resource_amount = resource_amount
+    def __init__(self, water_list: List[tuple], resource_list: List[tuple]):
+        self.water_list = water_list
+        self.resource_list = resource_list
+        self.water_mass = shared_variables.calculate_mass_coordinate(water_list)
+        self.resource_mass = shared_variables.calculate_mass_coordinate(resource_list)
 
 
 # class AreaType:

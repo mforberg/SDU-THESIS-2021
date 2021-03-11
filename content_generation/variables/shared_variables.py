@@ -5,6 +5,17 @@ import uuid
 import math
 
 
+def calculate_mass_coordinate(list_of_coordinates: List[tuple]) -> tuple:
+    if len(list_of_coordinates) <= 0:
+        return ()
+    total_x = 0
+    total_z = 0
+    for coordinate in list_of_coordinates:
+        total_x += coordinate[0]
+        total_z += coordinate[1]
+    return total_x / len(list_of_coordinates), total_z / len(list_of_coordinates)
+
+
 class SolutionArea:
 
     def __init__(self, coordinates: List[tuple], mass_coordinate: dict, height: float, type_of_district: str,

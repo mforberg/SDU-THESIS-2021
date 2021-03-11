@@ -30,11 +30,26 @@ class TypeFitness:
             else:
                 per_area_fitness += FITNESS_TYPE_DEFAULT_SCORE
         score += per_area_fitness / len(solution.population)
+        if score < 0:
+            score = 0
         solution.fitness = score
 
     def __crafting_has_resources_nearby(self, area: SolutionArea, preprocess_dict: dict) -> float:
-        resource_amount = preprocess_dict[(area.mass_coordinate['x'], area.mass_coordinate['z'])].resource_amount
-        return resource_amount * FITNESS_TYPE_CRAFTING_BONUS_FOR_RESOURCE_BLOCKS
+        resource_list = preprocess_dict[(area.mass_coordinate['x'], area.mass_coordinate['z'])].resource_list
+        water_mass = preprocess_dict[(area.mass_coordinate['x'], area.mass_coordinate['z'])].resource_mass
+        resource_amount = len(resource_list)
+        if resource_amount <= 0:
+            return -FITNESS_TYPE_CRAFTING_MAX_SCORE
+        resource_per_block = len(area.list_of_coordinates) / resource_amount
+        # y = a*x + b
+        # a = y2 - y1 / x2 - x1 (y1 is 0, x1 is 0, y2 is max score, x2 is the perfect amount of resources per block)
+        # b = 0
+        # x = actual resource per block
+        a = FITNESS_TYPE_CRAFTING_MAX_SCORE / FITNESS_TYPE_CRAFTING_PERFECT_RESOURCE_PER_BLOCK
+        fitness = a * resource_per_block
+        if fitness > FITNESS_TYPE_CRAFTING_MAX_SCORE:
+            return FITNESS_TYPE_CRAFTING_MAX_SCORE
+        return fitness
 
     def __royal_should_be_close_to_center(self, area: SolutionArea, preprocess_dict: dict) -> float:
         x_difference = area.mass_coordinate['x'] - preprocess_dict['city_center']['x']
@@ -48,8 +63,20 @@ class TypeFitness:
         return (a * distance) + FITNESS_TYPE_ROYAL_MAX_SCORE
 
     def __fishing_should_be_near_water(self, area: SolutionArea, preprocess_dict: dict) -> float:
-        water_amount = preprocess_dict[(area.mass_coordinate['x'], area.mass_coordinate['z'])].water_amount
-        fitness = water_amount * FITNESS_TYPE_FISHING_BONUS_FOR_WATER_BLOCKS
+        water_list = preprocess_dict[(area.mass_coordinate['x'], area.mass_coordinate['z'])].water_list
+        water_mass = preprocess_dict[(area.mass_coordinate['x'], area.mass_coordinate['z'])].water_mass
+        water_amount = len(water_list)
+        if water_amount == 0:
+            return -FITNESS_TYPE_FISHING_MAX_SCORE
+        water_per_block = len(area.list_of_coordinates) / water_amount
+        # y = a*x + b
+        # a = y2 - y1 / x2 - x1 (y1 is 0, x1 is 0, y2 is max score, x2 is the perfect amount of water per block)
+        # b = 0
+        # x = actual water per block
+        a = FITNESS_TYPE_FISHING_MAX_SCORE / FITNESS_TYPE_FISHING_PERFECT_WATER_PER_BLOCK
+        fitness = a * water_per_block
+        if fitness > FITNESS_TYPE_FISHING_MAX_SCORE:
+            return FITNESS_TYPE_FISHING_MAX_SCORE
         return fitness
 
     def __avoid_duplicates_global(self, solution: SolutionGA) -> float:

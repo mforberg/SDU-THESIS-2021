@@ -22,16 +22,16 @@ def __find_amount_of_water_stone_and_wood(area: SolutionArea, fluid_set: set, su
     max_x = area.min_max_values['max_x']
     min_z = area.min_max_values['min_z']
     max_z = area.min_max_values['max_z']
-    amount_of_water_found = 0
-    amount_of_stone_and_wood = 0
+    list_of_water = []
+    list_of_resources = []
     outside_modifier = TYPE_AREA_AROUND_DISTRICT_TO_BE_CHECKED
     for x in range(min_x - outside_modifier, max_x + outside_modifier):
         for z in range(min_z - outside_modifier, max_z + outside_modifier):
             if (x, z) in fluid_set:
-                amount_of_water_found += 1
+                list_of_water.append((x, z))
             else:
                 if (x, z) in surface_dict:
                     block_type = surface_dict[(x, z)]['type']
                     if block_type == STONE or block_type == LOG or block_type == LOG2:
-                        amount_of_stone_and_wood += 1
-    return PreProcessData(water_amount=amount_of_water_found, resource_amount=amount_of_stone_and_wood)
+                        list_of_resources.append((x, z))
+    return PreProcessData(water_list=list_of_water, resource_list=list_of_resources)
