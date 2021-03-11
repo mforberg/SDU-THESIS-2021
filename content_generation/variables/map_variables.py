@@ -7,10 +7,10 @@ BOX_X_MAX = 10050
 BOX_Z_MIN = 2000
 BOX_Z_MAX = 2050
 """Jonas' coordinates"""
-BOX_X_MIN = 385
-BOX_X_MAX = 585
-BOX_Z_MIN = 1500
-BOX_Z_MAX = 1700
+# BOX_X_MIN = 385
+# BOX_X_MAX = 585
+# BOX_Z_MIN = 1500
+# BOX_Z_MAX = 1700
 """Mikkel's coordinates"""
 # BOX_X_MIN = -153 #-245
 # BOX_X_MAX = 96   #4
