@@ -2,6 +2,8 @@ from map_variables import *
 import os.path
 import pickle
 import map_analysis
+from UserInputFetcher import fetch_user_integer
+import UserInputFetcher
 
 class BlockFileLoader:
     def __init__(self):
@@ -10,7 +12,7 @@ class BlockFileLoader:
     def run(self):
         if os.path.exists(f'{save_file_dir}{save_file_path}'):
             print('Do you want to run on save file? 1 or 2')
-            keyOne = self.fetch_user_integer()
+            keyOne = fetch_user_integer()
             #Should the user want to use a saved file
             if keyOne == 1:
                 print('What save file do you want to use?')
@@ -21,7 +23,7 @@ class BlockFileLoader:
             #If the user doesn't want to use a save file
             else:
                 print('Do you want to save the old file before creating a new one? 1 or 2')
-                keyTwo = self.fetch_user_integer()
+                keyTwo = fetch_user_integer()
                 if keyTwo == 1:
                     print("Give the file a name! Please don't use space")
                     file_name = str(input())
@@ -33,16 +35,6 @@ class BlockFileLoader:
         else:
             self.total_block_dict, self.total_surface_dict, self.district_areas, self.set_of_fluids = map_analysis.MapAnalysis().run()
             self.write_to_pkl_file(self.district_areas, self.set_of_fluids, self.total_block_dict, self.total_surface_dict)
-
-    def fetch_user_integer(self):
-        keyTwo = None
-        while True:
-            try:
-                keyTwo = int(input())
-                break
-            except:
-                print("Please put in a integer")
-        return keyTwo
 
     def file_selector(self, dir_save_file):
         dirs = os.listdir(dir_save_file)
