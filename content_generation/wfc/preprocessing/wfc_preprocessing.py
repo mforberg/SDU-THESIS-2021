@@ -25,6 +25,17 @@ class WFCPreprocessing:
         self.__set_min_max_values(self.__get_min_max_values(result))
         self.__print_modulo_n(n)
 
+        total_coordinates = []
+        for solution in result.population:
+            total_coordinates.extend(solution.list_of_coordinates)
+        total_set_coordinates = set(total_coordinates)
+
+        count = 0
+        for i in range(self.__min_x, self.__max_x - n + 1, 2):
+            # for i in range(min_z, max_z, 2)
+                # for i in range(min_x, min_x+1)
+        print(f"N={n}, min_x-max_x={self.__max_x-self.__min_x}, delta_x/n={(self.__max_x-self.__min_x)/n}, count={count}")
+
     def __prune_edges(self, n: int, result: SolutionGA):
         dicts = []
         while (self.__max_x - self.__min_x) % n != 0:
@@ -40,9 +51,6 @@ class WFCPreprocessing:
             for key in d:
                 value = d[key]
                 delete_counter[key] += value
-        for v in result.population:
-            print(len(v.set_of_coordinates))
-        result.update_sets()
         print(f"deleted nodes: {delete_counter}")
 
     def __prune_single_edge(self, edge_nodes, n, result, min_value, max_value, edge: str) -> dict:
