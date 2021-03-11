@@ -12,6 +12,7 @@ import json
 from block_file_loader import BlockFileLoader
 from map_variables import *
 import uuid
+from UserInputFetcher import fetch_user_integer
 
 class Main:
     global_dict_of_used_coordinates = {}
@@ -35,11 +36,9 @@ class Main:
         clusters = KMeansClustering().run(first_ga_result=result, surface_dict=surface_dict)
 
         SurfaceBuilder().build_clusters(clusters=clusters, surface_dict=surface_dict)
-        print("Reset surface? 1 or 2")
-        rollback = int(input())
-        print("continued")
-        if rollback == 1:
-            SurfaceBuilder().rollback(surface_dict=surface_dict)
+
+        self.rollback(surface_dict)
+        return
 
         #  Type GA
         first = time.time()
@@ -48,11 +47,7 @@ class Main:
         print(f"TYPE GA: {time.time()-first}")
 
         SurfaceBuilder().build_type_ga(surface_dict=surface_dict, type_ga_result=result)
-        print("Reset surface? 1 or 2")
-        rollback = int(input())
-        print("continued")
-        if rollback == 1:
-            SurfaceBuilder().rollback(surface_dict=surface_dict)
+        self.rollback
 
 
         # WFC Start
@@ -62,7 +57,23 @@ class Main:
         print("- - - - WFC RELATED GARBAGE STOPPED - - - -")
         # WFC End
 
+    def rollback(self, surface_dict):
+        print("Reset surface? 1 or 2")
+        rollback = self.rollback_options()
+        print("continued")
+        if rollback == 1:
+            SurfaceBuilder().rollback(surface_dict=surface_dict)
 
+    def rollback_options(self):
+        while True:
+            rollback = fetch_user_integer()
+            if rollback == 1:
+                break
+            elif rollback == 2:
+                break
+            else:
+                print("Please input 1 or 2")
+        return rollback
 
 
 if __name__ == '__main__':
