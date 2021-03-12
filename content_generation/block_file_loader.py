@@ -41,7 +41,7 @@ class BlockFileLoader:
         for index, file in enumerate(dirs):
             if file.endswith('.pkl'):
                 print(f'{index+1}: {file}')
-        stopper = self.fetch_user_integer()
+        stopper = fetch_user_integer()
         if stopper <= 0:
             stopper = stopper + 1
         block_file = open(f'{save_file_dir}{dirs[stopper-1]}', 'rb')
