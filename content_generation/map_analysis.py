@@ -6,7 +6,6 @@ from multiprocessing import Pool
 import time
 import grpc
 from map_variables import *
-from shared_variables import *
 import tqdm
 
 
@@ -18,7 +17,7 @@ client = minecraft_pb2_grpc.MinecraftServiceStub(channel)
 class MapAnalysis:
     work = []
 
-    def run(self) -> [dict, dict, SolutionGA, set]:
+    def run(self) -> MapAnalData:
         total_surface_dict = {}
         total_block_dict = {}
         self.create_area_for_work()
@@ -29,9 +28,9 @@ class MapAnalysis:
             total_block_dict.update(dictionary['block_dict'])
             total_surface_dict.update(dictionary['surface_dict'])
         result = self.find_areas_for_districts(total_surface_dict)
-        areas_for_districts = result[0]
-        set_of_fluid_coordinates = result[1]
-        return total_block_dict, total_surface_dict, areas_for_districts, set_of_fluid_coordinates
+        map_anal_data = MapAnalData(surface_dict=total_surface_dict, block_dict=total_block_dict,
+                                    set_of_fluid_coordinates=result[1], areas_for_districts=result[0])
+        return map_anal_data
 
     def create_area_for_work(self):
         for x in range(BOX_X_MIN, BOX_X_MAX + 1):

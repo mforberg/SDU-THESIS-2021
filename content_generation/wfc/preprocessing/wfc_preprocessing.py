@@ -31,7 +31,7 @@ class WFCPreprocessing:
         total_set_coordinates = set(total_coordinates)
 
         count = 0
-        for i in range(self.__min_x, self.__max_x - n + 1, 2):
+        # for i in range(self.__min_x, self.__max_x - n + 1, 2):
             # for i in range(min_z, max_z, 2)
                 # for i in range(min_x, min_x+1)
         print(f"N={n}, min_x-max_x={self.__max_x-self.__min_x}, delta_x/n={(self.__max_x-self.__min_x)/n}, count={count}")

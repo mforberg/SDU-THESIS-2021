@@ -1,16 +1,17 @@
 from minecraft_pb2 import *
+from shared_variables import *
 
 # Box area (they are made to be inclusive)
 """Nicolai's coordinates"""
-BOX_X_MIN = 10000
-BOX_X_MAX = 10050
-BOX_Z_MIN = 2000
-BOX_Z_MAX = 2050
+# BOX_X_MIN = 10000
+# BOX_X_MAX = 10050
+# BOX_Z_MIN = 2000
+# BOX_Z_MAX = 2050
 """Jonas' coordinates"""
-# BOX_X_MIN = 385
-# BOX_X_MAX = 585
-# BOX_Z_MIN = 1500
-# BOX_Z_MAX = 1700
+BOX_X_MIN = 385
+BOX_X_MAX = 585
+BOX_Z_MIN = 1500
+BOX_Z_MAX = 1700
 """Mikkel's coordinates"""
 # BOX_X_MIN = -153 #-245
 # BOX_X_MAX = 96   #4
@@ -37,7 +38,11 @@ FLUID_SET = {WATER, FLOWING_WATER, LAVA, FLOWING_LAVA}
 save_file_dir = '../data/'
 save_file_path = 'block_dicts.pkl'
 
-# class SolutionAnalysis:
-#
-#     def __init__(self, areas: List[AreaMap]):
-#         self.areas = areas
+
+class MapAnalData:
+    def __init__(self, block_dict: dict, surface_dict: dict, areas_for_districts: SolutionGA,
+                 set_of_fluid_coordinates: set):
+        self.block_dict = block_dict
+        self.surface_dict = surface_dict
+        self.areas_for_districts = areas_for_districts
+        self.set_of_fluid_coordinates = set_of_fluid_coordinates
