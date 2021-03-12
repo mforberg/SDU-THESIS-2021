@@ -38,7 +38,6 @@ class Main:
         SurfaceBuilder().build_clusters(clusters=clusters, surface_dict=surface_dict)
 
         self.rollback(surface_dict)
-        return
 
         #  Type GA
         first = time.time()
@@ -47,12 +46,12 @@ class Main:
         print(f"TYPE GA: {time.time()-first}")
 
         SurfaceBuilder().build_type_ga(surface_dict=surface_dict, type_ga_result=result)
-        self.rollback
+        self.rollback(surface_dict)
 
 
         # WFC Start
         print("- - - - WFC RELATED GARBAGE KEEP SCROLLING - - - -")
-        result = WFC_PP().create_tiles(result=result, tile_size=2)
+        result = WFC_PP().create_tiles(result=result, tile_size=2, surface_dict=surface_dict)
         WFCB().build_tiles(surface_dict=surface_dict, tiles=result)
         print("- - - - WFC RELATED GARBAGE STOPPED - - - -")
         # WFC End

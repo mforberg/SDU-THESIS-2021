@@ -1,6 +1,7 @@
 import time
 from typing import List
 from shared_variables import SolutionGA
+from wfc_tile import Tile
 
 
 class WFCPreprocessing:
@@ -10,7 +11,7 @@ class WFCPreprocessing:
         self.__min_x, self.__min_z = 9999999, 9999999
         self.__max_x, self.__max_z = -9999999, -9999999
 
-    def create_tiles(self, result: SolutionGA, tile_size: int):
+    def create_tiles(self, result: SolutionGA, tile_size: int, surface_dict: dict):
 
         n = tile_size
 
@@ -31,9 +32,23 @@ class WFCPreprocessing:
         total_set_coordinates = set(total_coordinates)
 
         count = 0
-        for i in range(self.__min_x, self.__max_x - n + 1, 2):
-            # for i in range(min_z, max_z, 2)
-                # for i in range(min_x, min_x+1)
+        all_tiles = []
+        for x in range(self.__min_x, self.__max_x - n + 1, 2):
+            for z in range(self.__min_z, self.__max_z - n + 1, 2):
+                x1 = self.__min_x + x
+                x2 = self.__min_x + x + 1
+                z1 = self.__min_z + z
+                z2 = self.__min_z + z + 1
+                tiles = [(x1, x2, z1, z2)]
+                neighbors = [1]
+                temp = Tile(tiles, neighbors)
+                all_tiles.append(temp)
+                if count <= 3:
+                    print(x, z)
+                    print(x1, x2, z1, z2)
+                count += 1
+        print(len(all_tiles))
+        print(all_tiles[:10])
         print(f"N={n}, min_x-max_x={self.__max_x-self.__min_x}, delta_x/n={(self.__max_x-self.__min_x)/n}, count={count}")
 
     def __prune_edges(self, n: int, result: SolutionGA):
