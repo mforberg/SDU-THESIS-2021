@@ -37,7 +37,7 @@ class Main:
 
         SurfaceBuilder().build_clusters(clusters=clusters, surface_dict=surface_dict)
 
-        self.rollback(surface_dict)
+        self.rollback(surface_dict=surface_dict)
 
         #  Type GA
         first = time.time()
@@ -46,7 +46,7 @@ class Main:
         print(f"TYPE GA: {time.time()-first}")
 
         SurfaceBuilder().build_type_ga(surface_dict=surface_dict, type_ga_result=result)
-        self.rollback(surface_dict)
+        self.rollback(surface_dict=surface_dict)
 
 
         # WFC Start

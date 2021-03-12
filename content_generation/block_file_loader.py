@@ -27,14 +27,23 @@ class BlockFileLoader:
                 if keyTwo == 1:
                     print("Give the file a name! Please don't use space")
                     file_name = str(input())
-                    self.total_block_dict, self.total_surface_dict, self.district_areas, self.set_of_fluids = map_analysis.MapAnalysis().run()
+                    temp_map_data = map_analysis.MapAnalysis().run()
+                    self.unpack_data_object_map_anal_data(temp_map_data)
                     self.write_to_pkl_file(self.district_areas, self.set_of_fluids, self.total_block_dict, self.total_surface_dict, file_name)
                 elif keyTwo == 2:
-                    self.total_block_dict, self.total_surface_dict, self.district_areas, self.set_of_fluids = map_analysis.MapAnalysis().run()
+                    temp_map_data = map_analysis.MapAnalysis().run()
+                    self.unpack_data_object_map_anal_data(temp_map_data)
                     self.write_to_pkl_file(self.district_areas, self.set_of_fluids, self.total_block_dict, self.total_surface_dict)
         else:
-            self.total_block_dict, self.total_surface_dict, self.district_areas, self.set_of_fluids = map_analysis.MapAnalysis().run()
+            temp_map_data = map_analysis.MapAnalysis().run()
+            self.unpack_data_object_map_anal_data(temp_map_data)
             self.write_to_pkl_file(self.district_areas, self.set_of_fluids, self.total_block_dict, self.total_surface_dict)
+
+    def unpack_data_object_map_anal_data(self, map_anal_data:MapAnalData):
+        self.total_block_dict = map_anal_data.block_dict
+        self.total_surface_dict = map_anal_data.surface_dict
+        self.district_areas = map_anal_data.areas_for_districts
+        self.set_of_fluids = map_anal_data.set_of_fluid_coordinates
 
     def file_selector(self, dir_save_file):
         dirs = os.listdir(dir_save_file)
@@ -48,21 +57,10 @@ class BlockFileLoader:
         return block_file
 
     def load_from_pkl_file(self, unpickled_block_file):
-        if self.check_range(unpickled_block_file):
-            self.total_block_dict, self.total_surface_dict, self.district_areas, self.set_of_fluids = \
-                unpickled_block_file['total_block_dict'], unpickled_block_file['total_surface_dict'], \
-                unpickled_block_file['district_areas'], \
-                unpickled_block_file['set_of_fluids']
-
-
-    def check_range(self, file):
-        x_range = file['x_range']
-        z_range = file['z_range']
-
-        if x_range[0] == BOX_X_MIN and x_range[1] == BOX_X_MAX and z_range[0] == BOX_Z_MIN and z_range[1] == BOX_Z_MAX:
-            return True
-        else:
-            return False
+        self.total_block_dict, self.total_surface_dict, self.district_areas, self.set_of_fluids = \
+            unpickled_block_file['total_block_dict'], unpickled_block_file['total_surface_dict'], \
+            unpickled_block_file['district_areas'], \
+            unpickled_block_file['set_of_fluids']
 
     def write_to_pkl_file(self, district_areas, set_of_fluids, total_block_dict, total_surface_dict, file_name = 'f'):
         data = {}
