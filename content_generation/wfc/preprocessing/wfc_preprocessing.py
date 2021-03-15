@@ -39,6 +39,8 @@ class WFCPreprocessing:
     def __generate_tileset(self, n):
         all_tiles = []
         utilized_coordinates = set()
+        # TODO: Only create tiles where coordinates are used in solution, currently tiles are created globally
+        # TODO: Create neighbors for a tile
         for x in range(self.__min_x, self.__max_x - n + 1, n):
             for z in range(self.__min_z, self.__max_z - n + 1, n):
                 nodes = []
@@ -49,8 +51,12 @@ class WFCPreprocessing:
                         z1 = z + z2
                         nodes.append((x1, z1))
                 temp = Tile(nodes)
+                self.__add_neighbors(temp)
                 all_tiles.append(temp)
         return all_tiles
+
+    def __add_neighbors(self, tile: Tile):
+        pass
 
     def __prune_edges(self, n: int, result: SolutionGA):
         dicts = []
