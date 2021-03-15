@@ -51,7 +51,7 @@ class Main:
 
         # WFC Start
         print("- - - - WFC RELATED GARBAGE KEEP SCROLLING - - - -")
-        result = WFC_PP().create_tiles(result=result, tile_size=2)
+        result = WFC_PP().create_tiles(result=result, tile_size=3, surface_dict=surface_dict)
         WFCB().build_tiles(surface_dict=surface_dict, tiles=result)
         print("- - - - WFC RELATED GARBAGE STOPPED - - - -")
         # WFC End
