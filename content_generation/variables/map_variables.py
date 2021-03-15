@@ -20,7 +20,7 @@ BOX_Z_MAX = 1700
 
 
 # Map analysis
-MIN_SIZE_OF_AREA = 50
+MIN_SIZE_OF_AREA = 20
 
 
 # List of blocks that is ignored
