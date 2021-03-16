@@ -3,6 +3,7 @@ from variables.map_variables import *
 import grpc
 import copy
 from shared_variables import SolutionGA
+from variables.wfc_tile import Tile
 
 
 class SurfaceBuilder:
@@ -23,6 +24,22 @@ class SurfaceBuilder:
                 block = copy.deepcopy(surface_dict[(coordinate[0], coordinate[1])]['block'])
                 block.type = current_building_block
                 blocks.append(block)
+        self.client.spawnBlocks(Blocks(blocks=blocks))
+
+    def build_wfc_glass_layer(self, surface_dict: dict, wfc_tiles: List[Tile]):
+
+        blocks = []
+        for tile in wfc_tiles:
+            current_building_block = GLASS
+            for coordinate in tile.nodes:
+                block = copy.deepcopy(surface_dict[(coordinate[0], coordinate[1])]['block'])
+                block.position.y += 1
+                block.type = current_building_block
+                blocks.append(block)
+        self.client.spawnBlocks(Blocks(blocks=blocks))
+        x = input("Please wait :)")
+        for block in blocks:
+            block.type = AIR
         self.client.spawnBlocks(Blocks(blocks=blocks))
 
     def build_clusters(self, surface_dict: dict, clusters: SolutionGA):

@@ -21,7 +21,7 @@ class WFCPreprocessing:
         # TODO: If you check min / max x / z, and you know the edge with most duplicates (e.g. max_x)
         #  you can find direction by adding / subtracting 1 to x by looking at opposite value (e.g. min_X)
 
-        print(f"max_x: {self.__max_x} min_x: {self.__min_x} max_z: {self.__max_z} min_z: {self.__min_z}")
+        print(f"(FIRST) max_x: {self.__max_x} min_x: {self.__min_x} max_z: {self.__max_z} min_z: {self.__min_z}")
         self.__prune_edges(n, result)
         self.__set_min_max_values(self.__get_min_max_values(result))
         self.__print_modulo_n(n)
@@ -31,18 +31,22 @@ class WFCPreprocessing:
             total_coordinates.extend(solution.list_of_coordinates)
         total_set_coordinates = set(total_coordinates)
 
-        all_tiles = self.__generate_tileset(n)
+        all_tiles = self.__generate_tileset(n, total_set_coordinates)
 
         print(((self.__max_x - self.__min_x) / n) * ((self.__max_z - self.__min_z) / n))
         print(f"N={n}, min_x-max_x={self.__max_x - self.__min_x}, delta_x/n={(self.__max_x - self.__min_x) / n}")
+        print(f"(SECOND) max_x: {self.__max_x} min_x: {self.__min_x} max_z: {self.__max_z} min_z: {self.__min_z}")
 
-    def __generate_tileset(self, n):
+        return all_tiles
+
+    def __generate_tileset(self, n, coordinates):
         all_tiles = []
+        all_tiles2 = []
         utilized_coordinates = set()
         # TODO: Only create tiles where coordinates are used in solution, currently tiles are created globally
         # TODO: Create neighbors for a tile
-        for x in range(self.__min_x, self.__max_x - n + 1, n):
-            for z in range(self.__min_z, self.__max_z - n + 1, n):
+        for x in range(self.__min_x, (self.__max_x - n) + 1, n):
+            for z in range(self.__min_z, (self.__max_z - n) + 1, n):
                 nodes = []
 
                 for x2 in range(0, n):
@@ -50,10 +54,17 @@ class WFCPreprocessing:
                         x1 = x + x2
                         z1 = z + z2
                         nodes.append((x1, z1))
+                set1 = set(nodes)
+                if set1.intersection(coordinates):
+                    temp2 = Tile(nodes)
+                    all_tiles2.append(temp2)
                 temp = Tile(nodes)
                 self.__add_neighbors(temp)
                 all_tiles.append(temp)
-        return all_tiles
+
+        print(f"intersection: {len(all_tiles2)}")
+        print(f"old: {len(all_tiles)}")
+        return all_tiles, all_tiles2
 
     def __add_neighbors(self, tile: Tile):
         pass
@@ -61,10 +72,12 @@ class WFCPreprocessing:
     def __prune_edges(self, n: int, result: SolutionGA):
         dicts = []
         while (self.__max_x - self.__min_x) % n != 0:
+            print("x axis pruning")
             edge_nodes = self.__find_edge_node_count(result)
             dicts.append(self.__prune_single_edge(edge_nodes, n, result, self.__min_x, self.__max_x, 'x'))
             self.__set_min_max_values(self.__get_min_max_values(result))
         while (self.__max_z - self.__min_z) % n != 0:
+            print("z axis pruning")
             edge_nodes = self.__find_edge_node_count(result)
             dicts.append(self.__prune_single_edge(edge_nodes, n, result, self.__min_z, self.__max_z, 'z'))
             self.__set_min_max_values(self.__get_min_max_values(result))
@@ -84,21 +97,28 @@ class WFCPreprocessing:
                 count_min += item[min_value]
                 count_max += item[max_value]
 
+            print(f"count_min: {count_min}, count_max: {count_max}")
+
             if count_max > count_min:
                 deleted_edge = min_value
+                print(f"deleted_edge: {deleted_edge}")
 
+            x_count = 0
+            z_count = 0
             count = 0
             for pop in result.population:
                 for coord in reversed(pop.list_of_coordinates):
                     if edge == 'x':
                         if coord[0] == deleted_edge:
                             count += 1
+                            x_count += 1
                             pop.list_of_coordinates.remove(coord)
                     if edge == 'z':
                         if coord[1] == deleted_edge:
                             count += 1
+                            z_count += 1
                             pop.list_of_coordinates.remove(coord)
-
+            print(f"x_count: {x_count}, z_count: {z_count}")
             delete_counter = {'min_x': 0, 'max_x': 0, 'min_z': 0, 'max_z': 0}
 
             if edge == 'x':
