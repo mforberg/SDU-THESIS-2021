@@ -45,8 +45,8 @@ class WFCPreprocessing:
         utilized_coordinates = set()
         # TODO: Only create tiles where coordinates are used in solution, currently tiles are created globally
         # TODO: Create neighbors for a tile
-        for x in range(self.__min_x, (self.__max_x - n) + 1, n):
-            for z in range(self.__min_z, (self.__max_z - n) + 1, n):
+        for x in range(self.__min_x, (self.__max_x - n) + 2, n): # + 2 because range no inclusive and because +1 to ensure last 3 blocks are made into tiles
+            for z in range(self.__min_z, (self.__max_z - n) + 2, n):
                 nodes = []
 
                 for x2 in range(0, n):
@@ -61,7 +61,6 @@ class WFCPreprocessing:
                 temp = Tile(nodes)
                 self.__add_neighbors(temp)
                 all_tiles.append(temp)
-
         print(f"intersection: {len(all_tiles2)}")
         print(f"old: {len(all_tiles)}")
         return all_tiles, all_tiles2
@@ -71,67 +70,80 @@ class WFCPreprocessing:
 
     def __prune_edges(self, n: int, result: SolutionGA):
         dicts = []
-        while (self.__max_x - self.__min_x) % n != 0:
+        delta_x = self.__max_x - self.__min_x + 1
+        delta_z = self.__max_z - self.__min_z + 1
+        x_mod_n = delta_x % n
+        z_mod_n = delta_z % n
+        print(f"delta_x: {delta_x}, dX%N: {delta_x % n}")
+        print(f"delta_z: {delta_z}, dZ%N: {delta_z % n}")
+        while x_mod_n != 0:
+            print(x_mod_n)
             print("x axis pruning")
             edge_nodes = self.__find_edge_node_count(result)
             dicts.append(self.__prune_single_edge(edge_nodes, n, result, self.__min_x, self.__max_x, 'x'))
             self.__set_min_max_values(self.__get_min_max_values(result))
-        while (self.__max_z - self.__min_z) % n != 0:
+            x_mod_n -= 1
+        while z_mod_n != 0:
+            print(z_mod_n)
             print("z axis pruning")
             edge_nodes = self.__find_edge_node_count(result)
             dicts.append(self.__prune_single_edge(edge_nodes, n, result, self.__min_z, self.__max_z, 'z'))
             self.__set_min_max_values(self.__get_min_max_values(result))
+            z_mod_n -= 1
         delete_counter = {'min_x': 0, 'max_x': 0, 'min_z': 0, 'max_z': 0}
-        for d in dicts:
-            for key in d:
-                value = d[key]
-                delete_counter[key] += value
-        print(f"deleted nodes: {delete_counter}")
+        # print(len(dicts))
+        # for d in dicts:
+        #     print(len(d))
+        # x = input("hands up")
+        # for d in dicts:
+        #     for key in d:
+        #         value = d[key]
+        #         delete_counter[key] += value
+        # print(f"deleted nodes: {delete_counter}")
 
     def __prune_single_edge(self, edge_nodes, n, result, min_value, max_value, edge: str) -> dict:
-        if (max_value - min_value) % n != 0:
-            deleted_edge = max_value
-            count_min, count_max = 0, 0
+        deleted_edge = max_value
+        count_min, count_max = 0, 0
 
-            for item in edge_nodes:
-                count_min += item[min_value]
-                count_max += item[max_value]
+        for item in edge_nodes:
+            count_min += item[min_value]
+            count_max += item[max_value]
 
-            print(f"count_min: {count_min}, count_max: {count_max}")
+        print(f"count_min: {count_min}, count_max: {count_max}")
 
-            if count_max > count_min:
-                deleted_edge = min_value
-                print(f"deleted_edge: {deleted_edge}")
+        if count_max > count_min:
+            deleted_edge = min_value
+            print(f"deleted_edge: {deleted_edge}")
 
-            x_count = 0
-            z_count = 0
-            count = 0
-            for pop in result.population:
-                for coord in reversed(pop.list_of_coordinates):
-                    if edge == 'x':
-                        if coord[0] == deleted_edge:
-                            count += 1
-                            x_count += 1
-                            pop.list_of_coordinates.remove(coord)
-                    if edge == 'z':
-                        if coord[1] == deleted_edge:
-                            count += 1
-                            z_count += 1
-                            pop.list_of_coordinates.remove(coord)
-            print(f"x_count: {x_count}, z_count: {z_count}")
-            delete_counter = {'min_x': 0, 'max_x': 0, 'min_z': 0, 'max_z': 0}
+        x_count = 0
+        z_count = 0
+        count = 0
+        for pop in result.population:
+            for coord in reversed(pop.list_of_coordinates):
+                if edge == 'x':
+                    if coord[0] == deleted_edge:
+                        count += 1
+                        x_count += 1
+                        pop.list_of_coordinates.remove(coord)
+                if edge == 'z':
+                    if coord[1] == deleted_edge:
+                        count += 1
+                        z_count += 1
+                        pop.list_of_coordinates.remove(coord)
+        print(f"x_count: {x_count}, z_count: {z_count}")
+        delete_counter = {'min_x': 0, 'max_x': 0, 'min_z': 0, 'max_z': 0}
 
-            if edge == 'x':
-                if deleted_edge == min_value:
-                    delete_counter['min_x'] += count
-                else:
-                    delete_counter['max_x'] += count
-            elif edge == 'z':
-                if deleted_edge == min_value:
-                    delete_counter['min_z'] += count
-                else:
-                    delete_counter['max_z'] += count
-            return delete_counter
+        if edge == 'x':
+            if deleted_edge == min_value:
+                delete_counter['min_x'] += count
+            else:
+                delete_counter['max_x'] += count
+        elif edge == 'z':
+            if deleted_edge == min_value:
+                delete_counter['min_z'] += count
+            else:
+                delete_counter['max_z'] += count
+        return delete_counter
 
     def __print_modulo_n(self, n):
         print(f"width (X):{self.__max_x - self.__min_x}, height (Z): {self.__max_z - self.__min_z}")
