@@ -5,6 +5,7 @@ from type_ga.type_main import TypesGA
 from wfc.preprocessing.wfc_preprocessing import WFCPreprocessing as WFC_PP
 from builder.wfc_builder import WFCBuilder as WFCB
 from builder.surface_builder import SurfaceBuilder
+from final_touch.final_main import PrepareMap
 import minecraft_pb2_grpc
 import grpc
 import time
@@ -13,6 +14,7 @@ from block_file_loader import BlockFileLoader
 from map_variables import *
 import uuid
 from UserInputFetcher import fetch_user_integer
+
 
 class Main:
     global_dict_of_used_coordinates = {}
@@ -57,6 +59,13 @@ class Main:
         self.rollback(surface_dict=surface_dict)
         print("- - - - WFC RELATED GARBAGE STOPPED - - - -")
         # WFC End
+
+        # Final touch
+        # result = PrepareMap(surface_dict=surface_dict, fluid_set=set_of_fluids).run(blocked_coordinates={(0, 0)},
+        #                                                                             connection_points=[[(BOX_X_MIN, BOX_Z_MIN),
+        #                                                                                                 (BOX_X_MAX, BOX_Z_MAX)]])
+        # SurfaceBuilder().build_from_list_of_tuples(surface_dict=surface_dict, coordinates=result)
+        # self.rollback(surface_dict=surface_dict)
 
     def rollback(self, surface_dict):
         print("Reset surface? 1 or 2")

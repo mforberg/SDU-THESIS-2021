@@ -10,7 +10,7 @@ class SurfaceBuilder:
 
     def __init__(self):
         __options = [('grpc.max_send_message_length', 512 * 1024 * 1024),
-                   ('grpc.max_receive_message_length', 512 * 1024 * 1024)]
+                     ('grpc.max_receive_message_length', 512 * 1024 * 1024)]
         __channel = grpc.insecure_channel('localhost:5001', options=__options)
         self.client = minecraft_pb2_grpc.MinecraftServiceStub(__channel)
 
@@ -64,6 +64,14 @@ class SurfaceBuilder:
                 block.type = AIR
             if block.type in list_of_building_blocks:
                 block.type = GRASS
+            blocks.append(block)
+        self.client.spawnBlocks(Blocks(blocks=blocks))
+
+    def build_from_list_of_tuples(self, surface_dict: dict, coordinates: List[tuple]):
+        blocks = []
+        for value in coordinates:
+            block = copy.deepcopy(surface_dict[(value[0], value[1])]['block'])
+            block.type = COBBLESTONE
             blocks.append(block)
         self.client.spawnBlocks(Blocks(blocks=blocks))
 
