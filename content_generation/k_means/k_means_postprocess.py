@@ -94,7 +94,7 @@ def __create_solution_area_from_cluster(cluster: List[list], surface_dict: dict)
     total_y = 0
     for coordinate in cluster:
         x, z = coordinate[0], coordinate[1]
-        total_y += surface_dict[(x, z)]['y']
+        total_y += surface_dict[(x, z)].y
         if x < min_x:
             min_x = x
         elif x > max_x:

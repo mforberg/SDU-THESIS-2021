@@ -10,7 +10,7 @@ class SurfaceBuilder:
 
     def __init__(self):
         __options = [('grpc.max_send_message_length', 512 * 1024 * 1024),
-                   ('grpc.max_receive_message_length', 512 * 1024 * 1024)]
+                     ('grpc.max_receive_message_length', 512 * 1024 * 1024)]
         __channel = grpc.insecure_channel('localhost:5001', options=__options)
         self.client = minecraft_pb2_grpc.MinecraftServiceStub(__channel)
 
@@ -21,7 +21,7 @@ class SurfaceBuilder:
         for district in type_ga_result.population:
             current_building_block = list_of_building_blocks[district.type_of_district]
             for coordinate in district.list_of_coordinates:
-                block = copy.deepcopy(surface_dict[(coordinate[0], coordinate[1])]['block'])
+                block = copy.deepcopy(surface_dict[(coordinate[0], coordinate[1])].block)
                 block.type = current_building_block
                 blocks.append(block)
         self.client.spawnBlocks(Blocks(blocks=blocks))
@@ -32,7 +32,7 @@ class SurfaceBuilder:
         for tile in wfc_tiles:
             current_building_block = GLASS
             for coordinate in tile.nodes:
-                block = copy.deepcopy(surface_dict[(coordinate[0], coordinate[1])]['block'])
+                block = copy.deepcopy(surface_dict[(coordinate[0], coordinate[1])].block)
                 block.position.y += 1
                 block.type = current_building_block
                 blocks.append(block)
@@ -49,7 +49,7 @@ class SurfaceBuilder:
         for cluster in clusters.population:
             current_building_block = list_of_building_blocks.pop(0)
             for value in cluster.list_of_coordinates:
-                block = copy.deepcopy(surface_dict[(value[0], value[1])]['block'])
+                block = copy.deepcopy(surface_dict[(value[0], value[1])].block)
                 block.type = current_building_block
                 blocks.append(block)
         self.client.spawnBlocks(Blocks(blocks=blocks))
@@ -59,7 +59,7 @@ class SurfaceBuilder:
                                    FURNACE, EMERALD_BLOCK]
         blocks = []
         for value in surface_dict.values():
-            block = copy.deepcopy(value['block'])
+            block = copy.deepcopy(value.block)
             if block.type == SPONGE:
                 block.type = AIR
             if block.type in list_of_building_blocks:
@@ -67,10 +67,18 @@ class SurfaceBuilder:
             blocks.append(block)
         self.client.spawnBlocks(Blocks(blocks=blocks))
 
+    def build_from_list_of_tuples(self, surface_dict: dict, coordinates: List[tuple]):
+        blocks = []
+        for value in coordinates:
+            block = copy.deepcopy(surface_dict[(value[0], value[1])].block)
+            block.type = COBBLESTONE
+            blocks.append(block)
+        self.client.spawnBlocks(Blocks(blocks=blocks))
+
     def grass_surface(self, surface_dict: dict):
         blocks = []
         for value in surface_dict.values():
-            block = copy.deepcopy(value['block'])
+            block = copy.deepcopy(value.block)
             if block.type in FLUID_SET:
                 continue
             block.type = GRASS
