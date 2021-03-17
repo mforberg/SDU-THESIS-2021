@@ -38,8 +38,8 @@ class AStar:
 
     def calculate_path_cost(self, current_point: tuple, to_point: tuple) -> float:
         cost = 1
-        cost += 5 * abs(self.surface_dict[current_point]['y'] - self.surface_dict[to_point]['y'])
-        if self.surface_dict[to_point]['type'] in self.fluid_set:
+        cost += 5 * abs(self.surface_dict[current_point].y - self.surface_dict[to_point].y)
+        if self.surface_dict[to_point].block_type in self.fluid_set:
             cost += 5
         return cost
 

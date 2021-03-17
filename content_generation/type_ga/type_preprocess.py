@@ -31,7 +31,7 @@ def __find_amount_of_water_stone_and_wood(area: SolutionArea, fluid_set: set, su
                 list_of_water.append((x, z))
             else:
                 if (x, z) in surface_dict:
-                    block_type = surface_dict[(x, z)]['type']
+                    block_type = surface_dict[(x, z)].block_type
                     if block_type == STONE or block_type == LOG or block_type == LOG2:
                         list_of_resources.append((x, z))
     return PreProcessData(water_list=list_of_water, resource_list=list_of_resources)

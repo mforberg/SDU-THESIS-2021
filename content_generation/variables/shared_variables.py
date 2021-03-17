@@ -1,6 +1,5 @@
 from typing import List
 import copy
-from pprint import pprint
 import uuid
 import math
 
@@ -38,10 +37,10 @@ class SolutionArea:
         return math.sqrt((math.pow(x - self.mass_coordinate['x'], 2) + math.pow(z - self.mass_coordinate['z'], 2)))
 
     def check_if_neighbor_to_coordinate(self, x: int, z: int, surface_dict: dict) -> bool:
-        y = surface_dict[(x, z)]['y']
+        y = surface_dict[(x, z)].y
         for coordinate in self.list_of_coordinates:
             amount = abs(coordinate[0] - x) + abs(coordinate[1] - z)
-            if amount <= 1 and abs(surface_dict[(coordinate[0], coordinate[1])]['y'] - y) <= 1:
+            if amount <= 1 and abs(surface_dict[(coordinate[0], coordinate[1])].y - y) <= 1:
                 return True
         return False
 
@@ -73,7 +72,7 @@ class SolutionArea:
     def recalculate_height(self, surface_dict: dict):
         total_y = 0
         for coordinate in self.list_of_coordinates:
-            total_y += surface_dict[coordinate]['y']
+            total_y += surface_dict[coordinate].y
         self.height = total_y / len(self.list_of_coordinates)
 
 
@@ -96,3 +95,11 @@ class SolutionGA:
 
     def __repr__(self):
         return f"<{self.__class__.__name__} ({hex(id(self))}): {self.fitness:.2f}, Population:\n {self.population}>"
+
+
+class SurfaceDictionaryValue:
+
+    def __init__(self, y: int, block_type: int, block):
+        self.y = y
+        self.block_type = block_type
+        self.block = block

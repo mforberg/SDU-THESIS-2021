@@ -62,9 +62,9 @@ class MapAnalysis:
             # block_dict[x, y, z] = {"type": block.type}
             if block.type not in SKIP_SET:
                 if (x, z) not in surface_dict:
-                    surface_dict[x, z] = {"y": y, "type": block.type, "block": block}
-                elif surface_dict[x, z]["y"] < y:
-                    surface_dict[x, z] = {"y": y, "type": block.type, "block": block}
+                    surface_dict[x, z] = SurfaceDictionaryValue(y=y, block_type=block.type, block=block)
+                elif surface_dict[x, z].y < y:
+                    surface_dict[x, z] = SurfaceDictionaryValue(y=y, block_type=block.type, block=block)
         return {'surface_dict': surface_dict, 'block_dict': block_dict}
 
     def find_areas_for_districts(self, surface_dict: dict) -> (SolutionGA, set):
@@ -89,7 +89,7 @@ class MapAnalysis:
         min_x = max_x = total_x = block_x
         min_z = max_z = total_z = block_z
         amount = 1
-        height = surface_dict[block_x, block_z]['y']
+        height = surface_dict[block_x, block_z].y
         checked_neighbors = []
         current_area = []
         nodes_to_be_checked.append((block_x, block_z))
@@ -97,12 +97,12 @@ class MapAnalysis:
             current_node = nodes_to_be_checked.pop()
             x = current_node[0]
             z = current_node[1]
-            if surface_dict[current_node]['type'] not in FLUID_SET:
+            if surface_dict[current_node].block_type not in FLUID_SET:
                 current_area.append(current_node)
                 neighbors = self.get_neighbors(surface_dict, x, z)
                 for neighbor in neighbors:
                     if neighbor not in checked_nodes and neighbor not in checked_neighbors \
-                            and surface_dict[current_node]['y'] == surface_dict[neighbor]['y']:
+                            and surface_dict[current_node].y == surface_dict[neighbor].y:
                         checked_neighbors.append(neighbor)
                         nodes_to_be_checked.append(neighbor)
                         amount += 1
