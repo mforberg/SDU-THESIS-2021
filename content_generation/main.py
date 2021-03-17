@@ -41,6 +41,7 @@ class Main:
 
         #  Type GA
         first = time.time()
+        # result[0] all tiles, result[1] only tiles associated with solution
         result = TypesGA().run(surface_dict=surface_dict, clusters=clusters,
                                global_district_types_dict=self.global_dict_of_types, fluid_set=set_of_fluids)
         print(f"TYPE GA: {time.time()-first}")
@@ -54,6 +55,8 @@ class Main:
         result = WFC_PP().create_tiles(result=result, tile_size=3, surface_dict=surface_dict)
         WFCB().build_tiles(surface_dict=surface_dict, tiles=result)
         SurfaceBuilder().build_wfc_glass_layer(surface_dict, result[1])
+        for tile in result[1][:5]:
+            print(tile.print_neighbors())
         self.rollback(surface_dict=surface_dict)
         print("- - - - WFC RELATED GARBAGE STOPPED - - - -")
         # WFC End
