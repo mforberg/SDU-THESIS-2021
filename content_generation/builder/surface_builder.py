@@ -8,6 +8,9 @@ from variables.wfc_tile import Tile
 
 class SurfaceBuilder:
 
+    anti_glass_blocks = []
+    anti_trash_blocks = []
+
     def __init__(self):
         __options = [('grpc.max_send_message_length', 512 * 1024 * 1024),
                      ('grpc.max_receive_message_length', 512 * 1024 * 1024)]
@@ -37,10 +40,35 @@ class SurfaceBuilder:
                 block.type = current_building_block
                 blocks.append(block)
         self.client.spawnBlocks(Blocks(blocks=blocks))
-        x = input("Please wait :)")
         for block in blocks:
             block.type = AIR
+        self.anti_glass_blocks = blocks
+
+    def delete_wfc_glass_layer(self):
+        self.client.spawnBlocks(Blocks(blocks=self.anti_glass_blocks))
+
+    def build_wfc_trash_layer(self, surface_dict: dict, wfc_tiles: List[Tile]):
+        list_of_building_blocks = [DIAMOND_ORE, COAL_ORE, GOLD_BLOCK, OBSIDIAN, ICE, NETHER_BRICK, SANDSTONE, WOOL,
+                                   FURNACE, EMERALD_BLOCK, DIAMOND_BLOCK]
+        blocks = []
+        counter = 0
+        for tile in wfc_tiles:
+            if counter >= len(list_of_building_blocks):
+                counter = 0
+            current_building_block = list_of_building_blocks[counter]
+            for coordinate in tile.nodes:
+                block = copy.deepcopy(surface_dict[(coordinate[0], coordinate[1])].block)
+                block.position.y += 1
+                block.type = current_building_block
+                blocks.append(block)
+            counter += 1
         self.client.spawnBlocks(Blocks(blocks=blocks))
+        for block in blocks:
+            block.type = AIR
+        self.anti_trash_blocks = blocks
+
+    def delete_wfc_trash_layer(self):
+        self.client.spawnBlocks(Blocks(blocks=self.anti_trash_blocks))
 
     def build_clusters(self, surface_dict: dict, clusters: SolutionGA):
         list_of_building_blocks = [DIAMOND_ORE, COAL_ORE, GOLD_BLOCK, OBSIDIAN, ICE, NETHER_BRICK, SANDSTONE, WOOL,
