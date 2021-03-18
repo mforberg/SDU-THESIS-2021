@@ -40,7 +40,6 @@ class WFCPreprocessing:
         return all_tiles
 
     def __generate_tileset(self, n, coordinates):
-        all_tiles = []
         solution_tiles = []
         existing_nodes = {}
 
@@ -48,10 +47,9 @@ class WFCPreprocessing:
         # +2: +1 because range is not inclusive, and also +1 to ensure last row of tiles is created
         for x in range(self.__min_x, (self.__max_x - n) + 2, n):
             for z in range(self.__min_z, (self.__max_z - n) + 2, n):
-                nodes = []
 
                 # Create NxN nodes
-
+                nodes = []
                 for x2 in range(0, n):
                     for z2 in range(0, n):
                         x1 = x + x2
@@ -59,7 +57,11 @@ class WFCPreprocessing:
                         nodes.append((x1, z1))
 
                 tile = Tile(nodes)
-                existing_nodes[x, z] = tile
+
+                # Add tile if any node is part of solution space
+                if set(nodes).intersection(coordinates):
+                    existing_nodes[x, z] = tile
+                    solution_tiles.append(tile)
 
                 # TODO: Add neighbors
                 # TODO: Randomly adds none object?
@@ -72,17 +74,9 @@ class WFCPreprocessing:
                     if (neighbor_x, neighbor_z) in existing_nodes:
                         tile.add_neighbor(existing_nodes[neighbor_x, neighbor_z])
 
-                # Add tile if any node is part of solution space
-                if set(nodes).intersection(coordinates):
-                    solution_tiles.append(tile)
 
-                # Add tile to global list
-                all_tiles.append(tile)
-
-
-        print(f"intersection: {len(solution_tiles)}")
-        print(f"old: {len(all_tiles)}")
-        return all_tiles, solution_tiles
+        print(f"Buildable tile count: {len(solution_tiles)}")
+        return solution_tiles
 
     def __prune_edges(self, n: int, result: SolutionGA):
         dicts = []

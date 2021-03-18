@@ -18,12 +18,14 @@ class Tile:
             other.neighbors.append(self)
 
     def print_neighbors(self):
-        print(f"{self.id} is neighbor to:")
-        print(self.nodes)
         print("- - - - - - -")
+        print(f"{self.id} has nodes:")
+        print(self.nodes)
+        print(f"and has the following neighbors:")
         for neighbor in self.neighbors:
             print(f"ID: {neighbor.id}")
             print(neighbor.nodes)
+        print("- - - - - - -")
 
     def __repr__(self):
         return f"<{self.__class__.__name__} ({hex(id(self))}): {self.id[:8]}, Nodes:\n {self.nodes}>"
