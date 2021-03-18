@@ -103,3 +103,4 @@ class SurfaceDictionaryValue:
         self.y = y
         self.block_type = block_type
         self.block = block
+

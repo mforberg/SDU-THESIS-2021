@@ -41,6 +41,7 @@ class Main:
 
         self.rollback(surface_dict=surface_dict)
 
+
         #  Type GA
         first = time.time()
         result = TypesGA().run(surface_dict=surface_dict, clusters=clusters,

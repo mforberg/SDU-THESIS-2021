@@ -1,4 +1,4 @@
-from variables.shared_variables import *
+from variables.k_means_variables import *
 # pip install -U scikit-learn
 from sklearn.cluster import KMeans
 # https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html
@@ -13,11 +13,14 @@ class KMeansClustering:
     minimum_length_of_centroid = 0
 
     def run(self, first_ga_result: SolutionGA, surface_dict: dict) -> SolutionGA:
-        converted_coordinates = self.__combine_the_lists_and_convert_to_list_of_list(first_ga_result)
-        centroids, centroid_centers = self.__find_centroids(list_of_points=converted_coordinates)
-        self.__calculate_minimum_length_of_centroid(centroids=centroids)
-        self.__combine_small_centroid_to_others(centroids=centroids, centroid_centers=centroid_centers)
-        return run_postprocess(centroids=centroids, surface_dict=surface_dict)
+        solution_ga = first_ga_result
+        for _ in range(0, K_MEANS_RUNS):
+            converted_coordinates = self.__combine_the_lists_and_convert_to_list_of_list(solution_ga)
+            centroids, centroid_centers = self.__find_centroids(list_of_points=converted_coordinates)
+            self.__calculate_minimum_length_of_centroid(centroids=centroids)
+            self.__combine_small_centroid_to_others(centroids=centroids, centroid_centers=centroid_centers)
+            solution_ga = run_postprocess(centroids=centroids, surface_dict=surface_dict)
+        return solution_ga
 
     def __combine_small_centroid_to_others(self, centroids: List[List[list]], centroid_centers: List[list]):
         skip_indexes = set()
@@ -80,21 +83,20 @@ class KMeansClustering:
 
     def __elbow_method(self, list_of_points: List[list]) -> int:
         wcss = []  # Within-Cluster-Sum-of-Squares
-        max_cluster = 11
-        if len(list_of_points) < max_cluster:
+        if len(list_of_points) < K_MEANS_MAX_CLUSTERS:
             max_cluster = len(list_of_points)
-        for i in range(1, max_cluster+1):  # 1 inclusive to 11
-            kmeans = KMeans(n_clusters=i)
-            kmeans = kmeans.fit(list_of_points)
-            wcss.append(kmeans.inertia_)
+        for i in range(1, K_MEANS_MAX_CLUSTERS+1):  # 1 inclusive to 11
+            k_means = KMeans(n_clusters=i)
+            k_means = k_means.fit(list_of_points)
+            wcss.append(k_means.inertia_)
         p1 = ([1, wcss[0]])
         p1 = np.asarray(p1)
-        p2 = np.asarray([max_cluster, wcss[max_cluster-1]])
+        p2 = np.asarray([K_MEANS_MAX_CLUSTERS, wcss[K_MEANS_MAX_CLUSTERS-1]])
         p2 = np.asarray(p2)
 
         current_max_distance = 0
         current_n = 0
-        for i in range(0, max_cluster-1):
+        for i in range(0, K_MEANS_MAX_CLUSTERS-1):
             p3 = ([i + 1, wcss[i]])
             p3 = np.asarray(p3)
             d = linalg.norm(np.cross(p2 - p1, p1 - p3)) / linalg.norm(p2 - p1)
