@@ -54,7 +54,7 @@ class BlockFileLoader:
                 pkl_files.append(file)
         block_file = None
         if len(pkl_files) == 1:
-            block_file = pkl_files[0]
+            block_file = open(f'{pkl_files[0]}', 'rb')
         else:
             stopper = fetch_user_integer()
             if stopper <= 0:
