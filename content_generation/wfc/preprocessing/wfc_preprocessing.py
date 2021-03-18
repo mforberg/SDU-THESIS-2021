@@ -12,94 +12,103 @@ class WFCPreprocessing:
         self.__max_x, self.__max_z = -9999999, -9999999
 
     def create_tiles(self, result: SolutionGA, tile_size: int, surface_dict: dict):
-
+        # TODO: Remove print statements when code is functional
         n = tile_size
 
+        # Set min/max x/z values of all coordinates in full solution
         self.__set_min_max_values(self.__get_min_max_values(result))
         self.__print_modulo_n(n)
 
-        # TODO: If you check min / max x / z, and you know the edge with most duplicates (e.g. max_x)
-        #  you can find direction by adding / subtracting 1 to x by looking at opposite value (e.g. min_X)
-
+        # Prune edges if delta_x or delta_z mod n is not 0 min/max z/x has to be a rectangle dividable by n
         print(f"(FIRST) max_x: {self.__max_x} min_x: {self.__min_x} max_z: {self.__max_z} min_z: {self.__min_z}")
         self.__prune_edges(n, result)
         self.__set_min_max_values(self.__get_min_max_values(result))
         self.__print_modulo_n(n)
 
+        # Create tileset for solution
         total_coordinates = []
         for solution in result.population:
             total_coordinates.extend(solution.list_of_coordinates)
         total_set_coordinates = set(total_coordinates)
 
-        all_tiles = self.__generate_tileset(n, total_set_coordinates)
+        solution_tiles = self.__generate_tileset(n, total_set_coordinates)
+
+        # TODO: Assign tiles to their respective clusters
+        clustered_tiles = self.__clustered_tileset(solution_tiles)
+
+        # TODO: Normalize cluster areas to same height
+        self.__normalize_height(clustered_tiles, surface_dict)
 
         print(((self.__max_x - self.__min_x) / n) * ((self.__max_z - self.__min_z) / n))
-        print(f"N={n}, min_x-max_x={self.__max_x - self.__min_x}, delta_x/n={(self.__max_x - self.__min_x) / n}")
+        print(f"N={n}, max_x-min_x={self.__max_x - self.__min_x}, delta_x%n={(self.__max_x - self.__min_x + 1) % n}")
         print(f"(SECOND) max_x: {self.__max_x} min_x: {self.__min_x} max_z: {self.__max_z} min_z: {self.__min_z}")
 
-        return all_tiles
+        return solution_tiles
+
+    def __clustered_tileset(self, solution_tiles):
+        pass
+
+    def __normalize_height(self, clustered_tiles, surface_dict):
+        pass
 
     def __generate_tileset(self, n, coordinates):
-        all_tiles = []
-        all_tiles2 = []
-        utilized_coordinates = set()
-        # TODO: Only create tiles where coordinates are used in solution, currently tiles are created globally
-        # TODO: Create neighbors for a tile
-        for x in range(self.__min_x, (self.__max_x - n) + 2, n): # + 2 because range no inclusive and because +1 to ensure last 3 blocks are made into tiles
-            for z in range(self.__min_z, (self.__max_z - n) + 2, n):
-                nodes = []
+        solution_tiles = []
+        existing_nodes = {}
 
+        # -n: Subtract to not go out of bounds, as the LAST tiles in a row/column will be at max_x - n
+        # +2: +1 because range is not inclusive, and also +1 to ensure last row of tiles is created
+        for x in range(self.__min_x, (self.__max_x - n) + 2, n):
+            for z in range(self.__min_z, (self.__max_z - n) + 2, n):
+
+                # Create NxN nodes
+                nodes = []
                 for x2 in range(0, n):
                     for z2 in range(0, n):
                         x1 = x + x2
                         z1 = z + z2
                         nodes.append((x1, z1))
-                set1 = set(nodes)
-                if set1.intersection(coordinates):
-                    temp2 = Tile(nodes)
-                    all_tiles2.append(temp2)
-                temp = Tile(nodes)
-                self.__add_neighbors(temp)
-                all_tiles.append(temp)
-        print(f"intersection: {len(all_tiles2)}")
-        print(f"old: {len(all_tiles)}")
-        return all_tiles, all_tiles2
 
-    def __add_neighbors(self, tile: Tile):
-        pass
+                tile = Tile(nodes)
+
+                # Add tile if any node is part of solution space
+                if set(nodes).intersection(coordinates):
+                    existing_nodes[x, z] = tile
+                    solution_tiles.append(tile)
+
+                # Add neighbors to tiles
+                neighbor_directions = [(0, 3), (0, -3), (3, 0), (-3, 0)]
+                for direction in neighbor_directions:
+                    neighbor_x = x + direction[0]
+                    neighbor_z = z + direction[1]
+
+                    if (neighbor_x, neighbor_z) in existing_nodes:
+                        tile.add_neighbor(existing_nodes[neighbor_x, neighbor_z])
+
+        print(f"Buildable tile count: {len(solution_tiles)}")
+        return solution_tiles
 
     def __prune_edges(self, n: int, result: SolutionGA):
         dicts = []
-        delta_x = self.__max_x - self.__min_x + 1
-        delta_z = self.__max_z - self.__min_z + 1
-        x_mod_n = delta_x % n
-        z_mod_n = delta_z % n
-        print(f"delta_x: {delta_x}, dX%N: {delta_x % n}")
-        print(f"delta_z: {delta_z}, dZ%N: {delta_z % n}")
-        while x_mod_n != 0:
-            print(x_mod_n)
-            print("x axis pruning")
+        delta_x_mod_n = (self.__max_x - self.__min_x + 1) % n
+        delta_z_mod_n = (self.__max_z - self.__min_z + 1) % n
+        while delta_x_mod_n != 0:
             edge_nodes = self.__find_edge_node_count(result)
             dicts.append(self.__prune_single_edge(edge_nodes, n, result, self.__min_x, self.__max_x, 'x'))
             self.__set_min_max_values(self.__get_min_max_values(result))
-            x_mod_n -= 1
-        while z_mod_n != 0:
-            print(z_mod_n)
-            print("z axis pruning")
+            delta_x_mod_n -= 1
+        while delta_z_mod_n != 0:
             edge_nodes = self.__find_edge_node_count(result)
             dicts.append(self.__prune_single_edge(edge_nodes, n, result, self.__min_z, self.__max_z, 'z'))
             self.__set_min_max_values(self.__get_min_max_values(result))
-            z_mod_n -= 1
+            delta_z_mod_n -= 1
+        self.__set_min_max_values(self.__get_min_max_values(result))
         delete_counter = {'min_x': 0, 'max_x': 0, 'min_z': 0, 'max_z': 0}
-        # print(len(dicts))
-        # for d in dicts:
-        #     print(len(d))
-        # x = input("hands up")
-        # for d in dicts:
-        #     for key in d:
-        #         value = d[key]
-        #         delete_counter[key] += value
-        # print(f"deleted nodes: {delete_counter}")
+
+        for d in dicts:
+            for key in d:
+                value = d[key]
+                delete_counter[key] += value
+        print(f"deleted nodes: {delete_counter}")
 
     def __prune_single_edge(self, edge_nodes, n, result, min_value, max_value, edge: str) -> dict:
         deleted_edge = max_value
@@ -109,30 +118,22 @@ class WFCPreprocessing:
             count_min += item[min_value]
             count_max += item[max_value]
 
-        print(f"count_min: {count_min}, count_max: {count_max}")
-
         if count_max > count_min:
             deleted_edge = min_value
-            print(f"deleted_edge: {deleted_edge}")
 
-        x_count = 0
-        z_count = 0
         count = 0
         for pop in result.population:
             for coord in reversed(pop.list_of_coordinates):
                 if edge == 'x':
                     if coord[0] == deleted_edge:
                         count += 1
-                        x_count += 1
                         pop.list_of_coordinates.remove(coord)
                 if edge == 'z':
                     if coord[1] == deleted_edge:
                         count += 1
-                        z_count += 1
                         pop.list_of_coordinates.remove(coord)
-        print(f"x_count: {x_count}, z_count: {z_count}")
-        delete_counter = {'min_x': 0, 'max_x': 0, 'min_z': 0, 'max_z': 0}
 
+        delete_counter = {'min_x': 0, 'max_x': 0, 'min_z': 0, 'max_z': 0}
         if edge == 'x':
             if deleted_edge == min_value:
                 delete_counter['min_x'] += count

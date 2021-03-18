@@ -47,13 +47,19 @@ class BlockFileLoader:
 
     def file_selector(self, dir_save_file):
         dirs = os.listdir(dir_save_file)
+        pkl_files = []
         for index, file in enumerate(dirs):
             if file.endswith('.pkl'):
                 print(f'{index+1}: {file}')
-        stopper = fetch_user_integer()
-        if stopper <= 0:
-            stopper = stopper + 1
-        block_file = open(f'{save_file_dir}{dirs[stopper-1]}', 'rb')
+                pkl_files.append(file)
+        block_file = None
+        if len(pkl_files) == 1:
+            block_file = open(f'{pkl_files[0]}', 'rb')
+        else:
+            stopper = fetch_user_integer()
+            if stopper <= 0:
+                stopper = stopper + 1
+            block_file = open(f'{save_file_dir}{dirs[stopper-1]}', 'rb')
         return block_file
 
     def load_from_pkl_file(self, unpickled_block_file):
