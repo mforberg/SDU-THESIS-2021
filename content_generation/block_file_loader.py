@@ -52,9 +52,8 @@ class BlockFileLoader:
             if file.endswith('.pkl'):
                 print(f'{index+1}: {file}')
                 pkl_files.append(file)
-        block_file = None
         if len(pkl_files) == 1:
-            block_file = open(f'{pkl_files[0]}', 'rb')
+            block_file = open(f'{save_file_dir}{pkl_files[0]}', 'rb')
         else:
             stopper = fetch_user_integer()
             if stopper <= 0:
