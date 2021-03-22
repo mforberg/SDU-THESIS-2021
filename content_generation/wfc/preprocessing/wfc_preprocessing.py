@@ -3,6 +3,7 @@ from typing import List
 from shared_variables import SolutionGA
 from wfc_tile import Tile
 import sys
+from pprint import pprint
 
 class WFCPreprocessing:
 
@@ -10,10 +11,12 @@ class WFCPreprocessing:
         # this is needed to draw grid over the whole solution so that it can be divided into tiles
         self.__min_x, self.__min_z = 9999999, 9999999
         self.__max_x, self.__max_z = -9999999, -9999999
+        self.n = 2
 
     def create_tiles(self, result: SolutionGA, tile_size: int, surface_dict: dict):
         # TODO: Remove print statements when code is functional
         n = tile_size
+        self.n = tile_size
 
         # Set min/max x/z values of all coordinates in full solution
         self.__set_min_max_values(self.__get_min_max_values(result))
@@ -43,15 +46,35 @@ class WFCPreprocessing:
         print(f"N={n}, max_x-min_x={self.__max_x - self.__min_x}, delta_x%n={(self.__max_x - self.__min_x + 1) % n}")
         print(f"(SECOND) max_x: {self.__max_x} min_x: {self.__min_x} max_z: {self.__max_z} min_z: {self.__min_z}")
 
-        return solution_tiles
+        return solution_tiles, clustered_tiles
 
     def __clustered_tileset(self, solution_tiles, result):
         clustered_tile_list = []
         coordinate_cluster_dict = {}
+        coordinate_cluster_list = []
+        build_list = []
+
         for i in range(len(result.population)):
+            temp = set()
             for coord in result.population[i].list_of_coordinates:
                 coordinate_cluster_dict[coord] = i
-        print(coordinate_cluster_dict)
+                temp.add(coord)
+            coordinate_cluster_list.append(temp)
+        test = []
+        count = 0
+        for tile in solution_tiles:
+            counter_dict = {n: 0 for n in range(len(coordinate_cluster_list))}
+
+            for coord in tile.nodes:
+                for i in range(len(coordinate_cluster_list)):
+                    if coord in coordinate_cluster_list[i]:
+                        counter_dict[i] += 1
+            if sum(counter_dict.values()) < (self.n * self.n):
+                count += 1
+                build_list.append(tile)
+            test.append(counter_dict)
+        print(f"count: {count}")
+        return build_list
 
 
     def __normalize_height(self, clustered_tiles, surface_dict):
@@ -68,10 +91,10 @@ class WFCPreprocessing:
 
                 # Create NxN nodes
                 nodes = []
-                for x2 in range(0, n):
-                    for z2 in range(0, n):
-                        x1 = x + x2
-                        z1 = z + z2
+                for x_range_n in range(0, n):
+                    for z_range_n in range(0, n):
+                        x1 = x + x_range_n
+                        z1 = z + z_range_n
                         nodes.append((x1, z1))
 
                 tile = Tile(nodes)
@@ -90,7 +113,6 @@ class WFCPreprocessing:
                     if (neighbor_x, neighbor_z) in existing_nodes:
                         tile.add_neighbor(existing_nodes[neighbor_x, neighbor_z])
 
-        print(f"Buildable tile count: {len(solution_tiles)}")
         return solution_tiles
 
     def __prune_edges(self, n: int, result: SolutionGA):
