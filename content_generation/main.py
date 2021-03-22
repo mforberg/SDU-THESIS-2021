@@ -41,6 +41,7 @@ class Main:
 
         self.rollback(surface_dict=surface_dict)
 
+
         #  Type GA
         first = time.time()
         # result[0] all tiles, result[1] only tiles associated with solution

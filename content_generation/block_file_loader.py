@@ -51,9 +51,8 @@ class BlockFileLoader:
             if file.endswith('.pkl'):
                 print(f'{index+1}: {file}')
                 pkl_files.append(file)
-        block_file = None
         if len(pkl_files) == 1:
-            block_file = open(f'{pkl_files[0]}', 'rb')
+            block_file = open(f'{save_file_dir}{pkl_files[0]}', 'rb')
         else:
             print('What save file do you want to use?')
             print('Use the number corresponding to file')

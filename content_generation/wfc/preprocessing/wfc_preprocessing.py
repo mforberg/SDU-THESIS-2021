@@ -34,7 +34,7 @@ class WFCPreprocessing:
         solution_tiles = self.__generate_tileset(n, total_set_coordinates)
 
         # TODO: Assign tiles to their respective clusters
-        clustered_tiles = self.__clustered_tileset(solution_tiles)
+        clustered_tiles = self.__clustered_tileset(solution_tiles, result)
 
         # TODO: Normalize cluster areas to same height
         self.__normalize_height(clustered_tiles, surface_dict)
@@ -45,8 +45,14 @@ class WFCPreprocessing:
 
         return solution_tiles
 
-    def __clustered_tileset(self, solution_tiles):
-        pass
+    def __clustered_tileset(self, solution_tiles, result):
+        clustered_tile_list = []
+        coordinate_cluster_dict = {}
+        for i in range(len(result.population)):
+            for coord in result.population[i].list_of_coordinates:
+                coordinate_cluster_dict[coord] = i
+        print(coordinate_cluster_dict)
+
 
     def __normalize_height(self, clustered_tiles, surface_dict):
         pass
