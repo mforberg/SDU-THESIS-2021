@@ -15,8 +15,7 @@ class BlockFileLoader:
             keyOne = fetch_user_integer()
             #Should the user want to use a saved file
             if keyOne == 1:
-                print('What save file do you want to use?')
-                print('Use the number corresponding to file')
+
                 block_file = self.file_selector(save_file_dir)
                 unpickled_block_file = pickle.load(block_file)
                 self.load_from_pkl_file(unpickled_block_file)
@@ -55,6 +54,8 @@ class BlockFileLoader:
         if len(pkl_files) == 1:
             block_file = open(f'{save_file_dir}{pkl_files[0]}', 'rb')
         else:
+            print('What save file do you want to use?')
+            print('Use the number corresponding to file')
             stopper = fetch_user_integer()
             if stopper <= 0:
                 stopper = stopper + 1
