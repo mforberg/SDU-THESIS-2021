@@ -3,7 +3,7 @@ from variables.map_variables import *
 import grpc
 import copy
 from shared_variables import SolutionGA
-from variables.wfc_tile import Tile
+from variables.wfc_variables import Tile
 
 
 class SurfaceBuilder:

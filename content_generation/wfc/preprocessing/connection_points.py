@@ -1,4 +1,4 @@
-from wfc_tile import *
+from wfc_variables import *
 import math
 
 
