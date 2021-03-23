@@ -10,6 +10,7 @@ class SurfaceBuilder:
 
     anti_glass_blocks = []
     anti_trash_blocks = []
+    anti_emerald_block = []
 
     def __init__(self):
         __options = [('grpc.max_send_message_length', 512 * 1024 * 1024),
@@ -43,6 +44,24 @@ class SurfaceBuilder:
         for block in blocks:
             block.type = AIR
         self.anti_glass_blocks = blocks
+
+    def build_wfc_poop_layer(self, surface_dict: dict, wfc_tiles: List[Tile]):
+
+        blocks = []
+        for tile in wfc_tiles:
+            current_building_block = EMERALD_BLOCK
+            for coordinate in tile.nodes:
+                block = copy.deepcopy(surface_dict[(coordinate[0], coordinate[1])].block)
+                block.position.y += 2
+                block.type = current_building_block
+                blocks.append(block)
+        self.client.spawnBlocks(Blocks(blocks=blocks))
+        for block in blocks:
+            block.type = AIR
+        self.anti_emerald_blocks = blocks
+
+    def delete_wfc_poop_layer(self):
+        self.client.spawnBlocks(Blocks(blocks=self.anti_emerald_blocks))
 
     def delete_wfc_glass_layer(self):
         self.client.spawnBlocks(Blocks(blocks=self.anti_glass_blocks))

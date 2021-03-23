@@ -55,13 +55,16 @@ class Main:
 
         # WFC Start
         print("- - - - WFC RELATED GARBAGE KEEP SCROLLING - - - -")
-        result = WFC_PP().create_tiles(result=result, tile_size=3, surface_dict=surface_dict)
-        WFCB().build_tiles(surface_dict=surface_dict, tiles=result)
+        result = WFC_PP().create_tiles(result=result, tile_size=2, surface_dict=surface_dict)
+        WFCB().build_tiles(surface_dict=surface_dict, tiles=result[0])
         SFB = SurfaceBuilder()
-        #SFB.build_wfc_glass_layer(surface_dict, result)
-        SFB.build_wfc_trash_layer(surface_dict, result)
-        #SFB.delete_wfc_glass_layer()
-        SFB.delete_wfc_trash_layer()
+        SFB.build_wfc_glass_layer(surface_dict, result[0])
+        SFB.build_wfc_poop_layer(surface_dict, result[1])
+        #SFB.build_wfc_trash_layer(surface_dict, result[0])
+        x = input("Please hold xd")
+        SFB.delete_wfc_glass_layer()
+        SFB.delete_wfc_poop_layer()
+        #SFB.delete_wfc_trash_layer()
         self.rollback(surface_dict=surface_dict)
         print("- - - - WFC RELATED GARBAGE STOPPED - - - -")
         # WFC End
