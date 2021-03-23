@@ -38,3 +38,22 @@ class Tile:
 
     def __ne__(self, other):
         return self.id is not other.id
+
+
+class Cluster:
+
+    def __init__(self, tiles: List[Tile]):
+        self.id: str = str(uuid4())
+        self.tiles = tiles
+
+    def __repr__(self):
+        return f"<{self.__class__.__name__} ({hex(id(self))}): ID {self.id[:8]}, Tile Count: {len(self.tiles)})"
+
+    def __hash__(self):
+        return hash(self.id)
+
+    def __eq__(self, other):
+        return self.id is other.id
+
+    def __ne__(self, other):
+        return self.id is not other.id

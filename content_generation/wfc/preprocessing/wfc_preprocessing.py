@@ -1,7 +1,7 @@
 import time
 from typing import List
 from shared_variables import SolutionGA
-from wfc_tile import Tile
+from wfc_variables import Tile, Cluster
 import sys
 from pprint import pprint
 
@@ -49,7 +49,7 @@ class WFCPreprocessing:
         return solution_tiles, clustered_tiles
 
     def __clustered_tileset(self, solution_tiles, result):
-        clustered_tile_list = []
+        cluster_list_with_neighbors = [Cluster([]) for i in range(len(result.population))]
         coordinate_cluster_dict = {}
         coordinate_cluster_list = []
         build_list = []
@@ -60,8 +60,7 @@ class WFCPreprocessing:
                 coordinate_cluster_dict[coord] = i
                 temp.add(coord)
             coordinate_cluster_list.append(temp)
-        test = []
-        count = 0
+
         for tile in solution_tiles:
             counter_dict = {n: 0 for n in range(len(coordinate_cluster_list))}
 
@@ -70,11 +69,11 @@ class WFCPreprocessing:
                     if coord in coordinate_cluster_list[i]:
                         counter_dict[i] += 1
             if sum(counter_dict.values()) < (self.n * self.n):
-                count += 1
                 build_list.append(tile)
-            test.append(counter_dict)
-        print(f"count: {count}")
-        return build_list
+            max_key = max(counter_dict, key=counter_dict.get)
+            cluster_list_with_neighbors[max_key].tiles.append(tile)
+
+        return build_list, cluster_list_with_neighbors
 
 
     def __normalize_height(self, clustered_tiles, surface_dict):
