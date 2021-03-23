@@ -2,10 +2,10 @@ from map_variables import *
 import os.path
 import pickle
 import map_analysis
-from util.UserInputFetcher import fetch_user_integer
+from UserInputFetcher import fetch_user_integer
 import UserInputFetcher
 
-from util.UserInputFetcher import fetch_user_integer_with_limit
+from UserInputFetcher import fetch_user_integer_with_limit
 
 
 class BlockFileLoader:
@@ -51,13 +51,15 @@ class BlockFileLoader:
         pkl_files = []
         for index, file in enumerate(dirs):
             if file.endswith('.pkl'):
-                print(f'{index+1}: {file}')
                 pkl_files.append(file)
         if len(pkl_files) == 1:
+            print(f"----currently using file {pkl_files}----")
             block_file = open(f'{save_file_dir}{pkl_files[0]}', 'rb')
         else:
             print('What save file do you want to use?')
             print('Use the number corresponding to file')
+            for index, pkl in enumerate(pkl_files):
+                print(f"{index}: {pkl}")
             stopper = fetch_user_integer_with_limit(len(pkl_files))
             if stopper <= 0:
                 stopper = stopper + 1

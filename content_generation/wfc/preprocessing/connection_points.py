@@ -4,15 +4,16 @@ import math
 
 class ConnectionPoints:
 
-    def __init__(self, clusters: list):
+    def __init__(self, clusters: List[Cluster]):
         self.clusters = clusters
         self.connection_points = []
         self.connected_clusters = []
         self.total_connected_list = []
 
-    def run(self):
+    def run(self) -> List[tuple]:
         self.__find_connection_tiles_next_to_each_other()
         self.__connect_everything()
+        return self.connection_points
 
     def __connect_everything(self):
         self.total_connected_list.append(self.clusters[0])
@@ -28,13 +29,13 @@ class ConnectionPoints:
                 if cluster not in self.total_connected_list:
                     self.total_connected_list.append(cluster)
 
-    def __find_nearest_connection_point(self, cluster):
+    def __find_nearest_connection_point(self, cluster: Cluster):
         shortest_distance = 9999999999999999999999999999
         connection_point = None
         from_cluster = None
         for other_cluster in self.clusters:
             if cluster != other_cluster:
-                for tile in cluster:
+                for tile in cluster.tiles:
                     closest_tile, tile_distance = self.__find_nearest_tile(tile=tile, other_cluster=other_cluster)
                     if tile_distance < shortest_distance:
                         shortest_distance = tile_distance
@@ -43,7 +44,7 @@ class ConnectionPoints:
         self.connection_points.append(connection_point)
         self.connected_clusters.append((cluster, from_cluster))
 
-    def __find_nearest_tile(self, tile, other_cluster):
+    def __find_nearest_tile(self, tile: Tile, other_cluster: Cluster):
         final_tile = tile
         shortest_distance = 9999999999999999999999999999
 
@@ -55,7 +56,7 @@ class ConnectionPoints:
         center_x = total_x / len(tile.nodes)
         center_z = total_z / len(tile.nodes)
 
-        for other_tile in other_cluster:
+        for other_tile in other_cluster.tiles:
             other_total_z = 0
             other_total_x = 0
             for node in other_tile.nodes:
@@ -69,7 +70,7 @@ class ConnectionPoints:
                 final_tile = other_tile
         return final_tile, shortest_distance
 
-    def __get_clusters_connected_to_this(self, cluster) -> list:
+    def __get_clusters_connected_to_this(self, cluster: Cluster) -> List[Cluster]:
         connected_clusters = []
         for connection in self.connected_clusters:
             if connection[0] == cluster:
@@ -82,7 +83,7 @@ class ConnectionPoints:
         skip_clusters = set()
         for cluster in self.clusters:
             skip_clusters.add(cluster)
-            for tile in cluster:
+            for tile in cluster.tiles:
                 for other_cluster in self.clusters:
                     if other_cluster not in skip_clusters:
                         neighbors = self.__find_neighbors_in_cluster(tile=tile, other_cluster=other_cluster)
@@ -90,9 +91,9 @@ class ConnectionPoints:
                             self.connection_points.append((tile, neighbor))
                             self.connected_clusters.append((cluster, other_cluster))
 
-    def __find_neighbors_in_cluster(self, tile, other_cluster) -> List[Tile]:
+    def __find_neighbors_in_cluster(self, tile: Tile, other_cluster: Cluster) -> List[Tile]:
         list_of_neighbors_in_other_clusters = []
         for neighbor in tile.neighbors:
-            if neighbor in other_cluster:
+            if neighbor in other_cluster.tiles:
                 list_of_neighbors_in_other_clusters.append(neighbor)
         return list_of_neighbors_in_other_clusters
