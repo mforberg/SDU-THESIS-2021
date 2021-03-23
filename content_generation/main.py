@@ -3,6 +3,7 @@ from k_means.k_means_clustering import KMeansClustering
 from map_ga.map_main import AreasGA
 from type_ga.type_main import TypesGA
 from wfc.preprocessing.wfc_preprocessing import WFCPreprocessing as WFC_PP
+from wfc.preprocessing.connection_points import ConnectionPoints
 from builder.wfc_builder import WFCBuilder as WFCB
 from builder.surface_builder import SurfaceBuilder
 from final_touch.final_main import PrepareMap
@@ -59,7 +60,9 @@ class Main:
         WFCB().build_tiles(surface_dict=surface_dict, tiles=result[0])
         SFB = SurfaceBuilder()
         SFB.build_wfc_glass_layer(surface_dict, result[0])
-        SFB.build_wfc_poop_layer(surface_dict, result[1])
+        connection_p = ConnectionPoints(clusters=result[1][1])
+        print(connection_p.run())
+        SFB.build_wfc_poop_layer(surface_dict, result[1][0])
         #SFB.build_wfc_trash_layer(surface_dict, result[0])
         x = input("Please hold xd")
         SFB.delete_wfc_glass_layer()
