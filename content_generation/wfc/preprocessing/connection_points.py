@@ -88,6 +88,7 @@ class ConnectionPoints:
                     if other_cluster not in skip_clusters:
                         neighbors = self.__find_neighbors_in_cluster(tile=tile, other_cluster=other_cluster)
                         for neighbor in neighbors:
+                            #  TODO: dont add them directly
                             self.connection_points.append((tile, neighbor))
                             self.connected_clusters.append((cluster, other_cluster))
 

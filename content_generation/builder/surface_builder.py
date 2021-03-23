@@ -131,3 +131,18 @@ class SurfaceBuilder:
             block.type = GRASS
             blocks.append(block)
         self.client.spawnBlocks(Blocks(blocks=blocks))
+
+    def build_connection_tiles(self, surface_dict: dict, connection_tiles: List[tuple]):
+        blocks = []
+        for tup in connection_tiles:
+            first = tup[0]
+            second = tup[1]
+            for value in first.nodes:
+                block = copy.deepcopy(surface_dict[(value[0], value[1])].block)
+                block.type = DIAMOND_BLOCK
+                blocks.append(block)
+            for value in second.nodes:
+                block = copy.deepcopy(surface_dict[(value[0], value[1])].block)
+                block.type = DIAMOND_BLOCK
+                blocks.append(block)
+        self.client.spawnBlocks(Blocks(blocks=blocks))
