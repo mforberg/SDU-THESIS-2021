@@ -1,9 +1,8 @@
-import time
 from typing import List
 from shared_variables import SolutionGA
 from wfc_variables import Tile, Cluster
-import sys
 from pprint import pprint
+
 
 class WFCPreprocessing:
 
@@ -36,7 +35,7 @@ class WFCPreprocessing:
 
         solution_tiles = self.__generate_tileset(n, total_set_coordinates)
 
-        # TODO: Assign tiles to their respective clusters
+        # TODO: Create third return statement where a clusters tiles only contain neighbors from within own cluster
         clustered_tiles = self.__clustered_tileset(solution_tiles, result)
 
         # TODO: Normalize cluster areas to same height
@@ -49,11 +48,12 @@ class WFCPreprocessing:
         return solution_tiles, clustered_tiles
 
     def __clustered_tileset(self, solution_tiles, result):
-        cluster_list_with_neighbors = [Cluster([]) for i in range(len(result.population))]
+        cluster_list_with_neighbors = [Cluster([]) for _ in range(len(result.population))]
         coordinate_cluster_dict = {}
         coordinate_cluster_list = []
         build_list = []
 
+        # Create dictionary with x, z = cluster_assignment
         for i in range(len(result.population)):
             temp = set()
             for coord in result.population[i].list_of_coordinates:
@@ -61,6 +61,7 @@ class WFCPreprocessing:
                 temp.add(coord)
             coordinate_cluster_list.append(temp)
 
+        # Assign tiles to their specific clusters, with all neighbors intact
         for tile in solution_tiles:
             counter_dict = {n: 0 for n in range(len(coordinate_cluster_list))}
 
@@ -73,8 +74,10 @@ class WFCPreprocessing:
             max_key = max(counter_dict, key=counter_dict.get)
             cluster_list_with_neighbors[max_key].tiles.append(tile)
 
-        return build_list, cluster_list_with_neighbors
+        # Assign tiles to their specific clusters, without "illegal" neighbors
 
+
+        return build_list, cluster_list_with_neighbors
 
     def __normalize_height(self, clustered_tiles, surface_dict):
         pass

@@ -39,6 +39,22 @@ class Tile:
     def __ne__(self, other):
         return self.id is not other.id
 
+    # def __deepcopy__(self, memodict={}):
+    #     copy_object = 0
+
+
+# def __deepcopy__(self, memo):
+#     copy_object = SolutionArea(coordinates=self.list_of_coordinates, mass_coordinate=self.mass_coordinate,
+#                                height=self.height, min_max_values=self.min_max_values,
+#                                type_of_district=self.type_of_district)
+#     return copy_object
+
+# def __deepcopy__(self, memo):
+#     copy_list = []
+#     for x in self.population:
+#         copy_list.append(copy.deepcopy(x, memo))
+#     copy_object = SolutionGA(self.fitness, copy_list)
+#     return copy_object
 
 class Cluster:
 

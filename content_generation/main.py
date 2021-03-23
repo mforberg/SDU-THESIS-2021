@@ -59,7 +59,7 @@ class Main:
         WFCB().build_tiles(surface_dict=surface_dict, tiles=result[0])
         SFB = SurfaceBuilder()
         SFB.build_wfc_glass_layer(surface_dict, result[0])
-        SFB.build_wfc_poop_layer(surface_dict, result[1])
+        SFB.build_wfc_poop_layer(surface_dict, result[1][0])
         #SFB.build_wfc_trash_layer(surface_dict, result[0])
         x = input("Please hold xd")
         SFB.delete_wfc_glass_layer()
