@@ -2,8 +2,11 @@ from map_variables import *
 import os.path
 import pickle
 import map_analysis
-from UserInputFetcher import fetch_user_integer
+from util.UserInputFetcher import fetch_user_integer
 import UserInputFetcher
+
+from util.UserInputFetcher import fetch_user_integer_with_limit
+
 
 class BlockFileLoader:
     def __init__(self):
@@ -15,7 +18,6 @@ class BlockFileLoader:
             keyOne = fetch_user_integer()
             #Should the user want to use a saved file
             if keyOne == 1:
-
                 block_file = self.file_selector(save_file_dir)
                 unpickled_block_file = pickle.load(block_file)
                 self.load_from_pkl_file(unpickled_block_file)
@@ -56,7 +58,7 @@ class BlockFileLoader:
         else:
             print('What save file do you want to use?')
             print('Use the number corresponding to file')
-            stopper = fetch_user_integer()
+            stopper = fetch_user_integer_with_limit(len(pkl_files))
             if stopper <= 0:
                 stopper = stopper + 1
             block_file = open(f'{save_file_dir}{dirs[stopper-1]}', 'rb')
