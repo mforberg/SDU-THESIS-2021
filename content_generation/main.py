@@ -38,9 +38,9 @@ class Main:
         #  K-means clustering
         clusters = KMeansClustering().run(first_ga_result=result, surface_dict=surface_dict)
 
-        SurfaceBuilder().build_clusters(clusters=clusters, surface_dict=surface_dict)
-
-        self.rollback(surface_dict=surface_dict)
+        # SurfaceBuilder().build_clusters(clusters=clusters, surface_dict=surface_dict)
+        #
+        # self.rollback(surface_dict=surface_dict)
 
 
         #  Type GA
@@ -65,10 +65,12 @@ class Main:
 
         SFB.build_wfc_poop_layer(surface_dict, result[1][0])
         #SFB.build_wfc_trash_layer(surface_dict, result[0])
+
+        SFB.build_connection_tiles(surface_dict=surface_dict, connection_tiles=connection_tiles)
+        SFB.delete_wfc_poop_layer()
         x = input("Please hold xd")
         SFB.delete_wfc_glass_layer()
-        SFB.delete_wfc_poop_layer()
-        SFB.build_connection_tiles(surface_dict=surface_dict, connection_tiles=connection_tiles)
+
         #SFB.delete_wfc_trash_layer()
         self.rollback(surface_dict=surface_dict)
         print("- - - - WFC RELATED GARBAGE STOPPED - - - -")

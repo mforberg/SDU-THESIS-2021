@@ -47,7 +47,7 @@ class Cluster:
         self.tiles = tiles
 
     def __repr__(self):
-        return f"<{self.__class__.__name__} ({hex(id(self))}): ID {self.id[:8]}, Tile Count: {len(self.tiles)})"
+        return f"<{self.__class__.__name__} ({hex(id(self))}): ID {self.id[:8]}, Tile Count: {len(self.tiles)})>"
 
     def __hash__(self):
         return hash(self.id)
