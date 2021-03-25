@@ -1,7 +1,9 @@
+import time
 from typing import List
 from shared_variables import SolutionGA
 from wfc_variables import Tile, Cluster
 from pprint import pprint
+from copy import deepcopy
 
 
 class WFCPreprocessing:
@@ -10,7 +12,7 @@ class WFCPreprocessing:
         # this is needed to draw grid over the whole solution so that it can be divided into tiles
         self.__min_x, self.__min_z = 9999999, 9999999
         self.__max_x, self.__max_z = -9999999, -9999999
-        self.n = 2
+        self.n = 2 # just a default value
 
     def create_tiles(self, result: SolutionGA, tile_size: int, surface_dict: dict):
         # TODO: Remove print statements when code is functional
@@ -21,7 +23,7 @@ class WFCPreprocessing:
         self.__set_min_max_values(self.__get_min_max_values(result))
         self.__print_modulo_n(n)
 
-        # Prune edges if delta_x or delta_z mod n is not 0 min/max z/x has to be a rectangle dividable by n
+        # Prune edges if delta_x or delta_z mod n is not 0; delta z/x has to be a rectangle dividable by n
         print(f"(FIRST) max_x: {self.__max_x} min_x: {self.__min_x} max_z: {self.__max_z} min_z: {self.__min_z}")
         self.__prune_edges(n, result)
         self.__set_min_max_values(self.__get_min_max_values(result))
@@ -73,9 +75,6 @@ class WFCPreprocessing:
                 build_list.append(tile)
             max_key = max(counter_dict, key=counter_dict.get)
             cluster_list_with_neighbors[max_key].tiles.append(tile)
-
-        # Assign tiles to their specific clusters, without "illegal" neighbors
-
 
         return build_list, cluster_list_with_neighbors
 

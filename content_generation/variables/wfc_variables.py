@@ -28,7 +28,7 @@ class Tile:
         print("- - - - - - -")
 
     def __repr__(self):
-        return f"<{self.__class__.__name__} ({hex(id(self))}): {self.id[:8]}, Nodes:\n {self.nodes}>"
+        return f"<{self.__class__.__name__} ({hex(id(self))}): ID[:8] {self.id[:8]}, Nodes:\n {self.nodes}>"
 
     def __hash__(self):
         return hash(self.id)
@@ -39,22 +39,6 @@ class Tile:
     def __ne__(self, other):
         return self.id is not other.id
 
-    # def __deepcopy__(self, memodict={}):
-    #     copy_object = 0
-
-
-# def __deepcopy__(self, memo):
-#     copy_object = SolutionArea(coordinates=self.list_of_coordinates, mass_coordinate=self.mass_coordinate,
-#                                height=self.height, min_max_values=self.min_max_values,
-#                                type_of_district=self.type_of_district)
-#     return copy_object
-
-# def __deepcopy__(self, memo):
-#     copy_list = []
-#     for x in self.population:
-#         copy_list.append(copy.deepcopy(x, memo))
-#     copy_object = SolutionGA(self.fitness, copy_list)
-#     return copy_object
 
 class Cluster:
 
