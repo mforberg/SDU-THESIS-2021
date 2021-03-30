@@ -3,6 +3,7 @@ from k_means.k_means_clustering import KMeansClustering
 from map_ga.map_main import AreasGA
 from type_ga.type_main import TypesGA
 from wfc.preprocessing.wfc_preprocessing import WFCPreprocessing as WFC_PP
+from wfc.preprocessing.connection_points import ConnectionPoints
 from builder.wfc_builder import WFCBuilder as WFCB
 from builder.surface_builder import SurfaceBuilder
 from final_touch.final_main import PrepareMap
@@ -37,9 +38,9 @@ class Main:
         #  K-means clustering
         clusters = KMeansClustering().run(first_ga_result=result, surface_dict=surface_dict)
 
-        SurfaceBuilder().build_clusters(clusters=clusters, surface_dict=surface_dict)
-
-        self.rollback(surface_dict=surface_dict)
+        # SurfaceBuilder().build_clusters(clusters=clusters, surface_dict=surface_dict)
+        #
+        # self.rollback(surface_dict=surface_dict)
 
 
         #  Type GA
@@ -59,11 +60,17 @@ class Main:
         WFCB().build_tiles(surface_dict=surface_dict, tiles=result[0])
         SFB = SurfaceBuilder()
         SFB.build_wfc_glass_layer(surface_dict, result[0])
-        SFB.build_wfc_poop_layer(surface_dict, result[1])
+        connection_p = ConnectionPoints(clusters=result[1][1])
+        connection_tiles = connection_p.run()
+
+        SFB.build_wfc_poop_layer(surface_dict, result[1][0])
         #SFB.build_wfc_trash_layer(surface_dict, result[0])
+
+        SFB.build_connection_tiles(surface_dict=surface_dict, connection_tiles=connection_tiles)
+        SFB.delete_wfc_poop_layer()
         x = input("Please hold xd")
         SFB.delete_wfc_glass_layer()
-        SFB.delete_wfc_poop_layer()
+
         #SFB.delete_wfc_trash_layer()
         self.rollback(surface_dict=surface_dict)
         print("- - - - WFC RELATED GARBAGE STOPPED - - - -")

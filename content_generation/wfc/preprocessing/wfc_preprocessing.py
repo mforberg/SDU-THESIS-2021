@@ -2,8 +2,9 @@ import time
 from typing import List
 from shared_variables import SolutionGA
 from wfc_variables import Tile, Cluster
-import sys
 from pprint import pprint
+from copy import deepcopy
+
 
 class WFCPreprocessing:
 
@@ -11,7 +12,7 @@ class WFCPreprocessing:
         # this is needed to draw grid over the whole solution so that it can be divided into tiles
         self.__min_x, self.__min_z = 9999999, 9999999
         self.__max_x, self.__max_z = -9999999, -9999999
-        self.n = 2
+        self.n = 2 # just a default value
 
     def create_tiles(self, result: SolutionGA, tile_size: int, surface_dict: dict):
         # TODO: Remove print statements when code is functional
@@ -22,7 +23,7 @@ class WFCPreprocessing:
         self.__set_min_max_values(self.__get_min_max_values(result))
         self.__print_modulo_n(n)
 
-        # Prune edges if delta_x or delta_z mod n is not 0 min/max z/x has to be a rectangle dividable by n
+        # Prune edges if delta_x or delta_z mod n is not 0; delta z/x has to be a rectangle dividable by n
         print(f"(FIRST) max_x: {self.__max_x} min_x: {self.__min_x} max_z: {self.__max_z} min_z: {self.__min_z}")
         self.__prune_edges(n, result)
         self.__set_min_max_values(self.__get_min_max_values(result))
@@ -36,7 +37,7 @@ class WFCPreprocessing:
 
         solution_tiles = self.__generate_tileset(n, total_set_coordinates)
 
-        # TODO: Assign tiles to their respective clusters
+        # TODO: Create third return statement where a clusters tiles only contain neighbors from within own cluster
         clustered_tiles = self.__clustered_tileset(solution_tiles, result)
 
         # TODO: Normalize cluster areas to same height
@@ -49,11 +50,12 @@ class WFCPreprocessing:
         return solution_tiles, clustered_tiles
 
     def __clustered_tileset(self, solution_tiles, result):
-        cluster_list_with_neighbors = [Cluster([]) for i in range(len(result.population))]
+        cluster_list_with_neighbors = [Cluster([]) for _ in range(len(result.population))]
         coordinate_cluster_dict = {}
         coordinate_cluster_list = []
         build_list = []
 
+        # Create dictionary with x, z = cluster_assignment
         for i in range(len(result.population)):
             temp = set()
             for coord in result.population[i].list_of_coordinates:
@@ -61,6 +63,7 @@ class WFCPreprocessing:
                 temp.add(coord)
             coordinate_cluster_list.append(temp)
 
+        # Assign tiles to their specific clusters, with all neighbors intact
         for tile in solution_tiles:
             counter_dict = {n: 0 for n in range(len(coordinate_cluster_list))}
 
@@ -74,7 +77,6 @@ class WFCPreprocessing:
             cluster_list_with_neighbors[max_key].tiles.append(tile)
 
         return build_list, cluster_list_with_neighbors
-
 
     def __normalize_height(self, clustered_tiles, surface_dict):
         pass
