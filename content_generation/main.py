@@ -56,22 +56,26 @@ class Main:
 
         # WFC Start
         print("- - - - WFC RELATED GARBAGE KEEP SCROLLING - - - -")
-        result = WFC_PP().create_tiles(result=result, tile_size=3, surface_dict=surface_dict)
-        WFCB().build_tiles(surface_dict=surface_dict, tiles=result[0])
+        wfc_pp = WFC_PP()
+        result = wfc_pp.create_tiles(result=result, tile_size=3, surface_dict=surface_dict)
         SFB = SurfaceBuilder()
+
         SFB.build_wfc_glass_layer(surface_dict, result[0])
         connection_p = ConnectionPoints(clusters=result[1][1])
         connection_tiles = connection_p.run()
+        wfc_pp.remove_neighbors(clustered_tiles=result[1][1])  # TODO: Maybe check this works
 
         SFB.build_wfc_poop_layer(surface_dict, result[1][0])
         #SFB.build_wfc_trash_layer(surface_dict, result[0])
-
         SFB.build_connection_tiles(surface_dict=surface_dict, connection_tiles=connection_tiles)
-        SFB.delete_wfc_poop_layer()
+
         x = input("Please hold xd")
         SFB.delete_wfc_glass_layer()
-
+        SFB.delete_wfc_poop_layer()
         #SFB.delete_wfc_trash_layer()
+
+        wfc_pp.normalize_height(clustered_tiles=result[1][1], surface_dict=surface_dict) # TODO: Implement + Test
+
         self.rollback(surface_dict=surface_dict)
         print("- - - - WFC RELATED GARBAGE STOPPED - - - -")
         # WFC End
