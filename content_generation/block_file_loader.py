@@ -28,9 +28,10 @@ class BlockFileLoader:
                 if keyTwo == 1:
                     print("Give the file a name! Please don't use space")
                     file_name = str(input())
+                    os.rename(f"{save_file_dir}{save_file_path}", f"{save_file_dir}{file_name}_{save_file_path}")
                     temp_map_data = map_analysis.MapAnalysis().run()
                     self.unpack_data_object_map_anal_data(temp_map_data)
-                    self.write_to_pkl_file(self.district_areas, self.set_of_fluids, self.total_block_dict, self.total_surface_dict, file_name)
+                    self.write_to_pkl_file(self.district_areas, self.set_of_fluids, self.total_block_dict, self.total_surface_dict)
                 elif keyTwo == 2:
                     temp_map_data = map_analysis.MapAnalysis().run()
                     self.unpack_data_object_map_anal_data(temp_map_data)
@@ -53,7 +54,7 @@ class BlockFileLoader:
             if file.endswith('.pkl'):
                 pkl_files.append(file)
         if len(pkl_files) == 1:
-            print(f"----currently using file {pkl_files}----")
+            print(f"-r---curently using file {pkl_files}----")
             block_file = open(f'{save_file_dir}{pkl_files[0]}', 'rb')
         else:
             print('What save file do you want to use?')
