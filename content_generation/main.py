@@ -6,6 +6,7 @@ from wfc.preprocessing.wfc_preprocessing import WFCPreprocessing as WFC_PP
 from wfc.preprocessing.connection_points import ConnectionPoints
 from builder.wfc_builder import WFCBuilder as WFCB
 from builder.surface_builder import SurfaceBuilder
+from builder.test_builder import TestBuilder
 from final_touch.final_main import PrepareMap
 import minecraft_pb2_grpc
 import grpc
@@ -22,6 +23,10 @@ class Main:
     global_dict_of_types = {}
 
     def run(self):
+        tb = TestBuilder()
+        tb.build_flat_surface(type_of_block=STONE)
+        tb.create_big_areas()
+
         #  Map analysis
 
         tester = BlockFileLoader()
@@ -32,6 +37,15 @@ class Main:
                                                                               tester.total_surface_dict,\
                                                                               tester.district_areas,\
                                                                               tester.set_of_fluids
+
+
+        # for key in surface_dict.keys():
+        #     print(key)
+        # random_block = surface_dict[BOX_X_MIN, BOX_Z_MIN].block
+
+        # tb.create_cuts(block=random_block)
+        # tb.create_big_areas(block=random_block)
+
         #  Map GA
         result = AreasGA().run(areas=district_areas)
 
@@ -49,6 +63,8 @@ class Main:
         result = TypesGA().run(surface_dict=surface_dict, clusters=clusters,
                                global_district_types_dict=self.global_dict_of_types, fluid_set=set_of_fluids)
         print(f"TYPE GA: {time.time()-first}")
+        for sol in result.population:
+            print(sol.type_of_district)
 
         SurfaceBuilder().build_type_ga(surface_dict=surface_dict, type_ga_result=result)
         self.rollback(surface_dict=surface_dict)
@@ -59,17 +75,18 @@ class Main:
         result = WFC_PP().create_tiles(result=result, tile_size=3, surface_dict=surface_dict)
         WFCB().build_tiles(surface_dict=surface_dict, tiles=result[0])
         SFB = SurfaceBuilder()
-        SFB.build_wfc_glass_layer(surface_dict, result[0])
+        # SFB.build_wfc_glass_layer(surface_dict, result[0])
         connection_p = ConnectionPoints(clusters=result[1][1])
         connection_tiles = connection_p.run()
+        print(connection_tiles)
 
-        SFB.build_wfc_poop_layer(surface_dict, result[1][0])
+        # SFB.build_wfc_poop_layer(surface_dict, result[1][0])
         #SFB.build_wfc_trash_layer(surface_dict, result[0])
 
         SFB.build_connection_tiles(surface_dict=surface_dict, connection_tiles=connection_tiles)
-        SFB.delete_wfc_poop_layer()
+        # SFB.delete_wfc_poop_layer()
         x = input("Please hold xd")
-        SFB.delete_wfc_glass_layer()
+        # SFB.delete_wfc_glass_layer()
 
         #SFB.delete_wfc_trash_layer()
         self.rollback(surface_dict=surface_dict)

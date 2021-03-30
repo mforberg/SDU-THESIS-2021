@@ -12,11 +12,14 @@ class ConnectionPoints:
 
     def run(self) -> List[tuple]:
         self.__find_connection_tiles_next_to_each_other()
+        print("connecting everything")
         self.__connect_everything()
+        print("done")
         return self.connection_points
 
     def __connect_everything(self):
         self.total_connected_list.append(self.clusters[0].id)
+        new = True
         while len(self.total_connected_list) < len(self.clusters):
             to_be_added = []
             for cluster_id in self.total_connected_list:
@@ -25,25 +28,65 @@ class ConnectionPoints:
                     to_be_added.extend(connected_clusters_ids)
                 else:
                     cluster = self.__get_cluster_from_id(cluster_id=cluster_id)
-                    self.__find_nearest_connection_point(cluster=cluster)
+                    other_clusters = self.__get_all_clusters_not_connected()
+                    result = self.__find_nearest_connection_point(cluster=cluster, from_clusters=other_clusters)
+                    connection_point = result[0]
+                    to_cluster = result[1]
+                    self.connection_points.append(connection_point)
+                    self.connected_clusters.append((cluster.id, to_cluster.id))
+                    to_be_added.append(to_cluster.id)
+            if not new:
+                result = self.__connect_main_cluster_to_other_district()
+                own_cluster = result[0]
+                connection_point = result[1]
+                to_cluster = result[2]
+                self.connection_points.append(connection_point)
+                self.connected_clusters.append((own_cluster.id, to_cluster.id))
+                to_be_added.append(to_cluster.id)
+            new = False
             for cluster_id in to_be_added:
                 if cluster_id not in self.total_connected_list:
+                    new = True
                     self.total_connected_list.append(cluster_id)
 
-    def __find_nearest_connection_point(self, cluster: Cluster):
+    def __connect_main_cluster_to_other_district(self) -> (Cluster, tuple, Cluster):
+        other_clusters = self.__get_all_clusters_not_connected()
+        total_shortest_distance = 999999999999999999
+        own_cluster = None
+        closest_cluster = None
+        connection_point = None
+        for cluster_id in self.total_connected_list:
+            cluster = self.__get_cluster_from_id(cluster_id=cluster_id)
+            result = self.__find_nearest_connection_point(cluster=cluster, from_clusters=other_clusters)
+            shortest_distance = result[2]
+            if shortest_distance < total_shortest_distance:
+                own_cluster = cluster
+                total_shortest_distance = shortest_distance
+                closest_cluster = result[1]
+                connection_point = result[0]
+        return own_cluster, connection_point, closest_cluster
+
+
+    def __find_nearest_connection_point(self, cluster: Cluster, from_clusters: List[Cluster]) -> (tuple, Cluster, int):
         shortest_distance = 9999999999999999999999999999
         connection_point = None
-        from_cluster = None
-        for other_cluster in self.clusters:
+        to_cluster = None
+        for other_cluster in from_clusters:
             if cluster != other_cluster:
                 for tile in cluster.tiles:
                     closest_tile, tile_distance = self.__find_nearest_tile(tile=tile, other_cluster=other_cluster)
                     if tile_distance < shortest_distance:
                         shortest_distance = tile_distance
                         connection_point = (tile, closest_tile)
-                        from_cluster = other_cluster
-        self.connection_points.append(connection_point)
-        self.connected_clusters.append((cluster.id, from_cluster.id))
+                        to_cluster = other_cluster
+        return connection_point, to_cluster, shortest_distance
+
+    def __get_all_clusters_not_connected(self) -> List[Cluster]:
+        not_connected = []
+        for cluster in self.clusters:
+            if cluster.id not in self.total_connected_list:
+                not_connected.append(cluster)
+        return not_connected
 
     def __find_nearest_tile(self, tile: Tile, other_cluster: Cluster):
         final_tile = tile
@@ -63,15 +106,15 @@ class ConnectionPoints:
             for node in other_tile.nodes:
                 other_total_x += node[0]
                 other_total_z += node[1]
-            other_center_x = total_x / len(other_tile.nodes)
-            other_center_z = total_z / len(other_tile.nodes)
+            other_center_x = other_total_x / len(other_tile.nodes)
+            other_center_z = other_total_z / len(other_tile.nodes)
             distance = math.sqrt(math.pow(center_x - other_center_x, 2) + math.pow(center_z - other_center_z, 2))
             if distance < shortest_distance:
                 shortest_distance = distance
                 final_tile = other_tile
         return final_tile, shortest_distance
 
-    def __get_clusters_connected_to_this(self, cluster_id: str) -> List[Cluster]:
+    def __get_clusters_connected_to_this(self, cluster_id: str) -> List[str]:
         connected_clusters = []
         for connection_ids in self.connected_clusters:
             first_cluster = self.__get_cluster_from_id(connection_ids[0])
@@ -105,13 +148,10 @@ class ConnectionPoints:
 
     def __find_single_connection_point_for_each_linked_connection(self, connection_dict: dict):
         skip_tuple = set()
-        test = 1
         for cluster_ids, list_of_tiles_connected in connection_dict.items():
             for tup in list_of_tiles_connected:
                 if tup in skip_tuple:
                     continue
-                print(test)
-                test += 1
                 connected = [tup]
                 check_tup = [tup]
                 skip_tuple.add(tup)
