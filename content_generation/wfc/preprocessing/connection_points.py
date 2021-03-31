@@ -12,10 +12,50 @@ class ConnectionPoints:
 
     def run(self) -> List[tuple]:
         self.__find_connection_tiles_next_to_each_other()
-        print("connecting everything")
         self.__connect_everything()
-        print("done")
+        self.__connect_own_clusters()
         return self.connection_points
+
+    def __connect_own_clusters(self):
+        for cluster in self.clusters:
+            connected_areas = []
+            tile_iterator = iter(cluster.tiles)
+            checked_tiles = set()
+            while len(checked_tiles) < len(cluster.tiles):
+                current_tile = next(tile_iterator)
+                if current_tile not in checked_tiles:
+                    connected_areas.append(self.__get_area_connected_to_this(cluster=cluster, tile=current_tile,
+                                                                             checked_tiles=checked_tiles))
+            own_cluster = [connected_areas[0]]
+            i = 0
+            while len(own_cluster) < len(connected_areas):
+                closest = None
+                connection_point = None
+                shortest_distance = 9999999999999
+                for inner_cluster in connected_areas:
+                    if inner_cluster in own_cluster:
+                        continue
+                    result = self.__find_nearest_connection_point(cluster=inner_cluster, from_clusters=own_cluster)
+                    temp_connection_point = result[0]
+                    temp_distance = result[2]
+                    if temp_distance < shortest_distance:
+                        shortest_distance = temp_distance
+                        connection_point = temp_connection_point
+                        closest = inner_cluster
+                self.connection_points.append(connection_point)
+                own_cluster.append(closest)
+
+    def __get_area_connected_to_this(self, tile: Tile, cluster: Cluster, checked_tiles: set) -> Cluster:
+        tiles_to_be_checked = [tile]
+        current_area = []
+        while tiles_to_be_checked:
+            current_tile = tiles_to_be_checked.pop(0)
+            checked_tiles.add(current_tile)
+            current_area.append(current_tile)
+            for neighbor in current_tile.neighbors:
+                if neighbor not in checked_tiles and neighbor in cluster.tiles:
+                    tiles_to_be_checked.append(neighbor)
+        return Cluster(current_area)
 
     def __connect_everything(self):
         self.total_connected_list.append(self.clusters[0].id)
@@ -65,7 +105,6 @@ class ConnectionPoints:
                 closest_cluster = result[1]
                 connection_point = result[0]
         return own_cluster, connection_point, closest_cluster
-
 
     def __find_nearest_connection_point(self, cluster: Cluster, from_clusters: List[Cluster]) -> (tuple, Cluster, int):
         shortest_distance = 9999999999999999999999999999

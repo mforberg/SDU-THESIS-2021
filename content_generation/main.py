@@ -97,11 +97,10 @@ class Main:
         # WFC End
 
         # Final touch
-        # prepare_map = PrepareMap(surface_dict=surface_dict, fluid_set=set_of_fluids)
-        # result = prepare_map.run(blocked_coordinates={(0, 0)}, connection_points=[[(BOX_X_MIN, BOX_Z_MIN),
-        #                                                                            (BOX_X_MAX, BOX_Z_MAX)]])
-        # SurfaceBuilder().build_from_list_of_tuples(surface_dict=surface_dict, coordinates=result)
-        # self.rollback(surface_dict=surface_dict)
+        prepare_map = PrepareMap(surface_dict=surface_dict, fluid_set=set_of_fluids)
+        result = prepare_map.run(cluster_list=result[1][1], connection_tiles=connection_tiles)
+        SurfaceBuilder().build_from_list_of_tuples(surface_dict=surface_dict, coordinates=result)
+        self.rollback(surface_dict=surface_dict)
 
     def rollback(self, surface_dict):
         print("Reset surface? 1 or 2")

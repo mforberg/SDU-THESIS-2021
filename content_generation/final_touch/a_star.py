@@ -8,31 +8,34 @@ class AStar:
         self.surface_dict = surface_dict
         self.fluid_set = fluid_set
 
-    def run(self, blocked_coordinates: set, connection_points: List[List[tuple]]) -> List[tuple]:
+    def run(self, blocked_coordinates: set, connection_points: List[tuple]) -> List[tuple]:
         total_list_of_road_blocks = []
         for road_network in connection_points:
-            total_list_of_road_blocks.extend(self.connect_point_to_goal(start_point=road_network[0],
-                                                                        goal_point=road_network[1],
+            total_list_of_road_blocks.extend(self.connect_point_to_goal(start_points=road_network[0],
+                                                                        goal_points=road_network[1],
                                                                         blocked_coordinates=blocked_coordinates))
         return total_list_of_road_blocks
 
-    def connect_point_to_goal(self, start_point: tuple, goal_point: tuple, blocked_coordinates: set) -> List[tuple]:
+    def connect_point_to_goal(self, start_points: List[tuple], goal_points: List[tuple], blocked_coordinates: set) -> \
+            List[tuple]:
         open_list = []
         parent_dict = {}
-        cost_so_far = {start_point: 0}
-        heapq.heappush(open_list, (0, start_point))
+        cost_so_far = dict()
+        for point in start_points:
+            cost_so_far[point] = 0
+            heapq.heappush(open_list, (0, point))
         while open_list:
             current_point = heapq.heappop(open_list)[1]
-
-            if current_point == goal_point:
-                return self.backtrack(parent_dict=parent_dict, start_point=start_point, goal_point=goal_point)
+            print(f"{current_point} not in {goal_points}")
+            if current_point in goal_points:
+                return self.backtrack(parent_dict=parent_dict, start_points=start_points, goal_point=current_point)
 
             for neighbor in self.get_neighbors(current_point, blocked_coordinates):
                 new_cost = cost_so_far[current_point]
                 new_cost += self.calculate_path_cost(current_point=current_point, to_point=neighbor)
                 if neighbor not in cost_so_far or new_cost < cost_so_far[neighbor]:
                     cost_so_far[neighbor] = new_cost
-                    new_cost += self.calculate_heuristic(point1=current_point, point2=neighbor)
+                    new_cost += self.calculate_heuristic(point=current_point, goals=goal_points)
                     heapq.heappush(open_list, (new_cost, neighbor))
                     parent_dict[neighbor] = current_point
 
@@ -43,11 +46,16 @@ class AStar:
             cost += 5
         return cost
 
-    def calculate_heuristic(self, point1: tuple, point2: tuple) -> float:
-        x_diff = abs(point1[0] - point2[0])
-        z_diff = abs(point1[1] - point2[1])
-        y_diff = abs(self.surface_dict[point1]['y'] - self.surface_dict[point2]['y'])
-        return x_diff + z_diff + y_diff
+    def calculate_heuristic(self, point: tuple, goals: List[tuple]) -> float:
+        smallest = 999999999999999999
+        for goal in goals:
+            x_diff = abs(point[0] - goal[0])
+            z_diff = abs(point[1] - goal[1])
+            y_diff = abs(self.surface_dict[point].y - self.surface_dict[goal].y)
+            value = x_diff + z_diff + y_diff
+            if value < smallest:
+                smallest = value
+        return smallest
 
     def get_neighbors(self, point: tuple, blocked_coordinates: set) -> List[tuple]:
         possible_neighbor_relations = [(0, 1), (0, -1), (1, 0), (-1, 0)]
@@ -61,11 +69,11 @@ class AStar:
                     neighbors.append(possible_neighbor)
         return neighbors
 
-    def backtrack(self, parent_dict: dict, start_point: tuple, goal_point: tuple) -> List[tuple]:
+    def backtrack(self, parent_dict: dict, start_points: List[tuple], goal_point: tuple) -> List[tuple]:
         backtracking = []
         current_node = goal_point
         while current_node in parent_dict:
             backtracking.append(current_node)
             current_node = parent_dict[current_node]
-        backtracking.append(start_point)
+        backtracking.extend(start_points)
         return backtracking

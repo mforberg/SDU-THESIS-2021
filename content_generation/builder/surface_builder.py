@@ -19,8 +19,8 @@ class SurfaceBuilder:
         self.client = minecraft_pb2_grpc.MinecraftServiceStub(__channel)
 
     def build_type_ga(self, surface_dict: dict, type_ga_result: SolutionGA):
-        list_of_building_blocks = {"Fishing": DIAMOND_ORE, "Trade": COAL_ORE, "Royal": GOLD_BLOCK, "Farms": OBSIDIAN,
-                                   "Crafts": ICE, "Village": WOOL}
+        list_of_building_blocks = {"Fishing": DIAMOND_ORE, "Trade": RED_GLAZED_TERRACOTTA, "Royal": GOLD_BLOCK,
+                                   "Farms": OBSIDIAN, "Crafts": ICE, "Village": WOOL}
         blocks = []
         for district in type_ga_result.population:
             current_building_block = list_of_building_blocks[district.type_of_district]
