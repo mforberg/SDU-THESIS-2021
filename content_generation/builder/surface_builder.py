@@ -146,3 +146,10 @@ class SurfaceBuilder:
                 block.type = DIAMOND_BLOCK
                 blocks.append(block)
         self.client.spawnBlocks(Blocks(blocks=blocks))
+
+    def bulk_write_air(self, dict):
+        bulk_blocks = []
+        for key in dict.keys():
+            print(key)
+            bulk_blocks.append(Block(position=Point(x=key[0], y=key[1], z=key[2]), type=AIR, orientation=NORTH))
+        self.client.spawnBlocks(Blocks(blocks = bulk_blocks))
