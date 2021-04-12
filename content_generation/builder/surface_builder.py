@@ -118,6 +118,7 @@ class SurfaceBuilder:
         blocks = []
         for value in coordinates:
             block = copy.deepcopy(surface_dict[(value[0], value[1])].block)
+            block.position.y = value[2]
             block.type = COBBLESTONE
             blocks.append(block)
         self.client.spawnBlocks(Blocks(blocks=blocks))

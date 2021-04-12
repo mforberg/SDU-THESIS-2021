@@ -26,6 +26,7 @@ class Main:
         # tb = TestBuilder()
         # tb.build_flat_surface(type_of_block=STONE)
         # tb.create_big_areas()
+        # tb.create_mexican_walls()
 
         #  Map analysis
 

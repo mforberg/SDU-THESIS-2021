@@ -6,7 +6,6 @@ class APoint:
     def __init__(self, node: tuple, y: int):
         self.node = node
         self.y = y
-        self.id: str = str(uuid4())
 
     def __eq__(self, other):
         if self.node == other.node:
@@ -17,7 +16,7 @@ class APoint:
             return False
 
     def __hash__(self):
-        return hash(self.id)
+        return hash((self.node[0], self.node[1], self.y))
 
     def __repr__(self):
         return f"<node:{self.node}, y:{self.y}>"

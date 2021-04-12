@@ -22,6 +22,10 @@ class AStar:
     def connect_point_to_goal(self, start_points: List[APoint], goal_points: List[APoint],
                               blocked_coordinates: Set[APoint]) -> List[APoint]:
         copy_of_blocked = copy.deepcopy(blocked_coordinates)
+        if start_points[0].node[0] > goal_points[0].node[0]:
+            temp = copy.deepcopy(start_points)
+            start_points = copy.deepcopy(goal_points)
+            goal_points = temp
         open_list = []
         parent_dict = {}
         cost_so_far = dict()
@@ -36,8 +40,7 @@ class AStar:
             current_point = heapq.heappop(open_list)[1]
 
             if current_point in goal_points:
-                print(i)
-                print(f"{current_point} in {goal_points}")
+                print(f"Checked: {i}, Cost: {cost_so_far[current_point]} - goal: {current_point}")
                 return self.backtrack(parent_dict=parent_dict, goal_point=current_point)
 
             for neighbor in self.get_neighbors(current_point, copy_of_blocked):
@@ -49,7 +52,7 @@ class AStar:
                     heapq.heappush(open_list, (new_cost, neighbor))
                     parent_dict[neighbor] = current_point
 
-    def calculate_path_cost(self, current_point: APoint, to_point: APoint) -> float:
+    def calculate_path_cost(self, current_point: APoint, to_point: APoint) -> int:
         cost = 1
         target_y = to_point.y
         cost += 2 * abs(current_point.y - target_y)
@@ -57,10 +60,10 @@ class AStar:
             if self.surface_dict[to_point.node].block_type in self.fluid_set:
                 cost += 5
         else:
-            cost += 100 * abs(self.surface_dict[to_point.node].y - target_y)
+            cost += 999999999999999999999999999999 * abs(self.surface_dict[to_point.node].y - target_y)
         return cost
 
-    def calculate_heuristic(self, point: APoint, goals: List[APoint]) -> float:
+    def calculate_heuristic(self, point: APoint, goals: List[APoint]) -> int:
         smallest = 999999999999999999
         for goal in goals:
             x_diff = abs(point.node[0] - goal.node[0])
@@ -98,4 +101,6 @@ class AStar:
         while current_point in parent_dict:
             backtracking.append(current_point)
             current_point = parent_dict[current_point]
+        print(f"Start: {current_point}")
+        print(f"---------------------------")
         return backtracking
