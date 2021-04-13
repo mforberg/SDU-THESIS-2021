@@ -43,7 +43,11 @@ class AStar:
                 print(f"Checked: {i}, Cost: {cost_so_far[current_point]} - goal: {current_point}")
                 return self.backtrack(parent_dict=parent_dict, goal_point=current_point)
 
-            for neighbor in self.get_neighbors(current_point, copy_of_blocked):
+            if current_point in parent_dict:
+                parent = parent_dict[current_point]
+            else:
+                parent = None
+            for neighbor in self.get_neighbors(point=current_point, blocked_coordinates=copy_of_blocked, parent=parent):
                 new_cost = cost_so_far[current_point]
                 new_cost += self.calculate_path_cost(current_point=current_point, to_point=neighbor)
                 if neighbor not in cost_so_far or new_cost < cost_so_far[neighbor]:
@@ -60,7 +64,7 @@ class AStar:
             if self.surface_dict[to_point.node].block_type in self.fluid_set:
                 cost += 5
         else:
-            cost += 999999999999999999999999999999 * abs(self.surface_dict[to_point.node].y - target_y)
+            cost += 5 * abs(self.surface_dict[to_point.node].y - target_y)
         return cost
 
     def calculate_heuristic(self, point: APoint, goals: List[APoint]) -> int:
@@ -74,10 +78,16 @@ class AStar:
                 smallest = value
         return smallest
 
-    def get_neighbors(self, point: APoint, blocked_coordinates: Set[APoint]) -> List[APoint]:
-        possible_neighbor_relations = [(0, 1), (0, -1), (1, 0), (-1, 0), (0, 0)]
+    def get_neighbors(self, point: APoint, blocked_coordinates: Set[APoint], parent: APoint) -> List[APoint]:
+        possible_neighbor_relations = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+        if parent is not None:
+            parent_relation = (parent.node[0] - point.node[0], parent.node[1] - point.node[1])
+        else:
+            parent_relation = (0, 0)
         neighbors = []
         for possible_neighbor_relation in possible_neighbor_relations:
+            if possible_neighbor_relation == parent_relation:
+                continue
             neighbor_x = point.node[0] + possible_neighbor_relation[0]
             neighbor_z = point.node[1] + possible_neighbor_relation[1]
             possible_neighbor = (neighbor_x, neighbor_z)
@@ -88,7 +98,7 @@ class AStar:
                 y_relations = [-1, 0, 1]
                 for y_relation in y_relations:
                     y = point_y + y_relation
-                    if y < surface_y or (y_relation == 0 and possible_neighbor_relation == (0, 0)):
+                    if y < surface_y:
                         continue
                     possible_point = APoint(node=possible_neighbor, y=y)
                     if possible_point not in blocked_coordinates:

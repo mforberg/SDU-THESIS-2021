@@ -24,6 +24,7 @@ class Main:
 
     def run(self):
         # tb = TestBuilder()
+        SFB = SurfaceBuilder()
         # tb.build_flat_surface(type_of_block=STONE)
         # tb.create_big_areas()
         # tb.create_mexican_walls()
@@ -67,7 +68,7 @@ class Main:
         for sol in result.population:
             print(sol.type_of_district)
 
-        SurfaceBuilder().build_type_ga(surface_dict=surface_dict, type_ga_result=result)
+        SFB.build_type_ga(surface_dict=surface_dict, type_ga_result=result)
         self.rollback(surface_dict=surface_dict)
 
 
@@ -75,7 +76,7 @@ class Main:
         print("- - - - WFC RELATED GARBAGE KEEP SCROLLING - - - -")
         wfc_pp = WFC_PP()
         result = wfc_pp.create_tiles(result=result, tile_size=3, surface_dict=surface_dict)
-        SFB = SurfaceBuilder()
+
 
         SFB.build_wfc_glass_layer(surface_dict, result[0])
         connection_p = ConnectionPoints(clusters=result[1][1])
@@ -100,7 +101,9 @@ class Main:
         # Final touch
         prepare_map = PrepareMap(surface_dict=surface_dict, fluid_set=set_of_fluids)
         result = prepare_map.run(cluster_list=result[1][1], connection_tiles=connection_tiles)
-        SurfaceBuilder().build_from_list_of_tuples(surface_dict=surface_dict, coordinates=result)
+        SFB.build_from_list_of_tuples(surface_dict=surface_dict, coordinates=result)
+        input("Delete road?")
+        SFB.delete_road_blocks()
         self.rollback(surface_dict=surface_dict)
 
     def rollback(self, surface_dict):

@@ -11,6 +11,7 @@ class SurfaceBuilder:
     anti_glass_blocks = []
     anti_trash_blocks = []
     anti_emerald_block = []
+    anti_road_blocks = []
 
     def __init__(self):
         __options = [('grpc.max_send_message_length', 512 * 1024 * 1024),
@@ -122,6 +123,12 @@ class SurfaceBuilder:
             block.type = COBBLESTONE
             blocks.append(block)
         self.client.spawnBlocks(Blocks(blocks=blocks))
+        for block in blocks:
+            block.type = AIR
+        self.anti_road_blocks.extend(blocks)
+
+    def delete_road_blocks(self):
+        self.client.spawnBlocks(Blocks(blocks=self.anti_road_blocks))
 
     def grass_surface(self, surface_dict: dict):
         blocks = []
