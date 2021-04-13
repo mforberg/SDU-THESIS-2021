@@ -5,13 +5,14 @@ from wfc_variables import Tile, Cluster
 from pprint import pprint
 from copy import deepcopy
 from collections import Counter
+import numpy
 
 class WFCPreprocessing:
 
     def __init__(self):
         # this is needed to draw grid over the whole solution so that it can be divided into tiles
-        self.__min_x, self.__min_z = 9999999, 9999999
-        self.__max_x, self.__max_z = -9999999, -9999999
+        self.__min_x, self.__min_z = numpy.inf, numpy.inf
+        self.__max_x, self.__max_z = -numpy.inf, -numpy.inf
         self.n = 2  # just a default value
 
     def create_tiles(self, result: SolutionGA, tile_size: int, surface_dict: dict):
@@ -219,8 +220,8 @@ class WFCPreprocessing:
         self.__min_z = values[3]
 
     def __get_min_max_values(self, result: SolutionGA) -> (int, int, int, int):
-        min_x, min_z = 9999999, 9999999
-        max_x, max_z = -9999999, -9999999
+        min_x, min_z = self.__min_x, self.__min_z
+        max_x, max_z = self.__max_x, self.__max_z
         for population in result.population:
             population.recalculate_min_max_mass()
             min_max_dict = population.min_max_values

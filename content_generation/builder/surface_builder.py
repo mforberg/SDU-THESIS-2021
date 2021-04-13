@@ -1,3 +1,5 @@
+import multiprocessing
+from multiprocessing import Pool
 import minecraft_pb2_grpc
 from variables.map_variables import *
 import grpc
@@ -147,9 +149,11 @@ class SurfaceBuilder:
                 blocks.append(block)
         self.client.spawnBlocks(Blocks(blocks=blocks))
 
-    def bulk_write_air(self, dict):
+    def bulk_write_air(self, list_of_coords):
         bulk_blocks = []
-        for key in dict.keys():
-            print(key)
+        for key in list_of_coords:
             bulk_blocks.append(Block(position=Point(x=key[0], y=key[1], z=key[2]), type=AIR, orientation=NORTH))
         self.client.spawnBlocks(Blocks(blocks = bulk_blocks))
+
+    def spawn_blocks(self, list_of_blocks):
+        self.client.spawnBlocks(list_of_blocks)

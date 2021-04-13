@@ -15,7 +15,7 @@ class TestBuilder:
         blocks = []
         for x in range(BOX_X_MIN, BOX_X_MAX):
             for z in range(BOX_Z_MIN, BOX_Z_MAX):
-                for y in range(70, 75):
+                for y in range(150, 155):
                     random_block = Block()
                     random_block.position.y = y
                     random_block.position.x = x
@@ -28,9 +28,9 @@ class TestBuilder:
         blocks = []
         for x in range(BOX_X_MIN, BOX_X_MAX):
             for z in range(BOX_Z_MIN, BOX_Z_MAX):
-                for y in range(70, 75):
+                for y in range(150, 155):
                     if x % 6 == 0 or z % 6 == 0:
-                        if y >= 74:
+                        if y >= 154:
                             random_block = Block()
                             random_block.position.y = y
                             random_block.position.x = x
@@ -49,8 +49,8 @@ class TestBuilder:
             for z in range(BOX_Z_MIN, BOX_Z_MAX):
                 if z % 10 == 0:
                     z_flipped = not z_flipped
-                for y in range(70, 75):
-                    if y >= 74:
+                for y in range(150, 155):
+                    if y >= 154:
                         random_block = Block()
                         if x_flipped or z_flipped:
                             random_block.type = BEDROCK

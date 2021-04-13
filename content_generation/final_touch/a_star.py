@@ -18,16 +18,23 @@ class AStar:
 
     def connect_point_to_goal(self, start_points: List[tuple], goal_points: List[tuple], blocked_coordinates: set) -> \
             List[tuple]:
+        if not start_points[0][0] < goal_points[0][0]:
+            temp = copy.deepcopy(start_points)
+            start_points = copy.deepcopy(goal_points)
+            goal_points = copy.deepcopy(temp)
         open_list = []
         parent_dict = {}
         cost_so_far = dict()
         for point in start_points:
+
             cost_so_far[point] = 0
             heapq.heappush(open_list, (0, point))
+        i = 0
         while open_list:
+            i += 1
             current_point = heapq.heappop(open_list)[1]
-            print(f"{current_point} not in {goal_points}")
             if current_point in goal_points:
+                print(f"Index: {i}: {current_point} not in {goal_points}")
                 return self.backtrack(parent_dict=parent_dict, start_points=start_points, goal_point=current_point)
 
             for neighbor in self.get_neighbors(current_point, blocked_coordinates):

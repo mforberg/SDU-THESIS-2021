@@ -3,10 +3,10 @@ from shared_variables import *
 
 # Box area (they are made to be inclusive)
 """Nicolai's coordinates"""
-BOX_X_MIN = 30100
-BOX_X_MAX = 30150
-BOX_Z_MIN = 33050
-BOX_Z_MAX = 33100
+BOX_X_MIN = 232140
+BOX_X_MAX = 232190
+BOX_Z_MIN = 23233050
+BOX_Z_MAX = 23233100
 """Jonas' coordinates"""
 # BOX_X_MIN = 385
 # BOX_X_MAX = 585
