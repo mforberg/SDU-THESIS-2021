@@ -37,7 +37,7 @@ class MapAnalysis:
             self.work.append({"x": x, "z_min": BOX_Z_MIN, "z_max": BOX_Z_MAX})
 
     def work_log(self, work_data):
-        result = self.read_part_of_world(work_data["x"], work_data["x"], work_data["z_min"], work_data["z_max"])
+        result = self.read_part_of_world(work_data["x"], work_data["x"], work_data["z_min"], work_data["z_max"], False)
         return result
 
     def pool_handler(self):
@@ -47,7 +47,7 @@ class MapAnalysis:
             result.append(i)
         return result
 
-    def read_part_of_world(self, min_x: int, max_x: int, min_z: int, max_z: int, min_y=30, max_y=160) -> dict:
+    def read_part_of_world(self, min_x: int, max_x: int, min_z: int, max_z: int, block_dt: bool, min_y=30, max_y=160) -> dict:
         cube_result = client.readCube(Cube(
             min=Point(x=min_x, y=min_y, z=min_z),
             max=Point(x=max_x, y=max_y, z=max_z)
@@ -59,7 +59,8 @@ class MapAnalysis:
         # changes the class structure to dictionaries + finds the surface
         for block in cube_result.blocks:
             x, y, z = block.position.x, block.position.y, block.position.z
-            # block_dict[x, y, z] = {"type": block.type}
+            if block_dt:
+                block_dict[x, y, z] = {"type": block.type, "block": block}
             if block.type not in SKIP_SET:
                 if (x, z) not in surface_dict:
                     surface_dict[x, z] = SurfaceDictionaryValue(y=y, block_type=block.type, block=block)

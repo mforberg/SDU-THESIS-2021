@@ -1,6 +1,7 @@
 import map_analysis
 from k_means.k_means_clustering import KMeansClustering
 from map_ga.map_main import AreasGA
+from preprocessing.deforestation import Deforest
 from type_ga.type_main import TypesGA
 from wfc.preprocessing.wfc_preprocessing import WFCPreprocessing as WFC_PP
 from wfc.preprocessing.connection_points import ConnectionPoints
@@ -40,11 +41,6 @@ class Main:
                                                                               tester.district_areas,\
                                                                               tester.set_of_fluids
 
-
-        # for key in surface_dict.keys():
-        #     print(key)
-        # random_block = surface_dict[BOX_X_MIN, BOX_Z_MIN].block
-
         # tb.create_cuts(block=random_block)
         # tb.create_big_areas(block=random_block)
 
@@ -77,6 +73,10 @@ class Main:
         wfc_pp = WFC_PP()
         result = wfc_pp.create_tiles(result=result, tile_size=3, surface_dict=surface_dict)
 
+        deforester = Deforest()
+        deforester.run(clusters=result[1][1], surface_dict=surface_dict)
+        SFB = SurfaceBuilder()
+
         SFB.build_wfc_glass_layer(surface_dict, result[0])
         connection_p = ConnectionPoints(clusters=result[1][1])
         connection_tiles = connection_p.run()
@@ -104,6 +104,7 @@ class Main:
         input("Delete road?")
         SFB.delete_road_blocks()
         self.rollback(surface_dict=surface_dict)
+        deforester.rollback()
 
     def rollback(self, surface_dict):
         print("Reset surface? 1 or 2")
