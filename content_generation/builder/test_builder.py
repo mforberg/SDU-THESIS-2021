@@ -125,5 +125,4 @@ class TestBuilder:
                     random_block.position.x = x
                     random_block.position.z = z
                     blocks.append(random_block)
-
         self.client.spawnBlocks(Blocks(blocks=blocks))
