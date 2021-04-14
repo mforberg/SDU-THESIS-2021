@@ -52,12 +52,12 @@ class Main:
         result = AreasGA().run(areas=district_areas)
 
         #  K-means clustering
+        print("Clustering Started")
         clusters = KMeansClustering().run(first_ga_result=result, surface_dict=surface_dict)
 
         # SurfaceBuilder().build_clusters(clusters=clusters, surface_dict=surface_dict)
         #
         # self.rollback(surface_dict=surface_dict)
-
 
         #  Type GA
         first = time.time()
@@ -76,7 +76,6 @@ class Main:
         print("- - - - WFC RELATED GARBAGE KEEP SCROLLING - - - -")
         wfc_pp = WFC_PP()
         result = wfc_pp.create_tiles(result=result, tile_size=3, surface_dict=surface_dict)
-
 
         SFB.build_wfc_glass_layer(surface_dict, result[0])
         connection_p = ConnectionPoints(clusters=result[1][1])
