@@ -41,41 +41,6 @@ class Main:
                                                                               tester.district_areas,\
                                                                               tester.set_of_fluids
 
-        # trees = [119, 120, 131, 132]
-        # trees_for_persistence = {}
-        # bulk_write_to_server_dict = {}
-        # height_for_tree = {} # key = tree location, value = height of tree
-        # for key in surface_dict.keys():
-        #     if surface_dict[key[0], key[1]].block.type in trees:
-        #         trees_for_persistence[(key[0], key[1])] = surface_dict[key[0], key[1]].block
-        # for key in trees_for_persistence.keys():
-        #     current_x, current_z = trees_for_persistence[key].position.x, trees_for_persistence[key].position.z
-        #     current_y = trees_for_persistence[key].position.y
-        #     height_of_neighbors = []
-        #     counter = 0
-        #     for x in range(current_x-3, current_x+3):
-        #         if x < BOX_X_MAX and x > BOX_X_MIN:
-        #             counter += 1
-        #             height_of_neighbors.append(surface_dict[x, current_z].block.position.y)
-        #     for z in range(current_z-3, current_z+3):
-        #         if z < BOX_Z_MAX and z > BOX_Z_MIN:
-        #             counter +=1
-        #             height_of_neighbors.append(surface_dict[current_x, z].block.position.y)
-        #     for index, height in enumerate(height_of_neighbors):
-        #         if index < 1 or index >= len(height_of_neighbors)-1:
-        #             continue
-        #         height_of_neighbors[index] = (height_of_neighbors[index - 1] + height_of_neighbors[index + 1])/2
-        #     height_of_neighbor = int(sum(height_of_neighbors)/counter)
-        #     height_for_tree[(current_x, current_z)] = current_y - height_of_neighbor
-        #     #print(current_x, current_z)
-        #     #print(f"height: {height_of_neighbor}, current y: {current_y}, height_of_tree: {height_for_tree[(current_x, current_z)]}")
-        #     for tree in height_for_tree:
-        #         for height in range(height_of_neighbor, height_for_tree[tree]):
-        #             bulk_write_to_server_dict[(tree[0], height, tree[1])] = trees_for_persistence[key]
-        # SurfaceBuilder().bulk_write_air(bulk_write_to_server_dict)
-        # x = input("Hol' up")
-        # random_block = surface_dict[BOX_X_MIN, BOX_Z_MIN].block
-
         # tb.create_cuts(block=random_block)
         # tb.create_big_areas(block=random_block)
 
