@@ -156,4 +156,4 @@ class SurfaceBuilder:
         self.client.spawnBlocks(Blocks(blocks = bulk_blocks))
 
     def spawn_blocks(self, list_of_blocks):
-        self.client.spawnBlocks(list_of_blocks)
+        self.client.spawnBlocks(Blocks(blocks= list_of_blocks))
