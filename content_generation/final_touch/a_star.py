@@ -1,5 +1,4 @@
 from typing import Set
-
 from variables.map_variables import *
 from variables.a_star_variables import *
 import heapq
@@ -13,14 +12,16 @@ class AStar:
 
     def run(self, blocked_coordinates: Set[APoint], connection_points: List[tuple]) -> List[APoint]:
         total_list_of_road_blocks = []
+        dict_of_road_blocks = {}
         for road_network in connection_points:
             total_list_of_road_blocks.extend(self.connect_point_to_goal(start_points=road_network[0],
                                                                         goal_points=road_network[1],
-                                                                        blocked_coordinates=blocked_coordinates))
+                                                                        blocked_coordinates=blocked_coordinates,
+                                                                        dict_of_road_blocks=dict_of_road_blocks))
         return total_list_of_road_blocks
 
     def connect_point_to_goal(self, start_points: List[APoint], goal_points: List[APoint],
-                              blocked_coordinates: Set[APoint]) -> List[APoint]:
+                              blocked_coordinates: Set[APoint], dict_of_road_blocks: dict) -> List[APoint]:
         copy_of_blocked = copy.deepcopy(blocked_coordinates)
         if start_points[0].node[0] > goal_points[0].node[0]:
             temp = copy.deepcopy(start_points)
@@ -41,13 +42,15 @@ class AStar:
 
             if current_point in goal_points:
                 print(f"Checked: {i}, Cost: {cost_so_far[current_point]} - goal: {current_point}")
-                return self.backtrack(parent_dict=parent_dict, goal_point=current_point)
+                return self.backtrack(parent_dict=parent_dict, goal_point=current_point,
+                                      road_blocks_dict=dict_of_road_blocks)
 
             if current_point in parent_dict:
                 parent = parent_dict[current_point]
             else:
                 parent = None
-            for neighbor in self.get_neighbors(point=current_point, blocked_coordinates=copy_of_blocked, parent=parent):
+            for neighbor in self.get_neighbors(point=current_point, blocked_coordinates=copy_of_blocked, parent=parent,
+                                               road_blocks_dict=dict_of_road_blocks):
                 new_cost = cost_so_far[current_point]
                 new_cost += self.calculate_path_cost(current_point=current_point, to_point=neighbor)
                 if neighbor not in cost_so_far or new_cost < cost_so_far[neighbor]:
@@ -59,12 +62,12 @@ class AStar:
     def calculate_path_cost(self, current_point: APoint, to_point: APoint) -> int:
         cost = 1
         target_y = to_point.y
-        cost += 2 * abs(current_point.y - target_y)
+        cost += abs(current_point.y - target_y)
         if self.surface_dict[to_point.node].y == target_y:
             if self.surface_dict[to_point.node].block_type in self.fluid_set:
-                cost += 5
+                cost += 3
         else:
-            cost += 5 * abs(self.surface_dict[to_point.node].y - target_y)
+            cost += 1 + abs(self.surface_dict[to_point.node].y - target_y)
         return cost
 
     def calculate_heuristic(self, point: APoint, goals: List[APoint]) -> int:
@@ -78,7 +81,8 @@ class AStar:
                 smallest = value
         return smallest
 
-    def get_neighbors(self, point: APoint, blocked_coordinates: Set[APoint], parent: APoint) -> List[APoint]:
+    def get_neighbors(self, point: APoint, blocked_coordinates: Set[APoint], parent: APoint,
+                      road_blocks_dict: dict) -> List[APoint]:
         possible_neighbor_relations = [(0, 1), (0, -1), (1, 0), (-1, 0)]
         if parent is not None:
             parent_relation = (parent.node[0] - point.node[0], parent.node[1] - point.node[1])
@@ -101,15 +105,22 @@ class AStar:
                     if y < surface_y:
                         continue
                     possible_point = APoint(node=possible_neighbor, y=y)
+                    #  check blocked coordinates and already placed road blocks
                     if possible_point not in blocked_coordinates:
-                        neighbors.append(possible_point)
+                        if possible_point.node not in road_blocks_dict:
+                            neighbors.append(possible_point)
+                        else:
+                            y_difference = abs(road_blocks_dict[possible_point.node] - y)
+                            if y_difference not in DISALLOWED_Y_DIFFERENCE:
+                                neighbors.append(possible_point)
         return neighbors
 
-    def backtrack(self, parent_dict: dict, goal_point: APoint) -> List[APoint]:
+    def backtrack(self, parent_dict: dict, goal_point: APoint, road_blocks_dict: dict) -> List[APoint]:
         backtracking = []
         current_point = parent_dict[goal_point]
         while current_point in parent_dict:
             backtracking.append(current_point)
+            road_blocks_dict[current_point.node] = current_point.y
             current_point = parent_dict[current_point]
         print(f"Start: {current_point}")
         print(f"---------------------------")

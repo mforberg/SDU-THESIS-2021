@@ -1,4 +1,4 @@
-from uuid import uuid4
+DISALLOWED_Y_DIFFERENCE = {1, 2}
 
 
 class APoint:
