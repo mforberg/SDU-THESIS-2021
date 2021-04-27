@@ -18,38 +18,42 @@ class AreasGA:
         self.population_averages = []
         self.new_best_prints = []
         self.DFC = DataFileCreator(filename="map_ga_data")
+        self.map_initial = MapInitialPopulation()
+        self.map_fitness = MapFitness()
+        self.map_select = MapSelection()
+        self.map_crossover = MapCrossover()
+        self.map_mutation = MapMutation()
 
     def run(self, areas: SolutionGA) -> SolutionGA:
         population = []
         # Generate initial population
         for i in range(0, MAP_POPULATION_SIZE):
-            initial_population = MapInitialPopulation().create(areas)
-            population.append(initial_population)
+            initial_solution = self.map_initial.create(areas)
+            population.append(initial_solution)
         # repeat fitness calculation and select the best solution overall
         for i in trange(MAP_GENERATION_AMOUNT, desc='GA for finding areas', leave=True):
             #  Fitness
-            MapFitness().calculate_fitness_for_all(population)
+            self.map_fitness.calculate_fitness_for_all(population)
+            #  check statistics
             r = self.DFC.check_stats_on_solution(population=population, current_gen=i, best_solution=self.best_solution)
             self.new_best_prints.extend(r[0])
             self.best_solution = r[1]
             # as long as it is not the last generation, find parents, do crossover, and mutate
             if i != MAP_GENERATION_AMOUNT - 1:
                 #  Select
-                parents_no_fitness = MapSelection().select_best_solutions(population)
+                parents_no_fitness = self.map_select.select_best_solutions(population)
                 #  Crossover
-                crossed_population_no_fitness = MapCrossover().crossover(population, parents_no_fitness)
+                crossed_population_no_fitness = self.map_crossover.crossover(population, parents_no_fitness)
                 #  Mutation
-                MapMutation().mutate_populations(crossed_population_no_fitness, areas)
+                self.map_mutation.mutate_populations(crossed_population_no_fitness, areas)
                 #  set population and clean it
                 population = crossed_population_no_fitness
-                self.__clean_population_for_duplicates_in_solution(population=population)
+                self.__clean_population_for_duplicates(population=population)
         for string in self.new_best_prints:
             print(string)
         return self.best_solution
 
-
-
-    def __clean_population_for_duplicates_in_solution(self, population: List[SolutionGA]):
+    def __clean_population_for_duplicates(self, population: List[SolutionGA]):
         for solution in population:
             unique_sets = set()
             for area in solution.population:

@@ -12,8 +12,11 @@ class ConnectionPoints:
 
     def run(self) -> List[tuple]:
         self.__find_connection_tiles_next_to_each_other()
+        print("1")
         self.__connect_everything()
+        print("2")
         self.__connect_own_clusters()
+        print("3")
         return self.connection_points
 
     def __connect_own_clusters(self):
@@ -22,13 +25,14 @@ class ConnectionPoints:
             tile_iterator = iter(cluster.tiles)
             checked_tiles = set()
             while len(checked_tiles) < len(cluster.tiles):
+                print(f"1: {len(checked_tiles)} < {len(cluster.tiles)}")
                 current_tile = next(tile_iterator)
                 if current_tile not in checked_tiles:
                     connected_areas.append(self.__get_area_connected_to_this(cluster=cluster, tile=current_tile,
                                                                              checked_tiles=checked_tiles))
             own_cluster = [connected_areas[0]]
-            i = 0
             while len(own_cluster) < len(connected_areas):
+                print(f"2: {len(checked_tiles)} < {len(cluster.tiles)}")
                 closest = None
                 connection_point = None
                 shortest_distance = 9999999999999
@@ -48,12 +52,15 @@ class ConnectionPoints:
     def __get_area_connected_to_this(self, tile: Tile, cluster: Cluster, checked_tiles: set) -> Cluster:
         tiles_to_be_checked = [tile]
         current_area = []
+        cluster_tiles_set = set()
+        for tile in cluster.tiles:
+            cluster_tiles_set.add(tile)
         while tiles_to_be_checked:
             current_tile = tiles_to_be_checked.pop(0)
             checked_tiles.add(current_tile)
             current_area.append(current_tile)
             for neighbor in current_tile.neighbors:
-                if neighbor not in checked_tiles and neighbor in cluster.tiles:
+                if neighbor not in checked_tiles and neighbor in cluster_tiles_set:
                     tiles_to_be_checked.append(neighbor)
         return Cluster(current_area)
 

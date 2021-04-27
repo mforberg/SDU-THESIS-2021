@@ -6,10 +6,11 @@ from variables.shared_variables import *
 
 class MapFitness:
 
-    median_y = 0
-    mass_center = {'x': 0, 'z': 0}
-    #  amount of blocks divided by distance from min-max corners
-    min_value_for_fitness_size = MIN_SIZE_OF_AREA / math.sqrt(MIN_SIZE_OF_AREA * 2)
+    def __init__(self):
+        self.median_y = 0
+        self.mass_center = {'x': 0, 'z': 0}
+        #  amount of blocks divided by distance from min-max corners
+        self.min_value_for_fitness_size = MIN_SIZE_OF_AREA / math.sqrt(MIN_SIZE_OF_AREA * 2)
 
     def calculate_fitness_for_all(self, population_list: List[SolutionGA]):
         for population in population_list:

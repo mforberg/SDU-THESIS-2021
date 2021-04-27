@@ -17,6 +17,11 @@ class TypesGA:
                                                                             type_of_district="no")])
         self.DFC = DataFileCreator(filename="type_ga_data")
         self.new_best_prints = []
+        self.type_initial = TypeInitialPopulation()
+        self.type_fitness = TypeFitness()
+        self.type_select = TypeSelection()
+        self.type_crossover = TypeCrossover()
+        self.type_mutation = TypeMutation()
 
     def run(self, surface_dict: dict, clusters: SolutionGA, global_district_types_dict: dict,
             fluid_set: set) -> SolutionGA:
@@ -24,21 +29,21 @@ class TypesGA:
         population = []
         # Generate initial population
         for i in range(0, TYPE_POPULATION_SIZE):
-            initial_population = TypeInitialPopulation().create(clusters=clusters)
+            initial_population = self.type_initial.create(clusters=clusters)
             population.append(initial_population)
         # repeat fitness calculation and select the best solution overall
         for i in trange(TYPE_GENERATION_AMOUNT, desc='GA for setting type', leave=True):
-            TypeFitness().calculate_fitness_for_all(population_list=population, surface_dict=surface_dict,
-                                                    global_dict_of_used_types=global_district_types_dict,
-                                                    preprocess_dict=preprocess_dict)
+            self.type_fitness.calculate_fitness_for_all(population_list=population, surface_dict=surface_dict,
+                                                        global_dict_of_used_types=global_district_types_dict,
+                                                        preprocess_dict=preprocess_dict)
             r = self.DFC.check_stats_on_solution(population=population, current_gen=i, best_solution=self.best_solution)
             self.new_best_prints.extend(r[0])
             self.best_solution = r[1]
             # as long as it is not the last generation, find parents, do crossover, and mutate
             if i != TYPE_GENERATION_AMOUNT - 1:
-                parents_no_fitness = TypeSelection().select_best_solutions(population_list=population)
-                crossed_population_no_fitness = TypeCrossover().crossover(population, parents_no_fitness)
-                TypeMutation().mutate_populations(crossed_population_no_fitness)
+                parents_no_fitness = self.type_select.select_best_solutions(population_list=population)
+                crossed_population_no_fitness = self.type_crossover.crossover(population, parents_no_fitness)
+                self.type_mutation.mutate_populations(crossed_population_no_fitness)
                 population = crossed_population_no_fitness
         self.__update_global_dict_of_types(solution=self.best_solution,
                                            global_dict_of_used_types=global_district_types_dict)
@@ -52,9 +57,9 @@ class TypesGA:
                 global_dict_of_used_types[area.type_of_district] += 1
             else:
                 global_dict_of_used_types[area.type_of_district] = 1
-
-    def __check_for_new_best_solution(self, populations_list: list, current_gen: int):
-        for solution in populations_list:
-            if solution.fitness > self.best_solution.fitness:
-                self.best_solution = copy.deepcopy(solution)
-                self.new_best_prints.append(f"New best {solution.fitness} at gen {current_gen}")
+    #
+    # def __check_for_new_best_solution(self, populations_list: list, current_gen: int):
+    #     for solution in populations_list:
+    #         if solution.fitness > self.best_solution.fitness:
+    #             self.best_solution = copy.deepcopy(solution)
+    #             self.new_best_prints.append(f"New best {solution.fitness} at gen {current_gen}")

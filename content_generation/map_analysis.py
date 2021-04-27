@@ -16,6 +16,7 @@ client = minecraft_pb2_grpc.MinecraftServiceStub(channel)
 
 class MapAnalysis:
     work = []
+    possible_neighbor_relations = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 
     def run(self) -> MapAnalData:
         total_surface_dict = {}
@@ -91,7 +92,7 @@ class MapAnalysis:
         min_z = max_z = total_z = block_z
         amount = 1
         height = surface_dict[block_x, block_z].y
-        checked_neighbors = []
+        checked_neighbors = set()
         current_area = []
         nodes_to_be_checked.append((block_x, block_z))
         while nodes_to_be_checked:
@@ -104,7 +105,7 @@ class MapAnalysis:
                 for neighbor in neighbors:
                     if neighbor not in checked_nodes and neighbor not in checked_neighbors \
                             and surface_dict[current_node].y == surface_dict[neighbor].y:
-                        checked_neighbors.append(neighbor)
+                        checked_neighbors.add(neighbor)
                         nodes_to_be_checked.append(neighbor)
                         amount += 1
                 total_x += x
@@ -128,12 +129,8 @@ class MapAnalysis:
 
     def get_neighbors(self, surface_dict: dict, block_x: int, block_z: int) -> List[tuple]:
         neighbors = []  # [[x1, z1], [x2, z2]]
-        for x in range(-1, 2):
-            if x != 0:
-                if (block_x + x, block_z) in surface_dict:
-                    neighbors.append((block_x+x, block_z))
-        for z in range(-1, 2):
-            if z != 0:
-                if (block_x, block_z + z) in surface_dict:
-                    neighbors.append((block_x, block_z + z))
+        for possible_neighbor_relation in self.possible_neighbor_relations:
+            possible_neighbor = (possible_neighbor_relation[0] + block_x, possible_neighbor_relation[1] + block_z)
+            if possible_neighbor in surface_dict:
+                neighbors.append(possible_neighbor)
         return neighbors
