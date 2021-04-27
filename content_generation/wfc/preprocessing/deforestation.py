@@ -71,27 +71,31 @@ class Deforest:
             pool.map(self.__find_trees, data)
 
     def run(self, clusters: list, surface_dict: dict):
-        self.surface_dict = surface_dict
-        data = [clusters, surface_dict]
-        self.__find_trees(data)
-        self.__read_tree()
-        self.__absolute_tree_finder()
-        self.__remove_trees()
-        lis = sorted(self.block_dict.keys(), key= lambda t: t[1], reverse=True)
+        try:
+            self.surface_dict = surface_dict
+            data = [clusters, surface_dict]
+            self.__find_trees(data)
+            self.__read_tree()
+            self.__absolute_tree_finder()
+            self.__remove_trees()
+            lis = sorted(self.block_dict.keys(), key= lambda t: t[1], reverse=True)
 
-        for tree in self.trees_for_persistence.keys():
-            templist = []
-            for el in lis:
-                if el[0] == tree[0] and el[2] == tree[1]:
-                    if not self.block_dict[el[0], el[1], el[2]]['type'] in [self.trees[2], self.trees[3], 5]:
-                        templist.append(self.block_dict[el[0], el[1], el[2]])
-            for ele in templist:
-                if ele['type'] in [self.trees[1], self.trees[0]]:
-                    templist.remove(ele)
-            for ele in templist:
-                print(ele)
-            templist = sorted(templist, key= lambda t: t['block'].position.y, reverse= True)
-            tempconditionalvar = templist[0]['block'].position.y
-            if (tree[0], tempconditionalvar, tree[1]) in self.block_dict:
-                heavy_sigh = SurfaceDictionaryValue(y=tempconditionalvar, block_type=self.block_dict[tree[0], tempconditionalvar, tree[1]]['type'], block=self.block_dict[tree[0], tempconditionalvar, tree[1]]['block'])
-                surface_dict[tree[0], tree[1]] = heavy_sigh
+            for tree in self.trees_for_persistence.keys():
+                templist = []
+                for el in lis:
+                    if el[0] == tree[0] and el[2] == tree[1]:
+                        if not self.block_dict[el[0], el[1], el[2]]['type'] in [self.trees[2], self.trees[3], 5]:
+                            templist.append(self.block_dict[el[0], el[1], el[2]])
+                for ele in templist:
+                    if ele['type'] in [self.trees[1], self.trees[0]]:
+                        templist.remove(ele)
+                for ele in templist:
+                    print(ele)
+                templist = sorted(templist, key= lambda t: t['block'].position.y, reverse= True)
+                tempconditionalvar = templist[0]['block'].position.y
+                if (tree[0], tempconditionalvar, tree[1]) in self.block_dict:
+                    heavy_sigh = SurfaceDictionaryValue(y=tempconditionalvar, block_type=self.block_dict[tree[0], tempconditionalvar, tree[1]]['type'], block=self.block_dict[tree[0], tempconditionalvar, tree[1]]['block'])
+                    surface_dict[tree[0], tree[1]] = heavy_sigh
+        except:
+            print("An exception occured. Rollback will commence.")
+            self.rollback()
