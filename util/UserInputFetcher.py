@@ -3,7 +3,7 @@ def fetch_user_integer_with_limit(limit: int):
     while True:
         try:
             keyTwo = int(input())
-            if limit >= keyTwo:
+            if limit >= keyTwo >= 0:
                 break
             else:
                 print(f"Please stay within the limit of {limit}")

@@ -1,3 +1,5 @@
+import multiprocessing
+from multiprocessing import Pool
 import minecraft_pb2_grpc
 from variables.map_variables import *
 import grpc
@@ -11,6 +13,7 @@ class SurfaceBuilder:
     anti_glass_blocks = []
     anti_trash_blocks = []
     anti_emerald_block = []
+    anti_road_blocks = []
 
     def __init__(self):
         __options = [('grpc.max_send_message_length', 512 * 1024 * 1024),
@@ -118,9 +121,16 @@ class SurfaceBuilder:
         blocks = []
         for value in coordinates:
             block = copy.deepcopy(surface_dict[(value[0], value[1])].block)
+            block.position.y = value[2]
             block.type = COBBLESTONE
             blocks.append(block)
         self.client.spawnBlocks(Blocks(blocks=blocks))
+        for block in blocks:
+            block.type = AIR
+        self.anti_road_blocks.extend(blocks)
+
+    def delete_road_blocks(self):
+        self.client.spawnBlocks(Blocks(blocks=self.anti_road_blocks))
 
     def grass_surface(self, surface_dict: dict):
         blocks = []
@@ -146,3 +156,12 @@ class SurfaceBuilder:
                 block.type = DIAMOND_BLOCK
                 blocks.append(block)
         self.client.spawnBlocks(Blocks(blocks=blocks))
+
+    def bulk_write_air(self, list_of_coords):
+        bulk_blocks = []
+        for key in list_of_coords:
+            bulk_blocks.append(Block(position=Point(x=key[0], y=key[1], z=key[2]), type=AIR, orientation=NORTH))
+        self.client.spawnBlocks(Blocks(blocks = bulk_blocks))
+
+    def spawn_blocks(self, list_of_blocks):
+        self.client.spawnBlocks(Blocks(blocks= list_of_blocks))

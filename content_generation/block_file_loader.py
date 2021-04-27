@@ -26,7 +26,7 @@ class BlockFileLoader:
                 print('Do you want to save the old file before creating a new one? 1 or 2')
                 keyTwo = fetch_user_integer()
                 if keyTwo == 1:
-                    print("Give the file a name! Please don't use space")
+                    print("Give the old file a name! Please don't use space")
                     file_name = str(input())
                     os.rename(f"{save_file_dir}{save_file_path}", f"{save_file_dir}{file_name}_{save_file_path}")
                     temp_map_data = map_analysis.MapAnalysis().run()
@@ -62,8 +62,9 @@ class BlockFileLoader:
             for index, pkl in enumerate(pkl_files):
                 print(f"{index}: {pkl}")
             stopper = fetch_user_integer_with_limit(len(pkl_files))
-            if stopper <= 0:
+            if stopper == 0:
                 stopper = stopper + 1
+            print(f'{save_file_dir}{dirs[stopper-1]}')
             block_file = open(f'{save_file_dir}{dirs[stopper-1]}', 'rb')
         return block_file
 

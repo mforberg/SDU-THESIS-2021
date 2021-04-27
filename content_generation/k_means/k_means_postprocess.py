@@ -1,5 +1,6 @@
 from shared_variables import *
 from map_analysis import MapAnalysis
+from variables.map_variables import FLUID_SET
 
 
 def run_postprocess(centroids: List[list], surface_dict: dict) -> SolutionGA:
@@ -26,7 +27,7 @@ def __check_for_and_consume_digestible_areas(solution: SolutionGA, area: Solutio
     found_areas.sort(key=lambda consumed_area: consumed_area.distance_to_mass_coordinate(x=area.mass_coordinate['x'],
                                                                                          z=area.mass_coordinate['z']))
     for found_area in found_areas:
-        if __check_if_digest(consumer=area, consumed=found_area):
+        if __check_if_digest(consumer=area, consumed=found_area, surface_dict=surface_dict):
             if __check_if_area_is_connected_to_consumer(consumer=area, consumed=found_area, surface_dict=surface_dict):
                 __consume_area(consumer=area, consumed=found_area)
 
@@ -62,9 +63,12 @@ def __consume_area(consumer: SolutionArea, consumed: SolutionArea):
         consumer.list_of_coordinates.append(coordinate)
 
 
-def __check_if_digest(consumer: SolutionArea, consumed: SolutionArea) -> bool:
+def __check_if_digest(consumer: SolutionArea, consumed: SolutionArea, surface_dict: dict) -> bool:
     min_max_values = consumer.min_max_values
     for coordinate in consumed.list_of_coordinates:
+        type_of_block = surface_dict[coordinate].block_type
+        if type_of_block in FLUID_SET:
+            return False
         if coordinate[0] < min_max_values['min_x'] or coordinate[0] > min_max_values['max_x'] or \
                 coordinate[1] < min_max_values['min_z'] or coordinate[1] > min_max_values['max_z'] \
                 or abs(consumer.height - consumed.height) > 5:

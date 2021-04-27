@@ -1,6 +1,7 @@
 import map_analysis
 from k_means.k_means_clustering import KMeansClustering
 from map_ga.map_main import AreasGA
+from preprocessing.deforestation import Deforest
 from type_ga.type_main import TypesGA
 from wfc.preprocessing.wfc_preprocessing import WFCPreprocessing as WFC_PP
 from wfc.preprocessing.connection_points import ConnectionPoints
@@ -24,9 +25,11 @@ class Main:
     global_dict_of_types = {}
 
     def run(self):
-        tb = TestBuilder()
-        tb.build_flat_surface(type_of_block=STONE)
-        tb.create_big_areas()
+        # tb = TestBuilder()
+        SFB = SurfaceBuilder()
+        # tb.build_flat_surface(type_of_block=STONE)
+        # tb.create_big_areas()
+        # tb.create_mexican_walls()
 
         #  Map analysis
 
@@ -39,11 +42,6 @@ class Main:
                                                                               tester.district_areas,\
                                                                               tester.set_of_fluids
 
-
-        # for key in surface_dict.keys():
-        #     print(key)
-        # random_block = surface_dict[BOX_X_MIN, BOX_Z_MIN].block
-
         # tb.create_cuts(block=random_block)
         # tb.create_big_areas(block=random_block)
 
@@ -51,12 +49,12 @@ class Main:
         result = AreasGA().run(areas=district_areas)
 
         #  K-means clustering
+        print("Clustering Started")
         clusters = KMeansClustering().run(first_ga_result=result, surface_dict=surface_dict)
 
         # SurfaceBuilder().build_clusters(clusters=clusters, surface_dict=surface_dict)
         #
         # self.rollback(surface_dict=surface_dict)
-
 
         #  Type GA
         first = time.time()
@@ -67,7 +65,7 @@ class Main:
         for sol in result.population:
             print(sol.type_of_district)
 
-        SurfaceBuilder().build_type_ga(surface_dict=surface_dict, type_ga_result=result)
+        SFB.build_type_ga(surface_dict=surface_dict, type_ga_result=result)
         self.rollback(surface_dict=surface_dict)
 
 
@@ -75,6 +73,9 @@ class Main:
         print("- - - - WFC RELATED GARBAGE KEEP SCROLLING - - - -")
         wfc_pp = WFC_PP()
         result = wfc_pp.create_tiles(result=result, tile_size=3, surface_dict=surface_dict)
+
+        #deforester = Deforest()
+        #deforester.run(clusters=result[1][1], surface_dict=surface_dict)
         SFB = SurfaceBuilder()
 
         SFB.build_wfc_glass_layer(surface_dict, result[0])
@@ -104,8 +105,11 @@ class Main:
         # Final touch
         prepare_map = PrepareMap(surface_dict=surface_dict, fluid_set=set_of_fluids)
         result = prepare_map.run(cluster_list=result[1][1], connection_tiles=connection_tiles)
-        SurfaceBuilder().build_from_list_of_tuples(surface_dict=surface_dict, coordinates=result)
+        SFB.build_from_list_of_tuples(surface_dict=surface_dict, coordinates=result)
+        input("Delete road?")
+        SFB.delete_road_blocks()
         self.rollback(surface_dict=surface_dict)
+        #deforester.rollback()
 
     def rollback(self, surface_dict):
         print("Reset surface? 1 or 2")
