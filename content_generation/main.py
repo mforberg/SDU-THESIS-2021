@@ -16,6 +16,7 @@ from block_file_loader import BlockFileLoader
 from map_variables import *
 import uuid
 from UserInputFetcher import fetch_user_integer
+from wfc_main import WaveFunctionCollapse as WFC
 
 
 class Main:
@@ -23,9 +24,9 @@ class Main:
     global_dict_of_types = {}
 
     def run(self):
-        # tb = TestBuilder()
-        # tb.build_flat_surface(type_of_block=STONE)
-        # tb.create_big_areas()
+        tb = TestBuilder()
+        tb.build_flat_surface(type_of_block=STONE)
+        tb.create_big_areas()
 
         #  Map analysis
 
@@ -91,6 +92,10 @@ class Main:
         #SFB.delete_wfc_trash_layer()
 
         wfc_pp.normalize_height(clustered_tiles=result[1][1], surface_dict=surface_dict) # TODO: Implement + Test
+
+        #wfc = WFC()
+        #wfc.run(clustered_tiles=result[1][1])
+
 
         self.rollback(surface_dict=surface_dict)
         print("- - - - WFC RELATED GARBAGE STOPPED - - - -")

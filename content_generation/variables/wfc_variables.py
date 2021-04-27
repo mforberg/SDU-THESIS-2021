@@ -12,6 +12,9 @@ class Tile:
         self.neighbors: List[Tile] = []
         self.cluster_assignment = -1  # Reassigned later
 
+        self.states = [State]
+        self.entropy = 0  # TODO: Implement something to assign this + figure out how to calc this
+
     def add_neighbor(self, other: Tile):
         if other not in self.neighbors:
             self.neighbors.append(other)
@@ -34,6 +37,9 @@ class Tile:
             print(neighbor.nodes)
         print("- - - - - - -")
 
+    def assign_states(self, states: [State]):
+        self.states = states
+
     def __repr__(self):
         return f"<{self.__class__.__name__} ({hex(id(self))}): ID[:8] {self.id[:8]}, CA: {self.cluster_assignment}, Nodes:\n {self.nodes}>"
 
@@ -46,6 +52,25 @@ class Tile:
     def __ne__(self, other):
         return self.id is not other.id
 
+
+class State:
+
+    def __init__(self, state_type: str, pattern, legal_neighbors: [str]):
+        self.type = state_type
+        self.pattern = pattern
+        self.legal_neighbors = legal_neighbors
+
+    def __repr__(self):
+        return f"<{self.__class__.__name__} ({hex(id(self))}: TYPE={self.type}"
+
+    def __eq__(self, other):
+        return self.type is other.type
+
+
+class Pattern:
+
+    def __init__(self, pattern):
+        self.pattern = pattern
 
 class Cluster:
 
