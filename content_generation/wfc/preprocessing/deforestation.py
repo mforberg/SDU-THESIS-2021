@@ -5,7 +5,6 @@ from surface_builder import SurfaceBuilder
 from shared_variables import SurfaceDictionaryValue
 from minecraft_pb2 import Block
 from map_variables import BOX_X_MIN, BOX_Z_MIN
-import concurrent.futures
 
 class Deforest:
 
@@ -19,8 +18,6 @@ class Deforest:
         self.tree_removal = []
         self.first_tree_x_y_z = []
         pass
-
-
 
     def __find_trees(self, list_clusters):
         for cluster in list_clusters[0]:
@@ -74,36 +71,31 @@ class Deforest:
             pool.map(self.__find_trees, data)
 
     def run(self, clusters: list, surface_dict: dict):
-        self.surface_dict = surface_dict
-        le = int(len(clusters)/5)
-        set1, set2, set3, set4, set5 = slice(le), slice(le, le * 2),\
-                                       slice(le * 2, le * 3),\
-                                       slice(le * 3, le * 4), slice(le * 4, le * 5)
-        #data = [[clusters[set1], surface_dict], [clusters[set2], surface_dict], [clusters[set3], surface_dict],
-        #        [clusters[set4], surface_dict], [clusters[set5], surface_dict]]
-        data = [clusters, surface_dict]
-        #self.__start_find_trees(data)
-        self.__find_trees(data)
-        self.__read_tree()
-        self.__absolute_tree_finder()
-        self.__remove_trees()
-        checked_x_z = []
-        lis = sorted(self.block_dict.keys(), key= lambda t: t[1], reverse=True)
+        try:
+            self.surface_dict = surface_dict
+            data = [clusters, surface_dict]
+            self.__find_trees(data)
+            self.__read_tree()
+            self.__absolute_tree_finder()
+            self.__remove_trees()
+            lis = sorted(self.block_dict.keys(), key= lambda t: t[1], reverse=True)
 
-        for tree in self.trees_for_persistence.keys():
-            templist = []
-            for el in lis:
-                if el[0] == tree[0] and el[2] == tree[1]:
-                    if not self.block_dict[el[0], el[1], el[2]]['type'] in [self.trees[2], self.trees[3], 5]:
-                        templist.append(self.block_dict[el[0], el[1], el[2]])
-            for ele in templist:
-                if ele['type'] in [self.trees[1], self.trees[0]]:
-                    templist.remove(ele)
-            for ele in templist:
-                print(ele)
-            templist = sorted(templist, key= lambda t: t['block'].position.y, reverse= True)
-            #tempconditionalvar = self.trees_for_persistence[tree[0], tree[1]].position.y - 1
-            tempconditionalvar = templist[0]['block'].position.y
-            if (tree[0], tempconditionalvar, tree[1]) in self.block_dict:
-                heavy_sigh = SurfaceDictionaryValue(y=tempconditionalvar, block_type=self.block_dict[tree[0], tempconditionalvar, tree[1]]['type'], block=self.block_dict[tree[0], tempconditionalvar, tree[1]]['block'])
-                surface_dict[tree[0], tree[1]] = heavy_sigh
+            for tree in self.trees_for_persistence.keys():
+                templist = []
+                for el in lis:
+                    if el[0] == tree[0] and el[2] == tree[1]:
+                        if not self.block_dict[el[0], el[1], el[2]]['type'] in [self.trees[2], self.trees[3], 5]:
+                            templist.append(self.block_dict[el[0], el[1], el[2]])
+                for ele in templist:
+                    if ele['type'] in [self.trees[1], self.trees[0]]:
+                        templist.remove(ele)
+                for ele in templist:
+                    print(ele)
+                templist = sorted(templist, key= lambda t: t['block'].position.y, reverse= True)
+                tempconditionalvar = templist[0]['block'].position.y
+                if (tree[0], tempconditionalvar, tree[1]) in self.block_dict:
+                    heavy_sigh = SurfaceDictionaryValue(y=tempconditionalvar, block_type=self.block_dict[tree[0], tempconditionalvar, tree[1]]['type'], block=self.block_dict[tree[0], tempconditionalvar, tree[1]]['block'])
+                    surface_dict[tree[0], tree[1]] = heavy_sigh
+        except:
+            print("An exception occured. Rollback will commence.")
+            self.rollback()
