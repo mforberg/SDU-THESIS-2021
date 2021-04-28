@@ -89,8 +89,6 @@ class Deforest:
                 for ele in templist:
                     if ele['type'] in [self.trees[1], self.trees[0]]:
                         templist.remove(ele)
-                for ele in templist:
-                    print(ele)
                 templist = sorted(templist, key= lambda t: t['block'].position.y, reverse= True)
                 tempconditionalvar = templist[0]['block'].position.y
                 if (tree[0], tempconditionalvar, tree[1]) in self.block_dict:
