@@ -66,7 +66,7 @@ class TestBuilder:
                 blocks.append(random_block)
         self.client.spawnBlocks(Blocks(blocks=blocks))
 
-    def create_mexican_walls(self):
+    def create_walls(self):
         first_count = 24
         first_passed_x = False
 

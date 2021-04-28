@@ -4,7 +4,8 @@ from variables.shared_variables import *
 
 
 class MapSelection:
-    total_fitness = 0
+    def __init__(self):
+        self.total_fitness = 0
 
     def select_best_solutions(self, population_list: List[SolutionGA]) -> List[List[SolutionArea]]:
         self.total_fitness = 0
