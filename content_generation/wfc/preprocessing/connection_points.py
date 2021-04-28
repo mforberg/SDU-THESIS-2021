@@ -12,11 +12,9 @@ class ConnectionPoints:
 
     def run(self) -> List[tuple]:
         self.__find_connection_tiles_next_to_each_other()
-        print("1")
         self.__connect_everything()
-        print("2")
+        print("connecting own cluster...")
         self.__connect_own_clusters()
-        print("3")
         return self.connection_points
 
     def __connect_own_clusters(self):
