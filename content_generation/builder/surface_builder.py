@@ -48,7 +48,7 @@ class SurfaceBuilder:
             block.type = AIR
         self.anti_glass_blocks = blocks
 
-    def build_wfc_poop_layer(self, surface_dict: dict, wfc_tiles: List[Tile]):
+    def build_wfc_absorubed_tiles_layer(self, surface_dict: dict, wfc_tiles: List[Tile]):
 
         blocks = []
         for tile in wfc_tiles:
@@ -63,7 +63,7 @@ class SurfaceBuilder:
             block.type = AIR
         self.anti_emerald_blocks = blocks
 
-    def delete_wfc_poop_layer(self):
+    def delete_wfc_absorbed_tiles_layer(self):
         self.client.spawnBlocks(Blocks(blocks=self.anti_emerald_blocks))
 
     def delete_wfc_glass_layer(self):

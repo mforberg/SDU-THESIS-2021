@@ -13,7 +13,7 @@ class ConnectionPoints:
     def run(self) -> List[tuple]:
         self.__find_connection_tiles_next_to_each_other()
         self.__connect_everything()
-        self.__connect_own_clusters()
+        # self.__connect_own_clusters()
         return self.connection_points
 
     def __connect_own_clusters(self):
@@ -48,12 +48,15 @@ class ConnectionPoints:
     def __get_area_connected_to_this(self, tile: Tile, cluster: Cluster, checked_tiles: set) -> Cluster:
         tiles_to_be_checked = [tile]
         current_area = []
+        cluster_tiles_set = set()
+        for tile in cluster.tiles:
+            cluster_tiles_set.add(tile)
         while tiles_to_be_checked:
             current_tile = tiles_to_be_checked.pop(0)
             checked_tiles.add(current_tile)
             current_area.append(current_tile)
             for neighbor in current_tile.neighbors:
-                if neighbor not in checked_tiles and neighbor in cluster.tiles:
+                if neighbor not in checked_tiles and neighbor in cluster_tiles_set:
                     tiles_to_be_checked.append(neighbor)
         return Cluster(current_area)
 

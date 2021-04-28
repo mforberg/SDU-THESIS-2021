@@ -63,8 +63,8 @@
         </parent>
         <parent name="wall_bottom">
             <neighbor name="wall_bottom"/>
-            <neighbor name="corner_upper_left"/>
-            <neighbor name="corner_upper_right"/>
+            <neighbor name="corner_bottom_left"/>
+            <neighbor name="corner_bottom_right"/>
             <neighbor name="floor"/>
             <neighbor name="road"/>
         </parent>

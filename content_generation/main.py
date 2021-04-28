@@ -83,19 +83,19 @@ class Main:
         connection_tiles = connection_p.run()
         wfc_pp.remove_neighbors(clustered_tiles=result[1][1])  # TODO: Maybe check this works
 
-        SFB.build_wfc_poop_layer(surface_dict, result[1][0])
+        SFB.build_wfc_absorubed_tiles_layer(surface_dict, result[1][0])
         # SFB.build_wfc_trash_layer(surface_dict, result[0])
         SFB.build_connection_tiles(surface_dict=surface_dict, connection_tiles=connection_tiles)
         x = input("Please hold xd")
         SFB.delete_wfc_glass_layer()
-        SFB.delete_wfc_poop_layer()
+        SFB.delete_wfc_absorbed_tiles_layer()
 
         #SFB.delete_wfc_trash_layer()
 
         wfc_pp.normalize_height(clustered_tiles=result[1][1], surface_dict=surface_dict) # TODO: Implement + Test
 
-        #wfc = WFC()
-        #wfc.run(clustered_tiles=result[1][1])
+        wfc = WFC()
+        wfc.run(clustered_tiles=result[1][1])
 
 
         self.rollback(surface_dict=surface_dict)
