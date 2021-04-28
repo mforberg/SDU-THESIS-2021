@@ -62,10 +62,8 @@ class BlockFileLoader:
             for index, pkl in enumerate(pkl_files):
                 print(f"{index}: {pkl}")
             stopper = fetch_user_integer_with_limit(len(pkl_files))
-            if stopper == 0:
-                stopper = stopper + 1
-            print(f'{save_file_dir}{dirs[stopper-1]}')
-            block_file = open(f'{save_file_dir}{dirs[stopper-1]}', 'rb')
+            print(f'{save_file_dir}{dirs[stopper]}')
+            block_file = open(f'{save_file_dir}{dirs[stopper]}', 'rb')
         return block_file
 
     def load_from_pkl_file(self, unpickled_block_file):
@@ -74,7 +72,7 @@ class BlockFileLoader:
             unpickled_block_file['district_areas'], \
             unpickled_block_file['set_of_fluids']
 
-    def write_to_pkl_file(self, district_areas, set_of_fluids, total_block_dict, total_surface_dict, file_name = 'f'):
+    def write_to_pkl_file(self, district_areas, set_of_fluids, total_block_dict, total_surface_dict, file_name='f'):
         data = {}
         data['x_range'] = [BOX_X_MIN, BOX_X_MAX]
         data['z_range'] = [BOX_Z_MIN, BOX_Z_MAX]
