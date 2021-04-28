@@ -27,13 +27,11 @@ class Main:
 
     def run(self):
         # tb = TestBuilder()
-        SFB = SurfaceBuilder()
-
         # tb.build_flat_surface(type_of_block=STONE)
         # tb.create_big_areas()
         # tb.create_walls()
-        # tb.create_cuts(block=random_block)
-        # tb.create_big_areas(block=random_block)
+
+        SFB = SurfaceBuilder()
 
         #  Map analysis
 

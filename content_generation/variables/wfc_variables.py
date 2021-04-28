@@ -41,10 +41,10 @@ class Tile:
         return hash(self.id)
 
     def __eq__(self, other):
-        return self.id is other.id
+        return self.id == other.id
 
     def __ne__(self, other):
-        return self.id is not other.id
+        return self.id != other.id
 
 
 class Cluster:
