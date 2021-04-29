@@ -78,11 +78,8 @@ class Main:
         SFB.build_wfc_glass_layer(surface_dict, result[0])
         SFB.delete_wfc_glass_layer()
 
-        print("connection point started")
         connection_p = ConnectionPoints(clusters=result[1][1])
-        print("running")
         connection_tiles = connection_p.run()
-        print("done")
 
         wfc_pp.remove_neighbors(clustered_tiles=result[1][1])  # TODO: Maybe check this works
 

@@ -71,12 +71,10 @@ class MapAnalysis:
 
     def find_areas_for_districts(self, surface_dict: dict) -> (SolutionGA, set):
         solution = SolutionGA(population=[], fitness=0)
-        surface_dict_iter = iter(surface_dict)
         fluid_blocks_set = set()
         checked_nodes = set()
         start = time.time()
-        while len(checked_nodes) < len(surface_dict):
-            node = next(surface_dict_iter)
+        for node in surface_dict:
             if node not in checked_nodes:
                 area = self.find_area(surface_dict, node[0], node[1], checked_nodes, fluid_blocks_set)
                 if len(area.list_of_coordinates) >= MIN_SIZE_OF_AREA:
