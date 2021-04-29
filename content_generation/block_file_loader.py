@@ -25,23 +25,20 @@ class BlockFileLoader:
             else:
                 print('Do you want to save the old file before creating a new one? 1 or 2')
                 keyTwo = fetch_user_integer()
-                if keyTwo == 1:
-                    print("Give the old file a name! Please don't use space")
-                    file_name = str(input())
-                    os.rename(f"{save_file_dir}{save_file_path}", f"{save_file_dir}{file_name}_{save_file_path}")
-                    temp_map_data = map_analysis.MapAnalysis().run()
-                    self.unpack_data_object_map_anal_data(temp_map_data)
-                    self.write_to_pkl_file(self.district_areas, self.set_of_fluids, self.total_block_dict, self.total_surface_dict)
-                elif keyTwo == 2:
-                    temp_map_data = map_analysis.MapAnalysis().run()
-                    self.unpack_data_object_map_anal_data(temp_map_data)
-                    self.write_to_pkl_file(self.district_areas, self.set_of_fluids, self.total_block_dict, self.total_surface_dict)
+                self.run_map_analysis_and_pickle_it(1) if keyTwo == 1 else self.run_map_analysis_and_pickle_it(2)
         else:
-            temp_map_data = map_analysis.MapAnalysis().run()
-            self.unpack_data_object_map_anal_data(temp_map_data)
-            self.write_to_pkl_file(self.district_areas, self.set_of_fluids, self.total_block_dict, self.total_surface_dict)
+            self.run_map_analysis_and_pickle_it(2)
 
-    def unpack_data_object_map_anal_data(self, map_anal_data:MapAnalData):
+    def run_map_analysis_and_pickle_it(self, i: int):
+        if i == 1:
+            print("Give the old file a name! Please don't use space")
+            file_name = str(input())
+            os.rename(f"{save_file_dir}{save_file_path}", f"{save_file_dir}{file_name}_{save_file_path}")
+        temp_map_data = map_analysis.MapAnalysis().run()
+        self.unpack_data_object_map_anal_data(temp_map_data)
+        self.write_to_pkl_file(self.district_areas, self.set_of_fluids, self.total_block_dict, self.total_surface_dict)
+
+    def unpack_data_object_map_anal_data(self, map_anal_data: MapAnalData):
         self.total_block_dict = map_anal_data.block_dict
         self.total_surface_dict = map_anal_data.surface_dict
         self.district_areas = map_anal_data.areas_for_districts
@@ -54,7 +51,7 @@ class BlockFileLoader:
             if file.endswith('.pkl'):
                 pkl_files.append(file)
         if len(pkl_files) == 1:
-            print(f"-r---curently using file {pkl_files}----")
+            print(f"-r---currently using file {pkl_files}----")
             block_file = open(f'{save_file_dir}{pkl_files[0]}', 'rb')
         else:
             print('What save file do you want to use?')
