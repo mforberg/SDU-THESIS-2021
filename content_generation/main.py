@@ -72,23 +72,23 @@ class Main:
         wfc_pp = WFC_PP()
         result = wfc_pp.create_tiles(result=result, tile_size=3, surface_dict=surface_dict)
 
-        # deforester = Deforest()
-        # deforester.run(clusters=result[1][1], surface_dict=surface_dict)
+        deforester = Deforest.getInstance()
+        deforester.run(clusters=result[1][1], surface_dict=surface_dict)
         SFB = SurfaceBuilder()
         SFB.build_wfc_glass_layer(surface_dict, result[0])
         SFB.delete_wfc_glass_layer()
 
         print("connection point started")
-        connection_p = ConnectionPoints(clusters=result[1][1])
+        #connection_p = ConnectionPoints(clusters=result[1][1])
         print("running")
-        connection_tiles = connection_p.run()
+        #connection_tiles = connection_p.run()
         print("done")
 
         wfc_pp.remove_neighbors(clustered_tiles=result[1][1])  # TODO: Maybe check this works
 
         SFB.build_wfc_poop_layer(surface_dict, result[1][0])
         # SFB.build_wfc_trash_layer(surface_dict, result[0])
-        SFB.build_connection_tiles(surface_dict=surface_dict, connection_tiles=connection_tiles)
+        #SFB.build_connection_tiles(surface_dict=surface_dict, connection_tiles=connection_tiles)
         x = input("Please hold")
 
         SFB.delete_wfc_poop_layer()
@@ -108,7 +108,7 @@ class Main:
         input("Delete road?")
         SFB.delete_road_blocks()
         self.rollback(surface_dict=surface_dict)
-        # deforester.rollback()
+        deforester.rollback()
 
     def rollback(self, surface_dict):
         print("Reset surface? 1 or 2")
@@ -116,6 +116,8 @@ class Main:
         print("continued")
         if rollback == 1:
             SurfaceBuilder().rollback(surface_dict=surface_dict)
+            value = Deforest.getInstance()
+            value.rollback()
 
     def rollback_options(self):
         while True:

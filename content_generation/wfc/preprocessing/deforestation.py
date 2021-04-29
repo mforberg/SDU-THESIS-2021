@@ -6,18 +6,30 @@ from shared_variables import SurfaceDictionaryValue
 from minecraft_pb2 import Block
 from map_variables import BOX_X_MIN, BOX_Z_MIN
 
+
 class Deforest:
 
+    __instance = None
+
+    @staticmethod
+    def getInstance():
+        if Deforest.__instance is None:
+            Deforest()
+        return Deforest.__instance
+
     def __init__(self):
-        self.trees_for_persistence = {}
-        self.surface_dict = {}
-        self.block_dict = {}
-        self.trees = [119, 120, 131, 132]
-        self.full_trees = {}
-        self.queue_for_removal = []
-        self.tree_removal = []
-        self.first_tree_x_y_z = []
-        pass
+        if Deforest.__instance is not None:
+            raise Exception("This is a singleton so don't initialize again")
+        else:
+            self.trees_for_persistence = {}
+            self.surface_dict = {}
+            self.block_dict = {}
+            self.trees = [119, 120, 131, 132]
+            self.full_trees = {}
+            self.queue_for_removal = []
+            self.tree_removal = []
+            self.first_tree_x_y_z = []
+            Deforest.__instance = self
 
     def __find_trees(self, list_clusters):
         for cluster in list_clusters[0]:
