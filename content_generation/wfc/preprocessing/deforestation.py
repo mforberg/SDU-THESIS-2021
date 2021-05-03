@@ -8,7 +8,6 @@ from map_variables import BOX_X_MIN, BOX_Z_MIN
 
 
 class Deforest:
-
     __instance = None
 
     @staticmethod
@@ -45,14 +44,15 @@ class Deforest:
         while self.queue_for_removal:
             node = self.queue_for_removal.pop()
             self.block_dict.update(MapAnalysis().read_part_of_world(node['min_x'], node['max_x'], node['min_z'],
-                                             node['max_z'], True, node['min_y'], node['max_y'])['block_dict'])
+                                                                    node['max_z'], True, node['min_y'], node['max_y'])[
+                                       'block_dict'])
 
     def __tree_discovery(self, node, y):
         min_x, min_z = node[0] - 5, node[1] - 5
         max_x, max_z = node[0] + 5, node[1] + 5
         min_y, max_y = 0, 0
-        global_min_z_in_surface_dict = min(self.surface_dict, key = lambda t: t[1])[1]
-        global_min_x_in_surface_dict = min(self.surface_dict, key = lambda t: t[0])[0]
+        global_min_z_in_surface_dict = min(self.surface_dict, key=lambda t: t[1])[1]
+        global_min_x_in_surface_dict = min(self.surface_dict, key=lambda t: t[0])[0]
         if min_x >= global_min_x_in_surface_dict and min_z >= global_min_z_in_surface_dict:
             min_y = self.surface_dict[min_x, min_z].block.position.y - 5
             max_y = y + 5
@@ -90,7 +90,7 @@ class Deforest:
             self.__read_tree()
             self.__absolute_tree_finder()
             self.__remove_trees()
-            lis = sorted(self.block_dict.keys(), key= lambda t: t[1], reverse=True)
+            lis = sorted(self.block_dict.keys(), key=lambda t: t[1], reverse=True)
 
             for tree in self.trees_for_persistence.keys():
                 templist = []
@@ -101,10 +101,13 @@ class Deforest:
                 for ele in templist:
                     if ele['type'] in [self.trees[1], self.trees[0]]:
                         templist.remove(ele)
-                templist = sorted(templist, key= lambda t: t['block'].position.y, reverse= True)
+                templist = sorted(templist, key=lambda t: t['block'].position.y, reverse=True)
                 tempconditionalvar = templist[0]['block'].position.y
                 if (tree[0], tempconditionalvar, tree[1]) in self.block_dict:
-                    heavy_sigh = SurfaceDictionaryValue(y=tempconditionalvar, block_type=self.block_dict[tree[0], tempconditionalvar, tree[1]]['type'], block=self.block_dict[tree[0], tempconditionalvar, tree[1]]['block'])
+                    heavy_sigh = SurfaceDictionaryValue(y=tempconditionalvar, block_type=
+                    self.block_dict[tree[0], tempconditionalvar, tree[1]]['type'],
+                                                        block=self.block_dict[tree[0], tempconditionalvar, tree[1]][
+                                                            'block'])
                     surface_dict[tree[0], tree[1]] = heavy_sigh
         except:
             print("An exception occured. Rollback will commence.")
