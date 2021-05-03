@@ -8,6 +8,7 @@ from variables.shared_variables import *
 
 class TypeCrossover(Crossover):
 
+
     def __init__(self, population_size: int):
         super().__init__(population_size)
 
