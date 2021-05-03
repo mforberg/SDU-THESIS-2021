@@ -2,6 +2,7 @@ from typing import Set
 from variables.map_variables import *
 from variables.a_star_variables import *
 import heapq
+from tqdm import tqdm
 
 
 class AStar:
@@ -13,7 +14,8 @@ class AStar:
     def run(self, blocked_coordinates: Set[APoint], connection_points: List[tuple]) -> List[APoint]:
         total_list_of_road_blocks = []
         dict_of_road_blocks = {}
-        for road_network in connection_points:
+        for road_network in tqdm(connection_points, desc='A*', leave=True):
+        # for road_network in connection_points:
             total_list_of_road_blocks.extend(self.connect_point_to_goal(start_points=road_network[0],
                                                                         goal_points=road_network[1],
                                                                         blocked_coordinates=blocked_coordinates,
