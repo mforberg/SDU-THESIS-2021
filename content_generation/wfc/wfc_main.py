@@ -24,16 +24,15 @@ class WaveFunctionCollapse:
         # Collapse to random tile
         for cluster in clustered_tiles:
             for tile in cluster.tiles:
-                print(tile.entropy)
                 tile.states = random.choice(tile.states)
 
-        for cluster in clustered_tiles:
-            for tile in cluster.tiles:
-                print("- - - - - - - - - - -")
-                print(tile)
-                print(tile.states)
-                print("- - - - - - - - - - -")
-            break
+        # for cluster in clustered_tiles:
+        #     for tile in cluster.tiles:
+        #         print("- - - - - - - - - - -")
+        #         print(tile)
+        #         print(tile.states)
+        #         print("- - - - - - - - - - -")
+        #     break
 
 
     def pattern_from_sample(self):

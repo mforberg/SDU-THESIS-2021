@@ -36,9 +36,8 @@ class AStar:
             cost = self.calculate_heuristic(point=point, goals=goal_points)
             cost_so_far[point] = cost
             heapq.heappush(open_list, (cost, point))
-        i = 0
+
         while open_list:
-            i += 1
 
             current_point = heapq.heappop(open_list)[1]
 
@@ -60,8 +59,6 @@ class AStar:
                     new_cost += self.calculate_heuristic(point=current_point, goals=goal_points)
                     heapq.heappush(open_list, (new_cost, neighbor))
                     parent_dict[neighbor] = current_point
-            print(f"this is i: {i}")
-            i += 1
 
     def calculate_path_cost(self, current_point: APoint, to_point: APoint) -> int:
         cost = 1
