@@ -26,10 +26,7 @@ class Main:
         self.global_dict_of_types = {}
 
     def run(self):
-        # tb = TestBuilder()
-        # tb.build_flat_surface(type_of_block=STONE)
-        # tb.create_big_areas()
-        # tb.create_walls()
+        # self.create_test_map()
 
         SFB = SurfaceBuilder()
 
@@ -61,8 +58,8 @@ class Main:
         result = TypesGA().run(surface_dict=surface_dict, clusters=clusters,
                                global_district_types_dict=self.global_dict_of_types, fluid_set=set_of_fluids)
         print(f"TYPE GA: {time.time()-first}")
-        for sol in result.population:
-            print(sol.type_of_district)
+        for solution in result.population:
+            print(solution.type_of_district)
 
         SFB.build_type_ga(surface_dict=surface_dict, type_ga_result=result)
         self.rollback(surface_dict=surface_dict)
@@ -85,7 +82,7 @@ class Main:
 
         SFB.build_wfc_poop_layer(surface_dict, result[1][0])
         # SFB.build_wfc_trash_layer(surface_dict, result[0])
-        # SFB.build_connection_tiles(surface_dict=surface_dict, connection_tiles=connection_tiles)
+        SFB.build_connection_tiles(surface_dict=surface_dict, connection_tiles=connection_tiles)
         x = input("Please hold")
 
         SFB.delete_wfc_poop_layer()
@@ -126,6 +123,12 @@ class Main:
             else:
                 print("Please input 1 or 2")
         return rollback
+
+    def create_test_map(self):
+        tb = TestBuilder()
+        tb.build_flat_surface(type_of_block=STONE)
+        tb.create_big_areas()
+        tb.create_walls()
 
 
 if __name__ == '__main__':

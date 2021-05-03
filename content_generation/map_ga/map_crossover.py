@@ -3,47 +3,6 @@ from variables.ga_map_variables import *
 from variables.shared_variables import *
 
 
-def k_point_crossover(k: int, shortest: List[SolutionArea], longest: List[SolutionArea]) -> dict:
-    points = set()
-    while len(shortest) > len(points) and k >= len(points):
-        new_value = False
-        while not new_value:
-            point = random.randint(0, len(shortest)-1)
-            if point not in points:
-                new_value = True
-                points.add(point)
-    child1 = []
-    child2 = []
-    flip = False
-    for i in range(0, len(longest)):
-        if i in points:
-            flip = not flip
-        if not flip:
-            if i < len(shortest):
-                child1.append(shortest[i])
-            child2.append(longest[i])
-        else:
-            if i < len(shortest):
-                child2.append(shortest[i])
-            child1.append(longest[i])
-    return {"c1": child1, "c2": child2}
-
-
-def uniform_crossover(shortest: List[SolutionArea], longest: List[SolutionArea]) -> dict:
-    child1 = []
-    child2 = []
-    for i in range(0, len(longest)):
-        if random.randint(0, 1) == 0:
-            if i < len(shortest):
-                child1.append(shortest[i])
-            child2.append(longest[i])
-        else:
-            if i < len(shortest):
-                child2.append(shortest[i])
-            child1.append(longest[i])
-    return {"c1": child1, "c2": child2}
-
-
 class MapCrossover:
 
     def __init__(self):
@@ -83,6 +42,45 @@ class MapCrossover:
         random.shuffle(parent1)
         random.shuffle(parent2)
         if len(parent1) > len(parent2):
-            return uniform_crossover(shortest=parent2, longest=parent1)
+            return self.uniform_crossover(shortest=parent2, longest=parent1)
         else:
-            return uniform_crossover(shortest=parent1, longest=parent2)
+            return self.uniform_crossover(shortest=parent1, longest=parent2)
+
+    # def k_point_crossover(self, k: int, shortest: List[SolutionArea], longest: List[SolutionArea]) -> dict:
+    #     points = set()
+    #     while len(shortest) > len(points) and k >= len(points):
+    #         new_value = False
+    #         while not new_value:
+    #             point = random.randint(0, len(shortest) - 1)
+    #             if point not in points:
+    #                 new_value = True
+    #                 points.add(point)
+    #     child1 = []
+    #     child2 = []
+    #     flip = False
+    #     for i in range(0, len(longest)):
+    #         if i in points:
+    #             flip = not flip
+    #         if not flip:
+    #             if i < len(shortest):
+    #                 child1.append(shortest[i])
+    #             child2.append(longest[i])
+    #         else:
+    #             if i < len(shortest):
+    #                 child2.append(shortest[i])
+    #             child1.append(longest[i])
+    #     return {"c1": child1, "c2": child2}
+
+    def uniform_crossover(self, shortest: List[SolutionArea], longest: List[SolutionArea]) -> dict:
+        child1 = []
+        child2 = []
+        for i in range(0, len(longest)):
+            if random.randint(0, 1) == 0:
+                if i < len(shortest):
+                    child1.append(shortest[i])
+                child2.append(longest[i])
+            else:
+                if i < len(shortest):
+                    child2.append(shortest[i])
+                child1.append(longest[i])
+        return {"c1": child1, "c2": child2}

@@ -41,19 +41,15 @@ class TypeCrossover:
         random.shuffle(parent1.population)
         random.shuffle(parent2.population)
         if len(parent1.population) > len(parent2.population):
-            return self.__single_point_crossover(shortest=parent2.population, longest=parent1.population)
+            return self.uniform_crossover(shortest=parent2.population, longest=parent1.population)
         else:
-            return self.__single_point_crossover(shortest=parent1.population, longest=parent2.population)
+            return self.uniform_crossover(shortest=parent1.population, longest=parent2.population)
 
-    def __single_point_crossover(self, shortest: List[SolutionArea], longest: List[SolutionArea]) -> Dict[str, List[SolutionArea]]:
-        point = random.randint(0, len(shortest)-1)
+    def uniform_crossover(self, shortest: List[SolutionArea], longest: List[SolutionArea]) -> dict:
         child1 = shortest
         child2 = longest
-        flip = False
         for i in range(0, len(longest)):
-            if i == point:
-                flip = True
-            if not flip:
+            if random.randint(0, 1) == 0:
                 if i < len(shortest):
                     child1[i].type_of_district = shortest[i].type_of_district
                 child2[i].type_of_district = longest[i].type_of_district
@@ -62,3 +58,21 @@ class TypeCrossover:
                     child2[i].type_of_district = shortest[i].type_of_district
                 child1[i].type_of_district = longest[i].type_of_district
         return {"c1": child1, "c2": child2}
+
+    # def __single_point_crossover(self, shortest: List[SolutionArea], longest: List[SolutionArea]) -> dict:
+    #     point = random.randint(0, len(shortest)-1)
+    #     child1 = shortest
+    #     child2 = longest
+    #     flip = False
+    #     for i in range(0, len(longest)):
+    #         if i == point:
+    #             flip = True
+    #         if not flip:
+    #             if i < len(shortest):
+    #                 child1[i].type_of_district = shortest[i].type_of_district
+    #             child2[i].type_of_district = longest[i].type_of_district
+    #         else:
+    #             if i < len(shortest):
+    #                 child2[i].type_of_district = shortest[i].type_of_district
+    #             child1[i].type_of_district = longest[i].type_of_district
+    #     return {"c1": child1, "c2": child2}

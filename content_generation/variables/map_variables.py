@@ -42,7 +42,7 @@ SKIP_SET = {DARK_OAK_DOOR, IRON_DOOR, BIRCH_DOOR, JUNGLE_DOOR, ACACIA_DOOR, SPRU
 FLUID_SET = {WATER, FLOWING_WATER, LAVA, FLOWING_LAVA, BEDROCK}
 
 save_file_dir = '../data/'
-save_file_path = 'old/block_dicts.pkl'
+save_file_path = 'block_dicts.pkl'
 
 
 class MapAnalData:

@@ -21,11 +21,12 @@ class ConnectionPoints:
             connected_areas = []
             tile_iterator = iter(cluster.tiles)
             checked_tiles = set()
-            while len(checked_tiles) < len(cluster.tiles):
-                current_tile = next(tile_iterator)
-                if current_tile not in checked_tiles:
-                    connected_areas.append(self.__get_area_connected_to_this(cluster=cluster, tile=current_tile,
+            # group all tiles. If all tiles are reachable from start tile -> len(connected_area) == 1
+            for tile in tile_iterator:
+                if tile not in checked_tiles:
+                    connected_areas.append(self.__get_area_connected_to_this(cluster=cluster, tile=tile,
                                                                              checked_tiles=checked_tiles))
+            # group all the tile clusters together (greedy)
             own_cluster = [connected_areas[0]]
             while len(own_cluster) < len(connected_areas):
                 closest = None

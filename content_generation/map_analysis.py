@@ -15,8 +15,10 @@ client = minecraft_pb2_grpc.MinecraftServiceStub(channel)
 
 
 class MapAnalysis:
-    work = []
-    possible_neighbor_relations = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+
+    def __init__(self):
+        self.work = []
+        self.possible_neighbor_relations = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 
     def run(self) -> MapAnalData:
         total_surface_dict = {}
@@ -85,24 +87,23 @@ class MapAnalysis:
 
     def find_area(self, surface_dict: dict, block_x: int, block_z: int, checked_nodes: Set[tuple],
                   fluid_blocks_set: set) -> SolutionArea:
-        nodes_to_be_checked = []
+        nodes_to_be_checked = [(block_x, block_z)]
+        nodes_iter = iter(nodes_to_be_checked)
         min_x = max_x = total_x = block_x
         min_z = max_z = total_z = block_z
         amount = 1
         height = surface_dict[block_x, block_z].y
         checked_neighbors = set()
         current_area = []
-        nodes_to_be_checked.append((block_x, block_z))
-        while nodes_to_be_checked:
-            current_node = nodes_to_be_checked.pop()
-            x = current_node[0]
-            z = current_node[1]
-            if surface_dict[current_node].block_type not in FLUID_SET:
-                current_area.append(current_node)
+        for node in nodes_iter:
+            x = node[0]
+            z = node[1]
+            if surface_dict[node].block_type not in FLUID_SET:
+                current_area.append(node)
                 neighbors = self.get_neighbors(surface_dict, x, z)
                 for neighbor in neighbors:
                     if neighbor not in checked_nodes and neighbor not in checked_neighbors \
-                            and surface_dict[current_node].y == surface_dict[neighbor].y:
+                            and surface_dict[node].y == surface_dict[neighbor].y:
                         checked_neighbors.add(neighbor)
                         nodes_to_be_checked.append(neighbor)
                         amount += 1
@@ -118,7 +119,7 @@ class MapAnalysis:
                     min_z = z
             else:
                 fluid_blocks_set.add((x, z))
-            checked_nodes.add(current_node)
+            checked_nodes.add(node)
         mass_x = total_x / amount
         mass_z = total_z / amount
         return SolutionArea(mass_coordinate={'x': mass_x, 'z': mass_z}, height=height, coordinates=current_area,
