@@ -84,7 +84,8 @@ class KMeansClustering:
     def __elbow_method(self, list_of_points: List[list]) -> int:
         wcss = []  # Within-Cluster-Sum-of-Squares
         if len(list_of_points) < K_MEANS_MAX_CLUSTERS:
-            max_cluster = len(list_of_points)
+            print("Max clusters exceed list of points")
+            return 4
         for i in range(1, K_MEANS_MAX_CLUSTERS+1):  # 1 inclusive to K_MEANS_MAX_CLUSTERS (11)
             k_means = KMeans(n_clusters=i)
             k_means = k_means.fit(list_of_points)

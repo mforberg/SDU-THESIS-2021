@@ -21,7 +21,7 @@ class AreasGA:
         self.map_initial = MapInitialPopulation()
         self.map_fitness = MapFitness()
         self.map_select = MapSelection()
-        self.map_crossover = MapCrossover()
+        self.map_crossover = MapCrossover(MAP_POPULATION_SIZE)
         self.map_mutation = MapMutation()
 
     def run(self, areas: SolutionGA) -> SolutionGA:
@@ -49,8 +49,8 @@ class AreasGA:
                 #  set population and clean it
                 population = crossed_population_no_fitness
                 self.__clean_population_for_duplicates(population=population)
-        for string in self.new_best_prints:
-            print(string)
+        # for string in self.new_best_prints:
+        #     print(string)
         return self.best_solution
 
     def __clean_population_for_duplicates(self, population: List[SolutionGA]):
