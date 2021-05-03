@@ -41,7 +41,7 @@ class AStar:
             current_point = heapq.heappop(open_list)[1]
 
             if current_point in goal_points:
-                print(f"Checked: {i}, Cost: {cost_so_far[current_point]} - goal: {current_point}")
+                # print(f"Checked: {i}, Cost: {cost_so_far[current_point]} - goal: {current_point}")
                 return self.backtrack(parent_dict=parent_dict, goal_point=current_point,
                                       road_blocks_dict=dict_of_road_blocks)
 
@@ -122,6 +122,6 @@ class AStar:
             backtracking.append(current_point)
             road_blocks_dict[current_point.node] = current_point.y
             current_point = parent_dict[current_point]
-        print(f"Start: {current_point}")
-        print(f"---------------------------")
+        # print(f"Start: {current_point}")
+        # print(f"---------------------------")
         return backtracking
