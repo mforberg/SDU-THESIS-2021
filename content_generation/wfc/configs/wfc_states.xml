@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wfc_states>
     <states>
-        <state name="corner_upper_left"/>
-        <state name="corner_upper_right"/>
-        <state name="corner_bottom_left"/>
-        <state name="corner_bottom_right"/>
+        <state name="corner_upper_left" weight="13"/>
+        <state name="corner_upper_right" weight="15"/>
+        <state name="corner_bottom_left" weight="11"/>
+        <state name="corner_bottom_right" weight="11"/>
 
-        <state name="wall_left"/>
-        <state name="wall_upper"/>
-        <state name="wall_right"/>
-        <state name="wall_bottom"/>
+        <state name="wall_left" weight="18"/>
+        <state name="wall_right" weight="28"/>
+        <state name="wall_upper" weight="19"/>
+        <state name="wall_bottom" weight="21"/>
 
-        <state name="floor"/>
-        <state name="road"/>
+        <state name="floor" weight="79"/>
+        <state name="road" weight="95"/>
     </states>
 
     <neighbors>

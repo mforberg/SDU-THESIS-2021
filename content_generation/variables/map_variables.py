@@ -8,10 +8,10 @@ from shared_variables import *
 # BOX_Z_MIN = 23232900
 # BOX_Z_MAX = 23232950
 """Jonas' coordinates"""
-BOX_X_MIN = 150
-BOX_X_MAX = 350
-BOX_Z_MIN = 1900
-BOX_Z_MAX = 2100
+# BOX_X_MIN = 150
+# BOX_X_MAX = 350
+# BOX_Z_MIN = 1900
+# BOX_Z_MAX = 2100
 # A* Test coordinates
 # BOX_X_MIN = 100
 # BOX_X_MAX = 300

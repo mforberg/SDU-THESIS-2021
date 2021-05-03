@@ -76,7 +76,7 @@ class Main:
         # deforester = Deforest()
         # deforester.run(clusters=result[1][1], surface_dict=surface_dict)
         SFB = SurfaceBuilder()
-        SFB.build_wfc_glass_layer(surface_dict, result[0])
+        # SFB.build_wfc_glass_layer(surface_dict, result[0])
 
         print("connection point started")
         connection_p = ConnectionPoints(clusters=result[1][1])
@@ -90,7 +90,7 @@ class Main:
         # SFB.build_wfc_trash_layer(surface_dict, result[0])
         SFB.build_connection_tiles(surface_dict=surface_dict, connection_tiles=connection_tiles)
         x = input("Please hold xd")
-        SFB.delete_wfc_glass_layer()
+        # SFB.delete_wfc_glass_layer()
         SFB.delete_wfc_absorbed_tiles_layer()
 
         # SFB.delete_wfc_trash_layer()

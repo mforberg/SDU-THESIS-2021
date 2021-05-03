@@ -4,8 +4,9 @@ import xml.etree.ElementTree as ET
 
 class WfcStates:
 
-    def create_2x2_states(self):
+    def create_3x3_states(self):
 
+        weights = {}
         states = {}
 
         mytree = ET.parse('wfc/configs/wfc_states.xml')
@@ -16,7 +17,11 @@ class WfcStates:
         for z in x:
             test = z.findall('state')
             for p in test:
-                print(p.get('name'))
+                try:
+                    weights[p.get('name')] = int(p.get('weight'))
+                except ValueError:
+                    print("Could not parse weight to int")
+
 
         # Find All Neighbors to a State
         neighbors = myroot.findall('neighbors')
@@ -29,5 +34,4 @@ class WfcStates:
                 for ln in legal_neighbors:
                     values.append(ln.get('name'))
                 states[key] = values
-        print(states)
-        return states
+        return weights, states
