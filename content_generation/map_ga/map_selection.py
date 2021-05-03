@@ -7,7 +7,7 @@ class MapSelection:
     def __init__(self):
         self.total_fitness = 0
 
-    def select_best_solutions(self, population_list: List[SolutionGA]) -> List[List[SolutionArea]]:
+    def select_best_solutions(self, population_list: List[SolutionGA]) -> List[SolutionGA]:
         self.total_fitness = 0
         self.__create_weighted_wheel(population_list)
         parent_list = []
@@ -16,7 +16,7 @@ class MapSelection:
         random.shuffle(population_list)
         counter = 0
         while len(parent_list) < len(population_list):
-            parent_list.append(population_list[counter].population)
+            parent_list.append(population_list[counter])
             counter += 1
         return parent_list
 
@@ -24,11 +24,11 @@ class MapSelection:
         for solution in total_pop:
             self.total_fitness += solution.fitness
 
-    def __select_solution_for_parent(self, population_list: List[SolutionGA]) -> List[SolutionArea]:
+    def __select_solution_for_parent(self, population_list: List[SolutionGA]) -> SolutionGA:
         random_float = random.random()
         fitness_left = random_float * self.total_fitness
-        for population in population_list:
-            if population.fitness >= fitness_left:
-                return population.population
+        for solution in population_list:
+            if solution.fitness >= fitness_left:
+                return solution
             else:
-                fitness_left -= population.fitness
+                fitness_left -= solution.fitness

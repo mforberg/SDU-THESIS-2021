@@ -37,7 +37,7 @@ class TypeCrossover:
         random_index = random.randint(0, len(self.parent_list) - 1)
         return copy.deepcopy(self.parent_list[random_index])
 
-    def __create_offspring(self, parent1: SolutionGA, parent2: SolutionGA) -> Dict[str, List[SolutionArea]]:
+    def __create_offspring(self, parent1: SolutionGA, parent2: SolutionGA) -> dict:
         random.shuffle(parent1.population)
         random.shuffle(parent2.population)
         if len(parent1.population) > len(parent2.population):
