@@ -58,8 +58,8 @@ class Main:
         result = TypesGA().run(surface_dict=self.surface_dict, clusters=clusters,
                                global_district_types_dict=self.global_dict_of_types, fluid_set=set_of_fluids)
         print(f"TYPE GA: {time.time()-first}")
-        for solution in result.population:
-            print(solution.type_of_district)
+        # for solution in result.population:
+        #     print(solution.type_of_district)
 
         self.SFB.build_type_ga(surface_dict=self.surface_dict, type_ga_result=result)
         self.rollback(surface_dict=self.surface_dict)
