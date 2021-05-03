@@ -1,13 +1,9 @@
 import random
-from typing import Dict
-
 from Crossover import Crossover
-from variables.ga_type_variables import *
 from variables.shared_variables import *
 
 
 class TypeCrossover(Crossover):
-
 
     def __init__(self, population_size: int):
         super().__init__(population_size)
