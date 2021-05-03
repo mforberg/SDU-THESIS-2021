@@ -20,7 +20,7 @@ class TypesGA:
         self.type_initial = TypeInitialPopulation()
         self.type_fitness = TypeFitness()
         self.type_select = TypeSelection()
-        self.type_crossover = TypeCrossover()
+        self.type_crossover = TypeCrossover(TYPE_POPULATION_SIZE)
         self.type_mutation = TypeMutation()
 
     def run(self, surface_dict: dict, clusters: SolutionGA, global_district_types_dict: dict,

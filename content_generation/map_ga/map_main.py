@@ -21,7 +21,7 @@ class AreasGA:
         self.map_initial = MapInitialPopulation()
         self.map_fitness = MapFitness()
         self.map_select = MapSelection()
-        self.map_crossover = MapCrossover()
+        self.map_crossover = MapCrossover(MAP_POPULATION_SIZE)
         self.map_mutation = MapMutation()
 
     def run(self, areas: SolutionGA) -> SolutionGA:
