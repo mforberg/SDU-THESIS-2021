@@ -79,13 +79,13 @@ class Main:
 
         wfc_pp.remove_neighbors(clustered_tiles=result[1][1])  # TODO: Maybe check this works
 
-        self.SFB.build_wfc_poop_layer(self.surface_dict, result[1][0])
+        # self.SFB.build_wfc_poop_layer(self.surface_dict, result[1][0])
         # SFB.build_wfc_trash_layer(surface_dict, result[0])
-        SFB.build_connection_tiles(surface_dict=surface_dict, connection_tiles=connection_tiles)
+
+        SFB.build_connection_tiles(surface_dict=self.surface_dict, connection_tiles=connection_tiles)
         x = input("Please hold")
 
-        self.SFB.delete_wfc_poop_layer()
-
+        # self.SFB.delete_wfc_poop_layer()
         # SFB.delete_wfc_trash_layer()
 
         wfc_pp.normalize_height(clustered_tiles=result[1][1], surface_dict=self.surface_dict)  # TODO: Implement + Test
@@ -111,7 +111,7 @@ class Main:
             SurfaceBuilder().rollback(surface_dict=surface_dict)
 
     def failsafe(self):
-        self.SFB.rollback()
+        self.SFB.rollback(self.surface_dict)
         Deforest.getInstance().rollback()
 
     def rollback_options(self):
