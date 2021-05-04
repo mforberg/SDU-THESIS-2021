@@ -49,9 +49,9 @@ class Tile:
         entropy = (log(sum_of_weights) - pp_weights / sum_of_weights)
         noise = random.uniform(0, (entropy*0.05))
         self.entropy = entropy - noise
-        print("- - - - look here - - - - -")
-        print(f"entropy: {entropy}, noise: {noise}")
-        print(self.entropy)
+        # print("- - - - look here - - - - -")
+        # print(f"entropy: {entropy}, noise: {noise}")
+        # print(self.entropy)
 
     def update_entropy(self):
         sum_of_weights = 0
@@ -72,6 +72,12 @@ class Tile:
 
     def __ne__(self, other):
         return self.id != other.id
+
+    def __lt__(self, other):
+        return self.entropy < other.entropy
+
+    def __le__(self, other):
+        return self.entropy <= other.entropy
 
 
 class State:

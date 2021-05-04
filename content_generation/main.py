@@ -89,21 +89,27 @@ class Main:
         # self.SFB.delete_wfc_poop_layer()
         # SFB.delete_wfc_trash_layer()
 
+
         wfc_pp.normalize_height(clustered_tiles=result[1][1], surface_dict=self.surface_dict)  # TODO: Implement + Test
 
+        # # # # # # # # # # # # # # # # # # # # # # #
+        # # # # # # # # #  A* Start # # # # # # # # #
+        prepare_map = PrepareMap(surface_dict=self.surface_dict, fluid_set=set_of_fluids)
+        result = prepare_map.run(cluster_list=result[1][1], connection_tiles=connection_tiles)
+        self.SFB.build_from_list_of_tuples(surface_dict=self.surface_dict, coordinates=result)
+        input("Delete road?")
+        # # # # # # # # #   A* End  # # # # # # # # #
+        # # # # # # # # # # # # # # # # # # # # # # #
+
         wfc = WFC()
-        wfc.run(clustered_tiles=result[1][1])
+        wfc.run(clustered_tiles=result[1][1], connection_tiles=connection_tiles)
 
 
         self.rollback(surface_dict=self.surface_dict)
         print("- - - - WFC RELATED GARBAGE STOPPED - - - -")
         # WFC End
 
-        # Final touch
-        prepare_map = PrepareMap(surface_dict=self.surface_dict, fluid_set=set_of_fluids)
-        result = prepare_map.run(cluster_list=result[1][1], connection_tiles=connection_tiles)
-        self.SFB.build_from_list_of_tuples(surface_dict=self.surface_dict, coordinates=result)
-        input("Delete road?")
+
         self.SFB.delete_road_blocks()
         self.rollback(surface_dict=self.surface_dict)
         #  deforester.rollback()
@@ -138,9 +144,10 @@ class Main:
 
 
 if __name__ == '__main__':
-    try:
-        Main().run()
-    except:
-        Main().failsafe()
-    else:
-        print("Rollback commence due to errors")
+    Main().run()
+    # try:
+    #     Main().run()
+    # except:
+    #     Main().failsafe()
+    # else:
+    #     print("Rollback commence due to errors")
