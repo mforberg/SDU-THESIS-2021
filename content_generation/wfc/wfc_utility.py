@@ -1,5 +1,4 @@
 from wfc_states import *
-from wfc_variables import State, Tile
 
 
 def cluster_fully_collapsed(cluster):
