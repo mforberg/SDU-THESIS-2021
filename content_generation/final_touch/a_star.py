@@ -36,6 +36,7 @@ class AStar:
             cost = self.calculate_heuristic(point=point, goals=goal_points)
             cost_so_far[point] = cost
             heapq.heappush(open_list, (cost, point))
+        
         while open_list:
 
             current_point = heapq.heappop(open_list)[1]

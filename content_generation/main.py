@@ -17,6 +17,7 @@ from block_file_loader import BlockFileLoader
 from map_variables import *
 import uuid
 from UserInputFetcher import fetch_user_integer
+from wfc_main import WaveFunctionCollapse as WFC
 
 
 class Main:
@@ -69,26 +70,30 @@ class Main:
         wfc_pp = WFC_PP()
         result = wfc_pp.create_tiles(result=result, tile_size=3, surface_dict=self.surface_dict)
 
-        # deforester = Deforest.getInstance()
-        # deforester.run(clusters=result[1][1], surface_dict=self.surface_dict)
-        # self.SFB.build_wfc_glass_layer(self.surface_dict, result[0])
-        # self.SFB.delete_wfc_glass_layer()
+        #  deforester = Deforest.getInstance()
+        #  deforester.run(clusters=result[1][1], surface_dict=self.surface_dict)
+        #  self.SFB.build_wfc_glass_layer(self.surface_dict, result[0])
 
         connection_p = ConnectionPoints(clusters=result[1][1])
         connection_tiles = connection_p.run()
 
         wfc_pp.remove_neighbors(clustered_tiles=result[1][1])  # TODO: Maybe check this works
 
-        # self.SFB.build_wfc_poop_layer(self.surface_dict, result[1][0])
+        SFB.build_wfc_absorubed_tiles_layer(self.surface_dict, result[1][0])
         # SFB.build_wfc_trash_layer(surface_dict, result[0])
-
         SFB.build_connection_tiles(surface_dict=self.surface_dict, connection_tiles=connection_tiles)
-        x = input("Please hold")
+        x = input("Please hold xd")
+        # SFB.delete_wfc_glass_layer()
+        SFB.delete_wfc_absorbed_tiles_layer()
 
         # self.SFB.delete_wfc_poop_layer()
         # SFB.delete_wfc_trash_layer()
 
         wfc_pp.normalize_height(clustered_tiles=result[1][1], surface_dict=self.surface_dict)  # TODO: Implement + Test
+
+        wfc = WFC()
+        wfc.run(clustered_tiles=result[1][1])
+
 
         self.rollback(surface_dict=self.surface_dict)
         print("- - - - WFC RELATED GARBAGE STOPPED - - - -")

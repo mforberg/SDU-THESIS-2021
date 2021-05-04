@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wfc_states>
+    <states>
+        <state name="corner_upper_left" weight="13"/>
+        <state name="corner_upper_right" weight="15"/>
+        <state name="corner_bottom_left" weight="11"/>
+        <state name="corner_bottom_right" weight="11"/>
+
+        <state name="wall_left" weight="18"/>
+        <state name="wall_right" weight="28"/>
+        <state name="wall_upper" weight="19"/>
+        <state name="wall_bottom" weight="21"/>
+
+        <state name="floor" weight="79"/>
+        <state name="road" weight="95"/>
+    </states>
+
+    <neighbors>
+
+        <!-- Corners -->
+        <parent name="corner_upper_left">
+            <neighbor name="wall_left"/>
+            <neighbor name="wall_upper"/>
+            <neighbor name="road"/>
+        </parent>
+        <parent name="corner_upper_right">
+            <neighbor name="wall_right"/>
+            <neighbor name="wall_upper"/>
+            <neighbor name="road"/>
+        </parent>
+        <parent name="corner_bottom_left">
+            <neighbor name="wall_left"/>
+            <neighbor name="wall_bottom"/>
+            <neighbor name="road"/>
+        </parent>
+        <parent name="corner_bottom_right">
+            <neighbor name="wall_right"/>
+            <neighbor name="wall_bottom"/>
+            <neighbor name="road"/>
+        </parent>
+
+        <!-- Walls -->
+        <parent name="wall_left">
+            <neighbor name="wall_left"/>
+            <neighbor name="corner_upper_left"/>
+            <neighbor name="corner_bottom_left"/>
+            <neighbor name="floor"/>
+            <neighbor name="road"/>
+        </parent>
+        <parent name="wall_right">
+            <neighbor name="wall_right"/>
+            <neighbor name="corner_upper_right"/>
+            <neighbor name="corner_bottom_right"/>
+            <neighbor name="floor"/>
+            <neighbor name="road"/>
+        </parent>
+        <parent name="wall_upper">
+            <neighbor name="wall_upper"/>
+            <neighbor name="corner_upper_left"/>
+            <neighbor name="corner_upper_right"/>
+            <neighbor name="floor"/>
+            <neighbor name="road"/>
+        </parent>
+        <parent name="wall_bottom">
+            <neighbor name="wall_bottom"/>
+            <neighbor name="corner_bottom_left"/>
+            <neighbor name="corner_bottom_right"/>
+            <neighbor name="floor"/>
+            <neighbor name="road"/>
+        </parent>
+
+        <!-- Floor -->
+        <parent name="floor">
+            <neighbor name="corner_upper_left"/>
+            <neighbor name="corner_bottom_left"/>
+            <neighbor name="corner_upper_right"/>
+            <neighbor name="corner_bottom_right"/>
+            <neighbor name="wall_left"/>
+            <neighbor name="wall_right"/>
+            <neighbor name="wall_upper"/>
+            <neighbor name="wall_bottom"/>
+        </parent>
+
+        <!-- Road -->
+        <parent name="road">
+            <neighbor name="corner_upper_left"/>
+            <neighbor name="corner_bottom_left"/>
+            <neighbor name="corner_upper_right"/>
+            <neighbor name="corner_bottom_right"/>
+            <neighbor name="wall_left"/>
+            <neighbor name="wall_right"/>
+            <neighbor name="wall_upper"/>
+            <neighbor name="wall_bottom"/>
+            <neighbor name="road"/>
+        </parent>
+    </neighbors>
+</wfc_states>
+
