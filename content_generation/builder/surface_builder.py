@@ -1,11 +1,10 @@
-import multiprocessing
-from multiprocessing import Pool
+from typing import List
 import minecraft_pb2_grpc
 from variables.map_variables import *
 import grpc
 import copy
-from shared_variables import SolutionGA
-from variables.wfc_variables import Tile
+from shared_models import SolutionGA
+from wfc_models import Tile
 
 
 class SurfaceBuilder:
@@ -49,7 +48,6 @@ class SurfaceBuilder:
         self.anti_glass_blocks = blocks
 
     def build_wfc_poop_layer(self, surface_dict: dict, wfc_tiles: List[Tile]):
-
         blocks = []
         for tile in wfc_tiles:
             current_building_block = EMERALD_BLOCK
@@ -161,7 +159,7 @@ class SurfaceBuilder:
         bulk_blocks = []
         for key in list_of_coords:
             bulk_blocks.append(Block(position=Point(x=key[0], y=key[1], z=key[2]), type=AIR, orientation=NORTH))
-        self.client.spawnBlocks(Blocks(blocks = bulk_blocks))
+        self.client.spawnBlocks(Blocks(blocks=bulk_blocks))
 
     def spawn_blocks(self, list_of_blocks):
-        self.client.spawnBlocks(Blocks(blocks= list_of_blocks))
+        self.client.spawnBlocks(Blocks(blocks=list_of_blocks))

@@ -1,10 +1,11 @@
+from ga_specific_models import DataFileCreator
 from .map_fitness import MapFitness
 from .map_initial_population import MapInitialPopulation
 from .map_selection import MapSelection
 from .map_crossover import MapCrossover
 from .map_mutation import MapMutation
 from variables.ga_map_variables import *
-from variables.shared_variables import *
+from models.shared_models import *
 from tqdm import trange
 
 

@@ -1,4 +1,3 @@
-from wfc_preprocessing import WFCPreprocessing
 
 
 class Wfc:

@@ -1,7 +1,7 @@
 import random
 from typing import Dict
 from variables.ga_type_variables import *
-from variables.shared_variables import *
+from models.shared_models import *
 
 
 class Crossover:

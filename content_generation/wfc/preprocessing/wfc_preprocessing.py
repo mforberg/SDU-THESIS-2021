@@ -1,7 +1,7 @@
 import time
 from typing import List
-from shared_variables import SolutionGA, SurfaceDictionaryValue
-from wfc_variables import Tile, Cluster
+from shared_models import SolutionGA, SurfaceDictionaryValue
+from wfc_models import Tile, Cluster
 from pprint import pprint
 from copy import deepcopy
 from collections import Counter

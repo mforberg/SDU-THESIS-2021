@@ -1,9 +1,9 @@
+from map_anal_models import MapAnalData
 from map_variables import *
 import os.path
 import pickle
 import map_analysis
 from UserInputFetcher import fetch_user_integer
-import UserInputFetcher
 
 from UserInputFetcher import fetch_user_integer_with_limit
 

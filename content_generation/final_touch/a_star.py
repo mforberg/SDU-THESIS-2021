@@ -1,5 +1,6 @@
-from typing import Set
-from variables.map_variables import *
+import copy
+from typing import Set, List
+from a_star_models import APoint
 from variables.a_star_variables import *
 import heapq
 from tqdm import tqdm
@@ -15,7 +16,6 @@ class AStar:
         total_list_of_road_blocks = []
         dict_of_road_blocks = {}
         for road_network in tqdm(connection_points, desc='A*', leave=True):
-        # for road_network in connection_points:
             total_list_of_road_blocks.extend(self.connect_point_to_goal(start_points=road_network[0],
                                                                         goal_points=road_network[1],
                                                                         blocked_coordinates=blocked_coordinates,
@@ -36,14 +36,11 @@ class AStar:
             cost = self.calculate_heuristic(point=point, goals=goal_points)
             cost_so_far[point] = cost
             heapq.heappush(open_list, (cost, point))
-        i = 0
         while open_list:
-            i += 1
 
             current_point = heapq.heappop(open_list)[1]
 
             if current_point in goal_points:
-                # print(f"Checked: {i}, Cost: {cost_so_far[current_point]} - goal: {current_point}")
                 return self.backtrack(parent_dict=parent_dict, goal_point=current_point,
                                       road_blocks_dict=dict_of_road_blocks)
 
@@ -124,6 +121,4 @@ class AStar:
             backtracking.append(current_point)
             road_blocks_dict[current_point.node] = current_point.y
             current_point = parent_dict[current_point]
-        # print(f"Start: {current_point}")
-        # print(f"---------------------------")
         return backtracking

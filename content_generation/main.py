@@ -69,10 +69,10 @@ class Main:
         wfc_pp = WFC_PP()
         result = wfc_pp.create_tiles(result=result, tile_size=3, surface_dict=self.surface_dict)
 
-        deforester = Deforest.getInstance()
-        deforester.run(clusters=result[1][1], surface_dict=self.surface_dict)
-        self.SFB.build_wfc_glass_layer(self.surface_dict, result[0])
-        self.SFB.delete_wfc_glass_layer()
+        # deforester = Deforest.getInstance()
+        # deforester.run(clusters=result[1][1], surface_dict=self.surface_dict)
+        # self.SFB.build_wfc_glass_layer(self.surface_dict, result[0])
+        # self.SFB.delete_wfc_glass_layer()
 
         connection_p = ConnectionPoints(clusters=result[1][1])
         connection_tiles = connection_p.run()
@@ -101,7 +101,7 @@ class Main:
         input("Delete road?")
         self.SFB.delete_road_blocks()
         self.rollback(surface_dict=self.surface_dict)
-        deforester.rollback()
+        # deforester.rollback()
 
     def rollback(self, surface_dict):
         print("Reset surface? 1 or 2")

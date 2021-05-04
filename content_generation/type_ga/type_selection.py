@@ -1,6 +1,6 @@
 import random
 from variables.ga_type_variables import *
-from variables.shared_variables import *
+from models.shared_models import *
 
 
 class TypeSelection:

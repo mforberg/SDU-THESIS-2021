@@ -1,4 +1,4 @@
-from shared_variables import *
+from models.shared_models import *
 from map_analysis import MapAnalysis
 from variables.map_variables import FLUID_SET
 
@@ -23,31 +23,12 @@ def __check_for_and_consume_digestible_areas(solution: SolutionGA, area: Solutio
                 checked_nodes.add((x, z))
                 if not __is_coordinate_part_of_another_area(x=x, z=z, solution=solution):
                     found_areas.append(MapAnalysis().find_area(surface_dict, x, z, checked_nodes, fluid_blocks_set))
-    # __let_consumers_consume_each_other(surface_dict=surface_dict, area_list=found_areas)
     found_areas.sort(key=lambda consumed_area: consumed_area.distance_to_mass_coordinate(x=area.mass_coordinate['x'],
                                                                                          z=area.mass_coordinate['z']))
     for found_area in found_areas:
         if __check_if_digest(consumer=area, consumed=found_area, surface_dict=surface_dict):
             if __check_if_area_is_connected_to_consumer(consumer=area, consumed=found_area, surface_dict=surface_dict):
                 __consume_area(consumer=area, consumed=found_area)
-
-
-# def __let_consumers_consume_each_other(area_list: List[SolutionArea], surface_dict: dict):
-#     skip_set = set()
-#     remove_index = []
-#     for x in range(0, len(area_list)):
-#         skip_set.add(x)
-#         current_area = area_list[x]
-#         for y in range(x, len(area_list)):
-#             if y not in skip_set:
-#                 area = area_list[y]
-#                 if __check_if_area_is_connected_to_consumer(consumer=current_area, consumed=area,
-#                                                             surface_dict=surface_dict):
-#                     __consume_area(consumer=current_area, consumed=area)
-#                     skip_set.add(y)
-#                     remove_index.append(y)
-#     for index in remove_index[::-1]:
-#         area_list.pop(index)
 
 
 def __check_if_area_is_connected_to_consumer(consumer: SolutionArea, consumed: SolutionArea,

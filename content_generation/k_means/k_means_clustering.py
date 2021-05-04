@@ -1,4 +1,5 @@
 from variables.k_means_variables import *
+from models.shared_models import *
 # pip install -U scikit-learn
 from sklearn.cluster import KMeans
 # https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html

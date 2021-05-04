@@ -1,7 +1,7 @@
-from typing import Set
+from typing import Set, List
 
-from wfc_variables import *
-from a_star_variables import *
+from a_star_models import APoint
+from wfc_models import Cluster
 
 
 class AStarPreprocess:

@@ -5,6 +5,8 @@ import multiprocessing
 from multiprocessing import Pool
 import time
 import grpc
+from shared_models import *
+from map_anal_models import MapAnalData
 from map_variables import *
 import tqdm
 

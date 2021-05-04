@@ -1,5 +1,4 @@
 from minecraft_pb2 import *
-from shared_variables import *
 
 # Box area (they are made to be inclusive)
 """Nicolai's coordinates"""
@@ -45,10 +44,3 @@ save_file_dir = '../data/'
 save_file_path = 'block_dicts.pkl'
 
 
-class MapAnalData:
-    def __init__(self, block_dict: dict, surface_dict: dict, areas_for_districts: SolutionGA,
-                 set_of_fluid_coordinates: set):
-        self.block_dict = block_dict
-        self.surface_dict = surface_dict
-        self.areas_for_districts = areas_for_districts
-        self.set_of_fluid_coordinates = set_of_fluid_coordinates

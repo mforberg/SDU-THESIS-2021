@@ -1,7 +1,7 @@
 import minecraft_pb2_grpc
 from minecraft_pb2 import *
 import grpc
-from shared_variables import SolutionGA
+from shared_models import SolutionGA
 
 
 class WFCBuilder:
