@@ -92,6 +92,11 @@ class Main:
 
         wfc_pp.normalize_height(clustered_tiles=result[1][1], surface_dict=self.surface_dict)  # TODO: Implement + Test
 
+
+
+        wfc = WFC()
+        wfc.run(clustered_tiles=result[1][1], connection_tiles=connection_tiles)
+
         # # # # # # # # # # # # # # # # # # # # # # #
         # # # # # # # # #  A* Start # # # # # # # # #
         prepare_map = PrepareMap(surface_dict=self.surface_dict, fluid_set=set_of_fluids)
@@ -100,10 +105,6 @@ class Main:
         input("Delete road?")
         # # # # # # # # #   A* End  # # # # # # # # #
         # # # # # # # # # # # # # # # # # # # # # # #
-
-        wfc = WFC()
-        wfc.run(clustered_tiles=result[1][1], connection_tiles=connection_tiles)
-
 
         self.rollback(surface_dict=self.surface_dict)
         print("- - - - WFC RELATED GARBAGE STOPPED - - - -")

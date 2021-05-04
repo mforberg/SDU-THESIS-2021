@@ -13,6 +13,7 @@ class Tile:
         self.nodes: List[tuple] = nodes
         self.neighbors: List[Tile] = []
         self.cluster_assignment = -1  # Reassigned later
+        self.collapsed = False
 
         self.states: [State] = []
         self.entropy = 0  # TODO: Implement something to assign this + figure out how to calc this
@@ -94,6 +95,9 @@ class State:
 
     def __eq__(self, other):
         return self.type is other.type
+
+    def __hash__(self):
+        return hash(self.type)
 
 
 class Pattern:
