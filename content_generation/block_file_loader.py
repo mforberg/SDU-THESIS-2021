@@ -3,9 +3,7 @@ from map_variables import *
 import os.path
 import pickle
 import map_analysis
-from UserInputFetcher import fetch_user_integer
-
-from UserInputFetcher import fetch_user_integer_with_limit
+from UserInputFetcher import fetch_user_integer, fetch_user_integer_with_limit
 
 
 class BlockFileLoader:

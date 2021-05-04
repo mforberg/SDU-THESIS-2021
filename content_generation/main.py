@@ -1,21 +1,16 @@
-import map_analysis
 from k_means.k_means_clustering import KMeansClustering
 from map_ga.map_main import AreasGA
 from preprocessing.deforestation import Deforest
 from type_ga.type_main import TypesGA
 from wfc.preprocessing.wfc_preprocessing import WFCPreprocessing as WFC_PP
 from wfc.preprocessing.connection_points import ConnectionPoints
-from builder.wfc_builder import WFCBuilder as WFCB
 from builder.surface_builder import SurfaceBuilder
 from builder.test_builder import TestBuilder
 from final_touch.final_main import PrepareMap
-import minecraft_pb2_grpc
-import grpc
 import time
-import json
 from block_file_loader import BlockFileLoader
 from map_variables import *
-import uuid
+
 from UserInputFetcher import fetch_user_integer
 from wfc_main import WaveFunctionCollapse as WFC
 
@@ -31,8 +26,6 @@ class Main:
 
     def run(self):
         # self.create_test_map()
-
-        SFB = SurfaceBuilder()
 
         #  Map analysis
         self.tester.run()
@@ -79,12 +72,12 @@ class Main:
 
         wfc_pp.remove_neighbors(clustered_tiles=result[1][1])  # TODO: Maybe check this works
 
-        SFB.build_wfc_absorubed_tiles_layer(self.surface_dict, result[1][0])
+        # self.SFB.build_wfc_absorubed_tiles_layer(self.surface_dict, result[1][0])
         # SFB.build_wfc_trash_layer(surface_dict, result[0])
-        SFB.build_connection_tiles(surface_dict=self.surface_dict, connection_tiles=connection_tiles)
+        # self.SFB.build_connection_tiles(surface_dict=self.surface_dict, connection_tiles=connection_tiles)
         x = input("Please hold xd")
         # SFB.delete_wfc_glass_layer()
-        SFB.delete_wfc_absorbed_tiles_layer()
+        # self.SFB.delete_wfc_absorbed_tiles_layer()
 
         # self.SFB.delete_wfc_poop_layer()
         # SFB.delete_wfc_trash_layer()
@@ -138,9 +131,11 @@ class Main:
 
 
 if __name__ == '__main__':
-    try:
-        Main().run()
-    except:
-        Main().failsafe()
-    else:
-        print("Rollback commence due to errors")
+    Main().run()
+    # try:
+    #     Main().run()
+    # except:
+    #     print("ja")
+    #     Main().failsafe()
+    # else:
+    #     print("Rollback commence due to errors")

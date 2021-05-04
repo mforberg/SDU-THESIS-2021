@@ -1,4 +1,4 @@
-from variables.wfc_variables import State, Pattern
+from models.wfc_models import State, Pattern
 import xml.etree.ElementTree as ET
 
 

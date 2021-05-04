@@ -1,6 +1,6 @@
 from wfc_state_utility import *
 from wfc_states import *
-from wfc_variables import State
+from models.wfc_models import State
 import random
 
 
