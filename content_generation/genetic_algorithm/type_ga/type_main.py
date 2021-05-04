@@ -1,11 +1,11 @@
 from ga_specific_models import DataFileCreator
 from selection import Selection
 from variables.ga_type_variables import *
-from .type_preprocess import run_preprocess
-from .type_initial_population import TypeInitialPopulation
-from .type_fitness import TypeFitness
-from .type_crossover import TypeCrossover
-from .type_mutation import TypeMutation
+from type_preprocess import run_preprocess
+from type_initial_population import TypeInitialPopulation
+from type_fitness import TypeFitness
+from type_crossover import TypeCrossover
+from type_mutation import TypeMutation
 from shared_models import *
 from tqdm import trange
 

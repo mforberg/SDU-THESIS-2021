@@ -49,7 +49,7 @@ class BlockFileLoader:
             if file.endswith('.pkl'):
                 pkl_files.append(file)
         if len(pkl_files) == 1:
-            print(f"-r---currently using file {pkl_files}----")
+            print(f"----currently using file {pkl_files}----")
             block_file = open(f'{save_file_dir}{pkl_files[0]}', 'rb')
         else:
             print('What save file do you want to use?')
