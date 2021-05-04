@@ -16,11 +16,9 @@ class Crossover:
         ordered_population_list = population_list
         ordered_population_list.sort(key=lambda x: x.fitness, reverse=True)
         # pick top x
-        i = 0
-        for solution in ordered_population_list:
+        for i, solution in enumerate(ordered_population_list):
             if i == TYPE_ELITISM_AMOUNT:
                 break
-            i += 1
             solution.fitness = 0
             new_population.append(copy.deepcopy(solution))
         while len(new_population) < self.population_size:

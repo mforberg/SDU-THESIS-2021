@@ -1,8 +1,6 @@
 import random
-
-from Crossover import Crossover
+from crossover import Crossover
 from models.shared_models import *
-
 
 class MapCrossover(Crossover):
 

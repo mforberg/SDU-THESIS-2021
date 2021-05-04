@@ -1,7 +1,7 @@
 from k_means.k_means_clustering import KMeansClustering
-from map_ga.map_main import AreasGA
+from map_main import AreasGA
 from preprocessing.deforestation import Deforest
-from type_ga.type_main import TypesGA
+from type_main import TypesGA
 from wfc.preprocessing.wfc_preprocessing import WFCPreprocessing as WFC_PP
 from wfc.preprocessing.connection_points import ConnectionPoints
 from builder.surface_builder import SurfaceBuilder
@@ -10,7 +10,6 @@ from final_touch.final_main import PrepareMap
 import time
 from block_file_loader import BlockFileLoader
 from map_variables import *
-
 from UserInputFetcher import fetch_user_integer
 from wfc_main import WaveFunctionCollapse as WFC
 
