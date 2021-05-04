@@ -1,10 +1,11 @@
+from ga_specific_models import DataFileCreator
+from selection import Selection
 from .map_fitness import MapFitness
 from .map_initial_population import MapInitialPopulation
-from .map_selection import MapSelection
 from .map_crossover import MapCrossover
 from .map_mutation import MapMutation
 from variables.ga_map_variables import *
-from variables.shared_variables import *
+from models.shared_models import *
 from tqdm import trange
 
 
@@ -20,7 +21,7 @@ class AreasGA:
         self.DFC = DataFileCreator(filename="map_ga_data")
         self.map_initial = MapInitialPopulation()
         self.map_fitness = MapFitness()
-        self.map_select = MapSelection()
+        self.map_select = Selection(MAP_AMOUNT_OF_PARENTS_CHOSEN)
         self.map_crossover = MapCrossover(MAP_POPULATION_SIZE)
         self.map_mutation = MapMutation()
 

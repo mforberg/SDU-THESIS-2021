@@ -1,6 +1,6 @@
 from wfc_utility import *
 from wfc_states import *
-from wfc_variables import State, Cluster
+from models.wfc_models import State, Cluster, Tile
 import random
 import heapq
 

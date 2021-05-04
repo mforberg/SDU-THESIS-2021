@@ -1,5 +1,5 @@
 import random
-from variables.shared_variables import *
+from models.shared_models import *
 from variables.ga_type_variables import *
 
 

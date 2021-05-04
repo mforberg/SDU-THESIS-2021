@@ -1,4 +1,4 @@
-from wfc_variables import *
+from wfc_models import *
 import math
 
 

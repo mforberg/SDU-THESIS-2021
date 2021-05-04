@@ -2,7 +2,7 @@ import multiprocessing
 
 from map_analysis import MapAnalysis
 from surface_builder import SurfaceBuilder
-from shared_variables import SurfaceDictionaryValue
+from shared_models import SurfaceDictionaryValue
 from minecraft_pb2 import Block
 from map_variables import BOX_X_MIN, BOX_Z_MIN
 

@@ -1,6 +1,6 @@
 import random
-from Crossover import Crossover
-from variables.shared_variables import *
+from crossover import Crossover
+from models.shared_models import *
 
 
 class TypeCrossover(Crossover):

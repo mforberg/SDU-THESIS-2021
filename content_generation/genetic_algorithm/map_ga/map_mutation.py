@@ -1,6 +1,6 @@
 import random
 from variables.ga_map_variables import *
-from variables.shared_variables import *
+from models.shared_models import *
 
 
 class MapMutation:

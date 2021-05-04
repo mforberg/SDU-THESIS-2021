@@ -1,7 +1,8 @@
+from typing import List
 from a_star import AStar
+from a_star_models import APoint
 from a_star_preprocess import AStarPreprocess
-from wfc_variables import *
-from a_star_variables import *
+from wfc_models import Cluster
 
 
 class PrepareMap:

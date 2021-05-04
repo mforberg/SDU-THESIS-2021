@@ -1,5 +1,5 @@
 from variables.ga_map_variables import *
-from variables.shared_variables import *
+from models.shared_models import *
 import random
 import copy
 

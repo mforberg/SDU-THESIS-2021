@@ -1,7 +1,7 @@
 import statistics
 from variables.ga_map_variables import *
 from variables.map_variables import MIN_SIZE_OF_AREA
-from variables.shared_variables import *
+from models.shared_models import *
 
 
 class MapFitness:
