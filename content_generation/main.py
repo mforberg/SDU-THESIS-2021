@@ -94,11 +94,10 @@ class Main:
         # # # # # # # # # # # # # # # # # # # # # # #
         # # # # # # # # #  A* Start # # # # # # # # #
         prepare_map = PrepareMap(surface_dict=self.surface_dict, fluid_set=set_of_fluids)
-        result = prepare_map.run(cluster_list=result[1][1], connection_tiles=connection_tiles)
-        self.SFB.build_from_list_of_tuples(surface_dict=self.surface_dict, coordinates=result)
+        roads = prepare_map.run(cluster_list=result[1][1], connection_tiles=connection_tiles)
+        self.SFB.build_from_list_of_tuples(surface_dict=self.surface_dict, coordinates=roads)
         input("Delete road?")
         self.SFB.delete_road_blocks()
-
         self.rollback(surface_dict=self.surface_dict)
         # # # # # # # # #   A* End  # # # # # # # # #
         # # # # # # # # # # # # # # # # # # # # # # #

@@ -93,7 +93,7 @@ class State:
         return f"<{self.__class__.__name__} ({hex(id(self))}: TYPE={self.type}, WEIGHT={self.weight}>"
 
     def __eq__(self, other):
-        return self.type is other.type
+        return self.type == other.type
 
     def __hash__(self):
         return hash(self.type)

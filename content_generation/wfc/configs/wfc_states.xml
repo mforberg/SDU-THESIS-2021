@@ -19,9 +19,9 @@
 
         <!-- Corners -->
         <parent name="corner_upper_left">
-            <neighbor name="wall_left"/>
-            <neighbor name="wall_upper"/>
-            <neighbor name="road"/>
+            <neighbor name="wall_left" legal="SOUTH"/>
+            <neighbor name="wall_upper" legal="EAST"/>
+            <neighbor name="road" legal="NORTH, WEST"/>
         </parent>
         <parent name="corner_upper_right">
             <neighbor name="wall_right"/>
@@ -79,6 +79,7 @@
             <neighbor name="wall_right"/>
             <neighbor name="wall_upper"/>
             <neighbor name="wall_bottom"/>
+            <neighbor name="floor"/>
         </parent>
 
         <!-- Road -->
