@@ -3,7 +3,7 @@ from map_main import AreasGA
 from preprocessing.deforestation import Deforest
 from type_main import TypesGA
 from wfc.preprocessing.wfc_preprocessing import WFCPreprocessing as WFC_PP
-from wfc.preprocessing.connection_points import ConnectionPoints
+from wfc.preprocessing.connection_points import ConnectionPoints, Cluster
 from builder.surface_builder import SurfaceBuilder
 from builder.test_builder import TestBuilder
 from final_touch.final_main import PrepareMap
@@ -73,7 +73,7 @@ class Main:
 
         # self.SFB.build_wfc_absorubed_tiles_layer(self.surface_dict, result[1][0])
         # SFB.build_wfc_trash_layer(surface_dict, result[0])
-        # self.SFB.build_connection_tiles(surface_dict=self.surface_dict, connection_tiles=connection_tiles)
+        self.SFB.build_connection_tiles(surface_dict=self.surface_dict, connection_tiles=connection_tiles)
         x = input("Please hold xd")
         # SFB.delete_wfc_glass_layer()
         # self.SFB.delete_wfc_absorbed_tiles_layer()
@@ -84,24 +84,22 @@ class Main:
 
         wfc_pp.normalize_height(clustered_tiles=result[1][1], surface_dict=self.surface_dict)  # TODO: Implement + Test
 
-
-
         wfc = WFC()
         wfc.run(clustered_tiles=result[1][1], connection_tiles=connection_tiles)
 
-        # # # # # # # # # # # # # # # # # # # # # # #
-        # # # # # # # # #  A* Start # # # # # # # # #
-        prepare_map = PrepareMap(surface_dict=self.surface_dict, fluid_set=set_of_fluids)
-        result = prepare_map.run(cluster_list=result[1][1], connection_tiles=connection_tiles)
-        self.SFB.build_from_list_of_tuples(surface_dict=self.surface_dict, coordinates=result)
-        input("Delete road?")
-        # # # # # # # # #   A* End  # # # # # # # # #
-        # # # # # # # # # # # # # # # # # # # # # # #
 
         self.rollback(surface_dict=self.surface_dict)
         print("- - - - WFC RELATED GARBAGE STOPPED - - - -")
         # WFC End
 
+        # # # # # # # # # # # # # # # # # # # # # # #
+        # # # # # # # # #  A* Start # # # # # # # # #
+        prepare_map = PrepareMap(surface_dict=self.surface_dict, fluid_set=set_of_fluids)
+        roads = prepare_map.run(cluster_list=result[1][1], connection_tiles=connection_tiles)
+        self.SFB.build_from_list_of_tuples(surface_dict=self.surface_dict, coordinates=roads)
+        input("Delete road?")
+        # # # # # # # # #   A* End  # # # # # # # # #
+        # # # # # # # # # # # # # # # # # # # # # # #
 
         self.SFB.delete_road_blocks()
         self.rollback(surface_dict=self.surface_dict)
