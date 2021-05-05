@@ -1,12 +1,12 @@
 from k_means.k_means_clustering import KMeansClustering
-from map_main import AreasGA
-from preprocessing.deforestation import Deforest
-from type_main import TypesGA
-from wfc.preprocessing.wfc_preprocessing import WFCPreprocessing as WFC_PP
+from genetic_algorithm.map_ga.map_main import AreasGA
+from wfc.preprocessing.deforestation import Deforest
+from genetic_algorithm.type_ga.type_main import TypesGA
+from wfc.preprocessing.wfc_preprocessing import WFCPreprocessing
 from wfc.preprocessing.connection_points import ConnectionPoints
 from builder.surface_builder import SurfaceBuilder
 from builder.test_builder import TestBuilder
-from final_touch.final_main import PrepareMap
+from a_star.a_star_main import PrepareMap
 import time
 from block_file_loader import BlockFileLoader
 from map_variables import *
@@ -43,7 +43,7 @@ class Main:
 
         # SurfaceBuilder().build_clusters(clusters=clusters, surface_dict=surface_dict)
 
-        # self.rollback(surface_dict=surface_dict)
+        self.rollback(surface_dict=self.surface_dict)
 
         #  Type GA
         first = time.time()
@@ -59,7 +59,7 @@ class Main:
 
         # WFC Start
         print("- - - - WFC RELATED GARBAGE KEEP SCROLLING - - - -")
-        wfc_pp = WFC_PP()
+        wfc_pp = WFCPreprocessing()
         result = wfc_pp.create_tiles(result=result, tile_size=3, surface_dict=self.surface_dict)
 
         #  deforester = Deforest.getInstance()
@@ -73,7 +73,7 @@ class Main:
 
         # self.SFB.build_wfc_absorubed_tiles_layer(self.surface_dict, result[1][0])
         # SFB.build_wfc_trash_layer(surface_dict, result[0])
-        # self.SFB.build_connection_tiles(surface_dict=self.surface_dict, connection_tiles=connection_tiles)
+        self.SFB.build_connection_tiles(surface_dict=self.surface_dict, connection_tiles=connection_tiles)
         x = input("Please hold xd")
         # SFB.delete_wfc_glass_layer()
         # self.SFB.delete_wfc_absorbed_tiles_layer()
@@ -81,13 +81,15 @@ class Main:
         # self.SFB.delete_wfc_poop_layer()
         # SFB.delete_wfc_trash_layer()
 
-
-        wfc_pp.normalize_height(clustered_tiles=result[1][1], surface_dict=self.surface_dict)  # TODO: Implement + Test
-
-
+        new_and_old_dict = wfc_pp.normalize_height(clustered_tiles=result[1][1], surface_dict=self.surface_dict)
+        self.SFB.spawn_blocks(new_and_old_dict['new'])
+        input("Rebuild map?")
+        self.SFB.spawn_blocks(new_and_old_dict['old'])
 
         wfc = WFC()
         wfc.run(clustered_tiles=result[1][1], connection_tiles=connection_tiles)
+        print("- - - - WFC RELATED GARBAGE STOPPED - - - -")
+        # WFC End
 
         # # # # # # # # # # # # # # # # # # # # # # #
         # # # # # # # # #  A* Start # # # # # # # # #
@@ -95,16 +97,12 @@ class Main:
         result = prepare_map.run(cluster_list=result[1][1], connection_tiles=connection_tiles)
         self.SFB.build_from_list_of_tuples(surface_dict=self.surface_dict, coordinates=result)
         input("Delete road?")
+        self.SFB.delete_road_blocks()
+
+        self.rollback(surface_dict=self.surface_dict)
         # # # # # # # # #   A* End  # # # # # # # # #
         # # # # # # # # # # # # # # # # # # # # # # #
 
-        self.rollback(surface_dict=self.surface_dict)
-        print("- - - - WFC RELATED GARBAGE STOPPED - - - -")
-        # WFC End
-
-
-        self.SFB.delete_road_blocks()
-        self.rollback(surface_dict=self.surface_dict)
         # deforester.rollback()
 
     def rollback(self, surface_dict):

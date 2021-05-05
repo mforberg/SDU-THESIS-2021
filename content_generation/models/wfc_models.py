@@ -104,6 +104,7 @@ class Pattern:
     def __init__(self, pattern):
         self.pattern = pattern
 
+
 class Cluster:
 
     def __init__(self, tiles: List[Tile]):
