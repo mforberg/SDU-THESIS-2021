@@ -87,7 +87,6 @@ class Main:
         wfc = WFC()
         wfc.run(clustered_tiles=result[1][1])
 
-
         self.rollback(surface_dict=self.surface_dict)
         print("- - - - WFC RELATED GARBAGE STOPPED - - - -")
         # WFC End
