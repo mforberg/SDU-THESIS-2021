@@ -43,7 +43,7 @@ class Main:
 
         # SurfaceBuilder().build_clusters(clusters=clusters, surface_dict=surface_dict)
 
-        self.rollback(surface_dict=self.surface_dict)
+        # self.rollback(surface_dict=self.surface_dict)
 
         #  Type GA
         first = time.time()
