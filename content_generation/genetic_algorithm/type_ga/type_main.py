@@ -1,11 +1,11 @@
 from ga_specific_models import DataFileCreator
+from selection import Selection
 from variables.ga_type_variables import *
-from .type_preprocess import run_preprocess
-from .type_initial_population import TypeInitialPopulation
-from .type_fitness import TypeFitness
-from .type_selection import TypeSelection
-from .type_crossover import TypeCrossover
-from .type_mutation import TypeMutation
+from type_preprocess import run_preprocess
+from type_initial_population import TypeInitialPopulation
+from type_fitness import TypeFitness
+from type_crossover import TypeCrossover
+from type_mutation import TypeMutation
 from shared_models import *
 from tqdm import trange
 
@@ -20,7 +20,7 @@ class TypesGA:
         self.new_best_prints = []
         self.type_initial = TypeInitialPopulation()
         self.type_fitness = TypeFitness()
-        self.type_select = TypeSelection()
+        self.type_select = Selection(TYPE_AMOUNT_OF_PARENTS_CHOSEN)
         self.type_crossover = TypeCrossover(TYPE_POPULATION_SIZE)
         self.type_mutation = TypeMutation()
 
