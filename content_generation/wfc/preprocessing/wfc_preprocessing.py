@@ -1,7 +1,10 @@
 import time
 from typing import List
 from shared_models import SolutionGA, SurfaceDictionaryValue
+from builder.surface_builder import SurfaceBuilder
 from wfc_models import Tile, Cluster
+from map_analysis import MapAnalysis
+from minecraft_pb2 import *
 from pprint import pprint
 from copy import deepcopy
 from collections import Counter
@@ -15,31 +18,31 @@ class WFCPreprocessing:
         self.__max_x, self.__max_z = -9999999, -9999999 #-numpy.inf, -numpy.inf
         self.n = 2  # just a default value
 
-    def create_tiles(self, result: SolutionGA, tile_size: int, surface_dict: dict):
+    def create_tiles(self, complete_solution_ga: SolutionGA, tile_size: int, surface_dict: dict):
         # TODO: Remove print statements when code is functional
         n = tile_size
         self.n = tile_size
 
         # Set min/max x/z values of all coordinates in full solution
-        self.__set_min_max_values(self.__get_min_max_values(result))
+        self.__set_min_max_values(self.__get_min_max_values(complete_solution_ga))
         self.__print_modulo_n(n)
 
         # Prune edges if delta_x or delta_z mod n is not 0; delta z/x has to be a rectangle dividable by n
         print(f"(FIRST) max_x: {self.__max_x} min_x: {self.__min_x} max_z: {self.__max_z} min_z: {self.__min_z}")
-        self.__prune_edges(n, result)
-        self.__set_min_max_values(self.__get_min_max_values(result))
+        self.__prune_edges(n, complete_solution_ga)
+        self.__set_min_max_values(self.__get_min_max_values(complete_solution_ga))
         self.__print_modulo_n(n)
 
         # Create tileset for solution
         total_coordinates = []
-        for solution in result.population:
+        for solution in complete_solution_ga.population:
             total_coordinates.extend(solution.list_of_coordinates)
         total_set_coordinates = set(total_coordinates)
 
         solution_tiles = self.__generate_tileset(n, total_set_coordinates)
 
         # Assign tiles to cluster
-        clustered_tiles = self.__clustered_tileset(solution_tiles, result)
+        clustered_tiles = self.__clustered_tileset(solution_tiles, complete_solution_ga)
 
         print(((self.__max_x - self.__min_x) / n) * ((self.__max_z - self.__min_z) / n))
         print(f"N={n}, max_x-min_x={self.__max_x - self.__min_x}, delta_x%n={(self.__max_x - self.__min_x + 1) % n}")
@@ -84,19 +87,94 @@ class WFCPreprocessing:
 
         return build_list, cluster_list_with_neighbors
 
-    def normalize_height(self, clustered_tiles, surface_dict):
+    def normalize_height(self, clustered_tiles: List[Cluster], surface_dict: dict) -> dict:
+        min_y = min_x = min_z = 99999999999999999999999
+        max_y = max_x = max_z = -99999999999999999999999
         for cluster in clustered_tiles:
             test = {}
             for tile in cluster.tiles:
                 for node in tile.nodes:
                     value: SurfaceDictionaryValue = surface_dict[node]
-                    if value.y not in test:
-                        test[value.y] = 0
+                    y = value.y
+                    x, z = node
+                    if y not in test:
+                        test[y] = 0
                     else:
-                        test[value.y] += 1
+                        test[y] += 1
+                    if min_y > y:
+                        min_y = y
+                    elif max_y < y:
+                        max_y = y
+                    if min_x > x:
+                        min_x = x
+                    elif max_x < x:
+                        max_x = x
+                    if min_z > z:
+                        min_z = z
+                    elif max_z < z:
+                        max_z = z
             max_key = max(test, key=test.get)
             cluster.y = max_key
+        print("Reading from world uwu")
+        result_dict = MapAnalysis().read_part_of_world(min_x=min_x, max_x=max_x, min_z=min_z, max_z=max_z,
+                                                       block_dt=True, min_y=min_y, max_y=max_y)
+        print("Done reading")
+        total_block_dict = result_dict['block_dict']
+        return self.__use_block_dict_and_clusters_to_normalize_height(clusters=clustered_tiles,
+                                                                      surface_dict=surface_dict,
+                                                                      total_block_dict=total_block_dict)
 
+    def __use_block_dict_and_clusters_to_normalize_height(self, clusters: List[Cluster], total_block_dict: dict,
+                                                          surface_dict: dict) -> dict:
+        list_of_blocks_to_be_placed = []
+        list_of_old_block_to_remember = []
+        for cluster in clusters:
+            targeted_y = cluster.y
+            for tile in cluster.tiles:
+                for node in tile.nodes:
+                    current_height = surface_dict[node].y
+                    if targeted_y == current_height:
+                        continue
+                    else:
+                        current_block = surface_dict[node].block
+                        if targeted_y > current_height:
+                            if current_block.type == GRASS:
+                                current_block.type = DIRT
+                            while targeted_y >= current_height:
+                                random_block = Block()
+                                x, z, y = current_block.position.x, current_block.position.z, current_height
+                                random_block.position.y = y
+                                random_block.position.x = x
+                                random_block.position.z = z
+                                if targeted_y == current_height:
+                                    if current_block.type == DIRT:
+                                        random_block.type = GRASS
+                                    else:
+                                        random_block.type = current_block.type
+                                else:
+                                    random_block.type = current_block.type
+                                list_of_blocks_to_be_placed.append(random_block)
+                                list_of_old_block_to_remember.append(total_block_dict[x, y, z]['block'])
+                                current_height += 1
+                                if targeted_y != current_height:
+                                    surface_dict[node].y += 1
+                        else:
+                            while targeted_y <= current_height:
+                                random_block = Block()
+                                x, z, y = current_block.position.x, current_block.position.z, current_height
+                                random_block.position.y = y
+                                random_block.position.x = x
+                                random_block.position.z = z
+                                if targeted_y == current_height:
+                                    random_block.type = current_block.type
+                                else:
+                                    random_block.type = AIR
+                                list_of_blocks_to_be_placed.append(random_block)
+                                list_of_old_block_to_remember.append(total_block_dict[x, y, z]['block'])
+                                current_height -= 1
+                                if targeted_y != current_height:
+                                    surface_dict[node].y -= 1
+        return {'new': list_of_blocks_to_be_placed, 'old': list_of_old_block_to_remember}
 
     def __generate_tileset(self, n, coordinates):
         solution_tiles = []

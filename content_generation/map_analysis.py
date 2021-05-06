@@ -52,14 +52,15 @@ class MapAnalysis:
             result.append(i)
         return result
 
-    def read_part_of_world(self, min_x: int, max_x: int, min_z: int, max_z: int, block_dt: bool, min_y=30, max_y=160) -> dict:
+    def read_part_of_world(self, min_x: int, max_x: int, min_z: int, max_z: int, block_dt: bool, min_y=30,
+                           max_y=160) -> dict:
         cube_result = client.readCube(Cube(
             min=Point(x=min_x, y=min_y, z=min_z),
             max=Point(x=max_x, y=max_y, z=max_z)
         ))
 
         surface_dict = {}  # x z -> type y block
-        block_dict = {}  # x y z -> type
+        block_dict = {}  # x y z -> "type": type, "block": block
 
         # changes the class structure to dictionaries + finds the surface
         for block in cube_result.blocks:
