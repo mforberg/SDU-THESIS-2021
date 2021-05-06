@@ -6,6 +6,11 @@
         <state name="corner_bottom_left" weight="11"/>
         <state name="corner_bottom_right" weight="11"/>
 
+        <state name="dot_upper_left" weight="15"/>
+        <state name="dot_upper_right" weight="15"/>
+        <state name="dot_bottom_left" weight="15"/>
+        <state name="dot_bottom_right" weight="15"/>
+
         <state name="wall_left" weight="18"/>
         <state name="wall_right" weight="28"/>
         <state name="wall_upper" weight="19"/>
@@ -19,80 +24,106 @@
 
         <!-- Corners -->
         <parent name="corner_upper_left">
-            <neighbor name="wall_left" legal="SOUTH"/>
-            <neighbor name="wall_upper" legal="EAST"/>
-            <neighbor name="road" legal="NORTH, WEST"/>
+            <neighbor name="wall_left" legal="S"/>
+            <neighbor name="wall_upper" legal="E"/>
+            <neighbor name="corner_upper_right" legal="E"/>
+            <neighbor name="corner_bottom_left" legal="S"/>
+            <neighbor name="dot_upper_left" legal="ES"/>
+            <neighbor name="road" legal="NW"/>
         </parent>
         <parent name="corner_upper_right">
-            <neighbor name="wall_right"/>
-            <neighbor name="wall_upper"/>
-            <neighbor name="road"/>
+            <neighbor name="wall_right" legal="S"/>
+            <neighbor name="wall_upper" legal="W"/>
+            <neighbor name="corner_upper_left" legal="W"/>
+            <neighbor name="corner_bottom_right" legal="S"/>
+            <neighbor name="dot_upper_right" legal="WS"/>
+            <neighbor name="road" legal="NE"/>
         </parent>
         <parent name="corner_bottom_left">
-            <neighbor name="wall_left"/>
-            <neighbor name="wall_bottom"/>
-            <neighbor name="road"/>
+            <neighbor name="wall_left" legal="N"/>
+            <neighbor name="wall_bottom" legal="E"/>
+            <neighbor name="corner_upper_left" legal="N"/>
+            <neighbor name="corner_bottom_right" legal="E"/>
+            <neighbor name="dot_bottom_left" legal="EN"/>
+            <neighbor name="road" legal="SW"/>
         </parent>
         <parent name="corner_bottom_right">
-            <neighbor name="wall_right"/>
-            <neighbor name="wall_bottom"/>
-            <neighbor name="road"/>
+            <neighbor name="wall_right" legal="N"/>
+            <neighbor name="wall_bottom" legal="W"/>
+            <neighbor name="corner_upper_left" legal="W"/>
+            <neighbor name="corner_upper_right" legal="N"/>
+            <neighbor name="dot_bottom_right" legal="WN"/>
+            <neighbor name="road" legal="SE"/>
         </parent>
 
         <!-- Walls -->
         <parent name="wall_left">
-            <neighbor name="wall_left"/>
-            <neighbor name="corner_upper_left"/>
-            <neighbor name="corner_bottom_left"/>
-            <neighbor name="floor"/>
-            <neighbor name="road"/>
+            <neighbor name="wall_left" legal="NS"/>
+            <neighbor name="corner_upper_left" legal="N"/>
+            <neighbor name="corner_bottom_left" legal="S"/>
+            <neighbor name="floor" legal="E"/>
+            <neighbor name="road" legal="W"/>
         </parent>
         <parent name="wall_right">
-            <neighbor name="wall_right"/>
-            <neighbor name="corner_upper_right"/>
-            <neighbor name="corner_bottom_right"/>
-            <neighbor name="floor"/>
-            <neighbor name="road"/>
+            <neighbor name="wall_right" legal="NS"/>
+            <neighbor name="corner_upper_right" legal="N"/>
+            <neighbor name="corner_bottom_right" legal="S"/>
+            <neighbor name="floor" legal="W"/>
+            <neighbor name="road" legal="E"/>
         </parent>
         <parent name="wall_upper">
-            <neighbor name="wall_upper"/>
-            <neighbor name="corner_upper_left"/>
-            <neighbor name="corner_upper_right"/>
-            <neighbor name="floor"/>
-            <neighbor name="road"/>
+            <neighbor name="wall_upper" legal="EW"/>
+            <neighbor name="corner_upper_left" legal="W"/>
+            <neighbor name="corner_upper_right" legal="E"/>
+            <neighbor name="floor" legal="S"/>
+            <neighbor name="road" legal="N"/>
         </parent>
         <parent name="wall_bottom">
-            <neighbor name="wall_bottom"/>
-            <neighbor name="corner_bottom_left"/>
-            <neighbor name="corner_bottom_right"/>
-            <neighbor name="floor"/>
-            <neighbor name="road"/>
+            <neighbor name="wall_bottom" legal="EW"/>
+            <neighbor name="corner_bottom_left" legal="W"/>
+            <neighbor name="corner_bottom_right" legal="E"/>
+            <neighbor name="floor" legal="N"/>
+            <neighbor name="road" legal="S"/>
+        </parent>
+
+        <!-- Dot Corners -->
+        <parent name="dot_upper_left">
+            <neighbor name="corner_upper_left" legal="NW"/>
+            <neighbor name="floor" legal="SE"/>
+        </parent>
+        <parent name="dot_upper_right">
+            <neighbor name="corner_upper_right" legal="NE"/>
+            <neighbor name="floor" legal="SW"/>
+        </parent>
+        <parent name="dot_bottom_left">
+            <neighbor name="corner_bottom_left" legal="SW"/>
+            <neighbor name="floor" legal="NE"/>
+        </parent>
+        <parent name="dot_bottom_right">
+            <neighbor name="corner_bottom_right" legal="SE"/>
+            <neighbor name="floor" legal="NW"/>
         </parent>
 
         <!-- Floor -->
         <parent name="floor">
-            <neighbor name="corner_upper_left"/>
-            <neighbor name="corner_bottom_left"/>
-            <neighbor name="corner_upper_right"/>
-            <neighbor name="corner_bottom_right"/>
-            <neighbor name="wall_left"/>
-            <neighbor name="wall_right"/>
-            <neighbor name="wall_upper"/>
-            <neighbor name="wall_bottom"/>
-            <neighbor name="floor"/>
+            <neighbor name="wall_left" legal="E"/>
+            <neighbor name="wall_right" legal="W"/>
+            <neighbor name="wall_upper" legal="S"/>
+            <neighbor name="wall_bottom" legal="N"/>
+            <neighbor name="floor" legal="NSEW"/>
         </parent>
 
         <!-- Road -->
         <parent name="road">
-            <neighbor name="corner_upper_left"/>
-            <neighbor name="corner_bottom_left"/>
-            <neighbor name="corner_upper_right"/>
-            <neighbor name="corner_bottom_right"/>
-            <neighbor name="wall_left"/>
-            <neighbor name="wall_right"/>
-            <neighbor name="wall_upper"/>
-            <neighbor name="wall_bottom"/>
-            <neighbor name="road"/>
+            <neighbor name="corner_upper_left" legal="ES"/>
+            <neighbor name="corner_bottom_left" legal="NE"/>
+            <neighbor name="corner_upper_right" legal="SW"/>
+            <neighbor name="corner_bottom_right" legal="WN"/>
+            <neighbor name="wall_left" legal="E"/>
+            <neighbor name="wall_right" legal="W"/>
+            <neighbor name="wall_upper" legal="S"/>
+            <neighbor name="wall_bottom" legal="N"/>
+            <neighbor name="road" legal="NSEW"/>
         </parent>
     </neighbors>
 </wfc_states>
