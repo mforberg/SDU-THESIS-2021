@@ -86,7 +86,7 @@ class WFCPreprocessing:
                 build_list.append(tile)
             max_key = max(counter_dict, key=counter_dict.get)
             tile.cluster_assignment = max_key
-            tile.type_of_tile = cluster_assignment_to_type[max_key]
+            tile.district_type = cluster_assignment_to_type[max_key]
             cluster_list_with_neighbors[max_key].tiles.append(tile)
 
         return build_list, cluster_list_with_neighbors

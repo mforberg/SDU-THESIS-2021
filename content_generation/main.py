@@ -9,6 +9,7 @@ from builder.test_builder import TestBuilder
 from builder.wfc_builder import WFCBuilder
 from a_star.a_star_main import PrepareMap
 import time
+import copy
 from block_file_loader import BlockFileLoader
 from map_variables import *
 from UserInputFetcher import fetch_user_integer
@@ -21,7 +22,7 @@ class Main:
         self.global_dict_of_used_coordinates = {}
         self.global_dict_of_types = {}
         self.SFB = SurfaceBuilder()
-        self.WFCBuilder = WFCBuilder()
+        self.WFC_builder = WFCBuilder()
         self.tester = BlockFileLoader()
         self.surface_dict = {}
 
@@ -84,14 +85,19 @@ class Main:
 
         # self.SFB.delete_wfc_poop_layer()
         # SFB.delete_wfc_trash_layer()
-
+        old_surface_dict = copy.deepcopy(self.surface_dict)
         new_and_old_dict = wfc_pp.normalize_height(clustered_tiles=result[1][1], surface_dict=self.surface_dict)
         self.SFB.spawn_blocks(new_and_old_dict['new'])
-        input("Rebuild map?")
-        self.SFB.spawn_blocks(new_and_old_dict['old'])
+
 
         wfc = WaveFunctionCollapse()
         list_of_collapsed_tiles = wfc.run(clustered_tiles=result[1][1], connection_tiles=connection_tiles)
+        input("rdy?")
+        self.WFC_builder.build_collapsed_tiles(surface_dict=self.surface_dict,
+                                               list_of_collapsed_tiles=list_of_collapsed_tiles)
+        input("Rebuild map?")
+        self.SFB.spawn_blocks(new_and_old_dict['old'])
+        self.surface_dict = old_surface_dict
         print("- - - - WFC RELATED GARBAGE STOPPED - - - -")
         # WFC End
 

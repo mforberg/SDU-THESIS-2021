@@ -58,7 +58,6 @@ class WaveFunctionCollapse:
             heapq.heapify(cluster.tiles)
             print(f"second call: {len(cluster.tiles)}")
 
-
         print("Counter dict")
         counter_dict = {n: 0 for n in range(15)}
         for cluster in clustered_tiles:
@@ -122,8 +121,6 @@ class WaveFunctionCollapse:
             print(f"total tiles: {len(cluster.tiles)}")
             print(f"uncollapsed tiles: {k}")
             print(f"tiles states length > 1: {length}")
-
-            break
         print("Return statement")
         return collapsed_tiles
 

@@ -13,7 +13,7 @@ class Tile:
         self.neighbors: List[Tile] = []
         self.cluster_assignment = -1  # Reassigned later
         self.collapsed = False
-        self.type_of_tile = "Nothing"
+        self.district_type = "Nothing"
         self.states: [State] = []
         self.entropy = 0  # TODO: Implement something to assign this + figure out how to calc this
 
