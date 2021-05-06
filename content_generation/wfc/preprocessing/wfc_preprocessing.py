@@ -62,13 +62,16 @@ class WFCPreprocessing:
         coordinate_cluster_dict = {}
         coordinate_cluster_list = []
         build_list = []
+        cluster_assignment_to_type = {}
 
         # Create dictionary with x, z = cluster_assignment
         for i in range(len(result.population)):
             temp = set()
+            district_type = result.population[i].type_of_district
             for coord in result.population[i].list_of_coordinates:
                 coordinate_cluster_dict[coord] = i
                 temp.add(coord)
+                cluster_assignment_to_type[i] = district_type
             coordinate_cluster_list.append(temp)
 
         # Assign tiles to their specific clusters, with all neighbors intact
@@ -83,6 +86,7 @@ class WFCPreprocessing:
                 build_list.append(tile)
             max_key = max(counter_dict, key=counter_dict.get)
             tile.cluster_assignment = max_key
+            tile.type_of_tile = cluster_assignment_to_type[max_key]
             cluster_list_with_neighbors[max_key].tiles.append(tile)
 
         return build_list, cluster_list_with_neighbors

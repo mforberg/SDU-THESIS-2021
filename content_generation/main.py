@@ -6,12 +6,13 @@ from wfc.preprocessing.wfc_preprocessing import WFCPreprocessing
 from wfc.preprocessing.connection_points import ConnectionPoints
 from builder.surface_builder import SurfaceBuilder
 from builder.test_builder import TestBuilder
+from builder.wfc_builder import WFCBuilder
 from a_star.a_star_main import PrepareMap
 import time
 from block_file_loader import BlockFileLoader
 from map_variables import *
 from UserInputFetcher import fetch_user_integer
-from wfc_main import WaveFunctionCollapse as WFC
+from wfc_main import WaveFunctionCollapse
 
 
 class Main:
@@ -20,6 +21,7 @@ class Main:
         self.global_dict_of_used_coordinates = {}
         self.global_dict_of_types = {}
         self.SFB = SurfaceBuilder()
+        self.WFCBuilder = WFCBuilder()
         self.tester = BlockFileLoader()
         self.surface_dict = {}
 
@@ -88,8 +90,8 @@ class Main:
         input("Rebuild map?")
         self.SFB.spawn_blocks(new_and_old_dict['old'])
 
-        wfc = WFC()
-        wfc.run(clustered_tiles=result[1][1], connection_tiles=connection_tiles)
+        wfc = WaveFunctionCollapse()
+        list_of_collapsed_tiles = wfc.run(clustered_tiles=result[1][1], connection_tiles=connection_tiles)
         print("- - - - WFC RELATED GARBAGE STOPPED - - - -")
         # WFC End
 
