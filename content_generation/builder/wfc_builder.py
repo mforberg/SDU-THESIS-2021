@@ -76,12 +76,12 @@ class WFCBuilder:
             z_value_for_wall = -1
         blocks = []
         for x_increase in range(0, size):
-            if x == x_value_for_wall:
+            if x_increase == x_value_for_wall:
                 x_wall = True
             else:
                 x_wall = False
             for z_increase in range(0, size):
-                if z == z_value_for_wall:
+                if z_increase == z_value_for_wall:
                     z_wall = True
                 else:
                     z_wall = False
@@ -141,12 +141,12 @@ class WFCBuilder:
             print("something wrong in build_exterior!")
         blocks = []
         for x_increase in range(0, size):
-            if x == x_value_for_wall:
+            if x_increase == x_value_for_wall:
                 x_wall = True
             else:
                 x_wall = False
             for z_increase in range(0, size):
-                if z == z_value_for_wall:
+                if z_increase == z_value_for_wall:
                     z_wall = True
                 else:
                     z_wall = False
