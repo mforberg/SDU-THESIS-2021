@@ -29,9 +29,15 @@ class WfcStates:
             parent_list = element.findall('parent')
             for parent in parent_list:
                 key = parent.get('name')
-                values = []
+                # values = []
+                # legal_neighbors = parent.findall('neighbor')
+                # for ln in legal_neighbors:
+                #     values.append(ln.get('name'))
+                # states[key] = values
+                values = {}
                 legal_neighbors = parent.findall('neighbor')
                 for ln in legal_neighbors:
-                    values.append(ln.get('name'))
+                    values[ln.get('name')] = [char for char in ln.get('legal')]
+
                 states[key] = values
         return weights, states

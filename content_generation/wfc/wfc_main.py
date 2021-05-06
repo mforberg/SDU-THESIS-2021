@@ -36,8 +36,15 @@ class WaveFunctionCollapse:
             state = State(state_type=key, pattern=[], legal_neighbors=value)
             state.weight = wfc_states[0][key]
             states.append(state)
-        print("Assign states to tiles")
 
+        # TODO: Remove
+        print("- - - - - STATES - - - - -")
+        for state in states:
+            print(state.type)
+            print(state.legal_neighbors)
+            print("- - - -")
+
+        print("Assign states to tiles")
         # Assign States to tiles
         for cluster in clustered_tiles:
             for tile in cluster.tiles:
@@ -100,13 +107,16 @@ class WaveFunctionCollapse:
         # Run main algorithm on each cluster
         collapsed_tiles = []
         for cluster in self.heaps:
+            test = len(cluster.tiles)
             while not cluster_fully_collapsed(cluster=cluster.tiles):
+
                 self.update_entropy_for_all_tiles(cluster=cluster)
                 heapq.heapify(cluster.tiles)
                 min_entropy_tile = self.observe(cluster.tiles)
                 collapsed_tiles.append(min_entropy_tile)
                 min_entropy_tile.collapsed = True
                 self.propagate(min_entropy_tile)
+                print(f"current: {len(cluster.tiles)}, max: {test}")
 
             # print(collapsed_tiles)
             k = 0
@@ -149,6 +159,7 @@ class WaveFunctionCollapse:
     def propagate(self, min_entropy_tile: Tile):
 
         stack = [min_entropy_tile]
+        NORTH, SOUTH, EAST, WEST = (0, 3), (0, -3), (3, 0), (-3, 0)
 
         while len(stack) > 0:
             current_tile: Tile = stack.pop()
@@ -157,14 +168,45 @@ class WaveFunctionCollapse:
                 legal_states_for_neighbor = []
                 neighbor_initial_possible_states: [State] = neighbor.states
 
-                for neighbor_state in neighbor_initial_possible_states:
-                    state_in_current: [State]
+                # Identify neighbors legal "neighbors neighbor" direction
+                existing_directions = self.identify_neighbor_directions(neighbor)
 
+                for neighbor_state in neighbor_initial_possible_states:
+
+                    # Remove states based on states in previous tile
+                    state_in_current: [State]
                     for state_in_current in current_tile.states:
 
                         if neighbor_state.type in state_in_current.legal_neighbors \
                                 and neighbor_state not in legal_states_for_neighbor:
                             legal_states_for_neighbor.append(neighbor_state)
+                    # print(f"legal_states_for_neighbor: {legal_states_for_neighbor}")
+                    # Remove states based on adjacency rules
+                    state: State
+                    for state in legal_states_for_neighbor:
+                        for legal_neighbor, legal_directions in state.legal_neighbors.items():
+                            # corner_upper_left = ["N", "S", "E"]
+                            temp = []
+                            for legal in legal_directions:  # "S", "N", ...
+                                if legal == "N":
+                                    temp.append(NORTH)
+                                elif legal == "S":
+                                    temp.append(SOUTH)
+                                elif legal == "W":
+                                    temp.append(WEST)
+                                elif legal == "E":
+                                    temp.append(EAST)
+                            # print(f"state type: {state.type}")
+                            # print(f"existing neighbor directions: {existing_directions}")
+                            # print(f"current legal neighbors: {legal_states_for_neighbor}")
+                            # print(f"state legal neighbor direction: {state.legal_neighbors.items()}")
+                            # print(f"existing_directions[di]:")
+                            for di in temp:
+                                if not existing_directions[di]:
+                                    # print(f"di in existing directions: {di}")
+                                    if state in legal_states_for_neighbor:
+                                        legal_states_for_neighbor.remove(state)
+
 
                 if len(legal_states_for_neighbor) > 1:
                     temp = neighbor.states
@@ -173,6 +215,21 @@ class WaveFunctionCollapse:
                     if not set(temp).issubset(set(legal_states_for_neighbor)):
                         if neighbor not in stack:
                             stack.append(neighbor)
+
+    def identify_neighbor_directions(self, neighbor):
+        NORTH, SOUTH, EAST, WEST = (0, 3), (0, -3), (3, 0), (-3, 0)
+        directions = [NORTH, SOUTH, EAST, WEST]
+        existing_directions = {NORTH: False, SOUTH: False, EAST: False, WEST: False}
+        neighbor_x = neighbor.nodes[0][0]
+        neighbor_z = neighbor.nodes[0][1]
+        for neighbors_neighbor in neighbor.neighbors:
+            for direction in directions:
+                temp_x = neighbor_x + direction[0]
+                temp_z = neighbor_z + direction[1]
+
+                if (temp_x, temp_z) in neighbors_neighbor.nodes:
+                    existing_directions[direction] = True
+        return existing_directions
 
     def update_entropy_for_all_tiles(self, cluster):
         for tile in cluster.tiles:
