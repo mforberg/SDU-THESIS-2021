@@ -83,10 +83,11 @@ class Main:
         # self.SFB.delete_wfc_poop_layer()
         # SFB.delete_wfc_trash_layer()
 
-        new_and_old_dict = wfc_pp.normalize_height(clustered_tiles=result[1][1], surface_dict=self.surface_dict)
-        self.SFB.spawn_blocks(new_and_old_dict['new'])
-        input("Rebuild map?")
-        self.SFB.spawn_blocks(new_and_old_dict['old'])
+        # TODO: Comment back in when build WFC
+        # new_and_old_dict = wfc_pp.normalize_height(clustered_tiles=result[1][1], surface_dict=self.surface_dict)
+        # self.SFB.spawn_blocks(new_and_old_dict['new'])
+        # input("Rebuild map?")
+        # self.SFB.spawn_blocks(new_and_old_dict['old'])
 
         wfc = WFC()
         wfc.run(clustered_tiles=result[1][1], connection_tiles=connection_tiles)

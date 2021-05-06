@@ -83,7 +83,7 @@ class Tile:
 class State:
 
 
-    def __init__(self, state_type: str, pattern, legal_neighbors: [str]):
+    def __init__(self, state_type: str, pattern, legal_neighbors):
         self.type = state_type
         self.pattern = pattern
         self.legal_neighbors = legal_neighbors # {neighbor: str = [valid_dir: str, valid_dir: str]
