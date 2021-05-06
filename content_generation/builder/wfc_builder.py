@@ -31,8 +31,8 @@ class WFCBuilder:
                 blocks.extend(self.__build_interior(x=x, z=z, y=y, district_type=district_type,
                                                     tile_type=tile_type, size=3))
             elif tile_type in self.dot_builds:
-                blocks.extend(self.__build_exterior(x=x, z=z, y=y, district_type=district_type,
-                                                    tile_type=tile_type, size=3))
+                blocks.extend(self.__build_dots(x=x, z=z, y=y, district_type=district_type,
+                                                tile_type=tile_type, size=3))
             elif tile_type == "road":
                 blocks.extend(self.__build_road(x=x, z=z, y=y, size=3))
             else:
@@ -101,7 +101,8 @@ class WFCBuilder:
                     if floor:
                         random_block.type = PLANKS
                     elif roof:
-                        random_block.type = self.dict_of_building_blocks[district_type]
+                        # random_block.type = self.dict_of_building_blocks[district_type]
+                        random_block.type = GLASS
                     elif x_wall or z_wall:
                         random_block.type = COBBLESTONE
                     else:
@@ -121,8 +122,8 @@ class WFCBuilder:
                 blocks.append(random_block)
         return blocks
 
-    def __build_exterior(self, x: int, z: int, y: int, district_type: str, tile_type: str,
-                         size: int) -> List[Block]:
+    def __build_dots(self, x: int, z: int, y: int, district_type: str, tile_type: str,
+                     size: int) -> List[Block]:
         if tile_type == "dot_upper_left":
             x_value_for_wall = 0
             z_value_for_wall = size - 1
@@ -138,7 +139,7 @@ class WFCBuilder:
         else:
             x_value_for_wall = 0
             z_value_for_wall = 0
-            print("something wrong in build_exterior!")
+            print("something wrong in build_dots!")
         blocks = []
         for x_increase in range(0, size):
             if x_increase == x_value_for_wall:
@@ -152,17 +153,27 @@ class WFCBuilder:
                     z_wall = False
                 for y_increase in range(0, 4):
                     if y_increase == 0:
-                        continue
+                        floor = True
                     else:
-                        random_block = Block()
-                        random_block.position.x = x + x_increase
-                        random_block.position.z = z + z_increase
-                        random_block.position.y = y + y_increase
-                        if x_wall and z_wall:
-                            random_block.type = self.dict_of_building_blocks[district_type]
-                        else:
-                            random_block.type = AIR
-                        blocks.append(random_block)
+                        floor = False
+                    if y_increase == 3:
+                        roof = True
+                    else:
+                        roof = False
+
+                    random_block = Block()
+                    random_block.position.x = x + x_increase
+                    random_block.position.z = z + z_increase
+                    random_block.position.y = y + y_increase
+                    if floor:
+                        random_block.type = PLANKS
+                    elif roof:
+                        random_block.type = GLASS
+                    elif x_wall and z_wall:
+                        random_block.type = self.dict_of_building_blocks[district_type]
+                    else:
+                        random_block.type = AIR
+                    blocks.append(random_block)
         return blocks
 
     def __get_smallest(self, tile: Tile) -> tuple:
