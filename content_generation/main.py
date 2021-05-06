@@ -35,11 +35,11 @@ class Main:
                                                                         self.tester.set_of_fluids
 
         #  Map GA
-        result = AreasGA().run(areas=district_areas)
+        solution_ga_without_types = AreasGA().run(areas=district_areas)
 
         #  K-means clustering
         print("Clustering Started")
-        clusters = KMeansClustering().run(first_ga_result=result, surface_dict=self.surface_dict)
+        clusters = KMeansClustering().run(first_ga_result=solution_ga_without_types, surface_dict=self.surface_dict)
 
         # SurfaceBuilder().build_clusters(clusters=clusters, surface_dict=surface_dict)
 
@@ -47,20 +47,22 @@ class Main:
 
         #  Type GA
         first = time.time()
-        # result[0] all tiles, result[1] only tiles associated with solution
-        result = TypesGA().run(surface_dict=self.surface_dict, clusters=clusters,
-                               global_district_types_dict=self.global_dict_of_types, fluid_set=set_of_fluids)
+
+        final_solution_ga = TypesGA().run(surface_dict=self.surface_dict, clusters=clusters,
+                                          global_district_types_dict=self.global_dict_of_types, fluid_set=set_of_fluids)
         print(f"TYPE GA: {time.time()-first}")
         # for solution in result.population:
         #     print(solution.type_of_district)
 
-        self.SFB.build_type_ga(surface_dict=self.surface_dict, type_ga_result=result)
+        self.SFB.build_type_ga(surface_dict=self.surface_dict, type_ga_result=final_solution_ga)
         self.rollback(surface_dict=self.surface_dict)
 
         # WFC Start
         print("- - - - WFC RELATED GARBAGE KEEP SCROLLING - - - -")
         wfc_pp = WFCPreprocessing()
-        result = wfc_pp.create_tiles(result=result, tile_size=3, surface_dict=self.surface_dict)
+        # result[0] all tiles, result[1] only tiles associated with solution
+        result = wfc_pp.create_tiles(complete_solution_ga=final_solution_ga, tile_size=3,
+                                     surface_dict=self.surface_dict)
 
         #  deforester = Deforest.getInstance()
         #  deforester.run(clusters=result[1][1], surface_dict=self.surface_dict)

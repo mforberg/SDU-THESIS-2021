@@ -18,31 +18,31 @@ class WFCPreprocessing:
         self.__max_x, self.__max_z = -9999999, -9999999 #-numpy.inf, -numpy.inf
         self.n = 2  # just a default value
 
-    def create_tiles(self, result: SolutionGA, tile_size: int, surface_dict: dict):
+    def create_tiles(self, complete_solution_ga: SolutionGA, tile_size: int, surface_dict: dict):
         # TODO: Remove print statements when code is functional
         n = tile_size
         self.n = tile_size
 
         # Set min/max x/z values of all coordinates in full solution
-        self.__set_min_max_values(self.__get_min_max_values(result))
+        self.__set_min_max_values(self.__get_min_max_values(complete_solution_ga))
         self.__print_modulo_n(n)
 
         # Prune edges if delta_x or delta_z mod n is not 0; delta z/x has to be a rectangle dividable by n
         print(f"(FIRST) max_x: {self.__max_x} min_x: {self.__min_x} max_z: {self.__max_z} min_z: {self.__min_z}")
-        self.__prune_edges(n, result)
-        self.__set_min_max_values(self.__get_min_max_values(result))
+        self.__prune_edges(n, complete_solution_ga)
+        self.__set_min_max_values(self.__get_min_max_values(complete_solution_ga))
         self.__print_modulo_n(n)
 
         # Create tileset for solution
         total_coordinates = []
-        for solution in result.population:
+        for solution in complete_solution_ga.population:
             total_coordinates.extend(solution.list_of_coordinates)
         total_set_coordinates = set(total_coordinates)
 
         solution_tiles = self.__generate_tileset(n, total_set_coordinates)
 
         # Assign tiles to cluster
-        clustered_tiles = self.__clustered_tileset(solution_tiles, result)
+        clustered_tiles = self.__clustered_tileset(solution_tiles, complete_solution_ga)
 
         print(((self.__max_x - self.__min_x) / n) * ((self.__max_z - self.__min_z) / n))
         print(f"N={n}, max_x-min_x={self.__max_x - self.__min_x}, delta_x%n={(self.__max_x - self.__min_x + 1) % n}")
