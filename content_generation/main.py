@@ -92,6 +92,11 @@ class Main:
 
         wfc = WaveFunctionCollapse()
         list_of_collapsed_tiles = wfc.run(clustered_tiles=result[1][1], connection_tiles=connection_tiles)
+        print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ")
+        for tile in list_of_collapsed_tiles:
+            print(tile.nodes)
+            print(tile.states)
+            print("- - - - - -")
         input("rdy?")
         self.WFC_builder.build_collapsed_tiles(surface_dict=self.surface_dict,
                                                list_of_collapsed_tiles=list_of_collapsed_tiles)

@@ -50,7 +50,7 @@
         <parent name="corner_bottom_right">
             <neighbor name="wall_right" legal="N"/>
             <neighbor name="wall_bottom" legal="W"/>
-            <neighbor name="corner_upper_left" legal="W"/>
+            <neighbor name="corner_bottom_left" legal="W"/>
             <neighbor name="corner_upper_right" legal="N"/>
             <neighbor name="dot_bottom_right" legal="WN"/>
             <neighbor name="road" legal="SE"/>
@@ -116,7 +116,7 @@
         <!-- Road -->
         <parent name="road">
             <neighbor name="corner_upper_left" legal="ES"/>
-            <neighbor name="corner_bottom_left" legal="NE"/>
+            <neighbor name="corner_bottom_left" legal="NW"/>
             <neighbor name="corner_upper_right" legal="SW"/>
             <neighbor name="corner_bottom_right" legal="WN"/>
             <neighbor name="wall_left" legal="E"/>

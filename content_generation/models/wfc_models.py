@@ -59,7 +59,12 @@ class Tile:
         for state in self.states:
             sum_of_weights += state.weight
             pp_weights += state.weight * log(state.weight)
-        self.entropy = (log(sum_of_weights) - pp_weights / sum_of_weights)
+        entropy = (log(sum_of_weights) - pp_weights / sum_of_weights)
+        noise = random.uniform(0, (entropy*0.05))
+        self.entropy = entropy - noise
+
+    def reassign_states(self, new_states):
+        self.states = new_states
 
     def __repr__(self):
         return f"<{self.__class__.__name__} ({hex(id(self))}): ID[:8] {self.id[:8]}, CA: {self.cluster_assignment}, Nodes:\n {self.nodes}>"
@@ -86,7 +91,7 @@ class State:
     def __init__(self, state_type: str, pattern, legal_neighbors):
         self.type = state_type
         self.pattern = pattern
-        self.legal_neighbors = legal_neighbors # {neighbor: str = [valid_dir: str, valid_dir: str]
+        self.legal_neighbors = legal_neighbors  # {neighbor: str = [valid_dir: str, valid_dir: str]
         self.weight = 1  # reassigned later
 
     def __repr__(self):

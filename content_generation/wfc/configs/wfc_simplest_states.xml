@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wfc_states>
+    <states>
+        <state name="wall_upper" weight="40"/>
+        <state name="wall_bottom" weight="40"/>
+        <state name="road" weight="80"/>
+    </states>
+
+    <neighbors>
+
+        <!-- Walls -->
+        <parent name="wall_upper">
+            <neighbor name="wall_bottom" legal="D"/>
+            <neighbor name="road" legal="LRU"/>
+        </parent>
+        <parent name="wall_bottom">
+            <neighbor name="wall_upper" legal="U"/>
+            <neighbor name="road" legal="LRD"/>
+        </parent>
+
+        <!-- Road -->
+        <parent name="road">
+            <neighbor name="wall_upper" legal="D"/>
+            <neighbor name="wall_bottom" legal="U"/>
+            <neighbor name="road" legal="LRDU"/>
+        </parent>
+    </neighbors>
+</wfc_states>
+

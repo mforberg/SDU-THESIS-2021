@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wfc_states>
+    <states>
+        <state name="corner_upper_left" weight="40"/>
+        <state name="corner_upper_right" weight="40"/>
+        <state name="corner_bottom_left" weight="40"/>
+        <state name="corner_bottom_right" weight="40"/>
+
+        <state name="road" weight="100"/>
+    </states>
+
+    <neighbors>
+
+        <!-- Corners -->
+        <parent name="corner_upper_left">
+            <neighbor name="corner_upper_right" legal="R"/>
+            <neighbor name="corner_bottom_left" legal="D"/>
+            <neighbor name="road" legal="UL"/>
+        </parent>
+        <parent name="corner_upper_right">
+            <neighbor name="corner_upper_left" legal="L"/>
+            <neighbor name="corner_bottom_right" legal="D"/>
+            <neighbor name="road" legal="UR"/>
+        </parent>
+        <parent name="corner_bottom_left">
+            <neighbor name="corner_upper_left" legal="U"/>
+            <neighbor name="corner_bottom_right" legal="R"/>
+            <neighbor name="road" legal="DL"/>
+        </parent>
+        <parent name="corner_bottom_right">
+            <neighbor name="corner_bottom_left" legal="L"/>
+            <neighbor name="corner_upper_right" legal="U"/>
+            <neighbor name="road" legal="DR"/>
+        </parent>
+
+        <!-- Road -->
+        <parent name="road">
+            <neighbor name="corner_upper_left" legal="RD"/>
+            <neighbor name="corner_bottom_left" legal="UL"/>
+            <neighbor name="corner_upper_right" legal="DL"/>
+            <neighbor name="corner_bottom_right" legal="LU"/>
+            <neighbor name="road" legal="DLRU"/>
+        </parent>
+    </neighbors>
+</wfc_states>
+

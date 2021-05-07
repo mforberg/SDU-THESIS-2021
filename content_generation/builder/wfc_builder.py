@@ -21,6 +21,7 @@ class WFCBuilder:
 
     def build_collapsed_tiles(self, surface_dict: dict, list_of_collapsed_tiles: List[Tile]):
         blocks = []
+        b = True
         for tile in list_of_collapsed_tiles:
             district_type = tile.district_type
             x, z = self.__get_smallest(tile=tile)
@@ -30,14 +31,40 @@ class WFCBuilder:
             if tile_type in self.corner_builds or tile_type in self.wall_builds or tile_type == "floor":
                 blocks.extend(self.__build_interior(x=x, z=z, y=y, district_type=district_type,
                                                     tile_type=tile_type, size=3))
+                if b:
+                    self.client.spawnBlocks(Blocks(blocks=self.__build_interior(x=x, z=z, y=y, district_type=district_type,
+                                                    tile_type=tile_type, size=3)))
             elif tile_type in self.dot_builds:
                 blocks.extend(self.__build_dots(x=x, z=z, y=y, district_type=district_type,
                                                 tile_type=tile_type, size=3))
+                if b:
+                    self.client.spawnBlocks(Blocks(blocks=self.__build_dots(x=x, z=z, y=y, district_type=district_type,
+                                                tile_type=tile_type, size=3)))
             elif tile_type == "road":
-                blocks.extend(self.__build_road(x=x, z=z, y=y, size=3))
+                blocks.extend(self.__build_road(x=x, z=z, y=y, size=3, district_type=district_type))
+                if b:
+                    self.client.spawnBlocks(Blocks(blocks=self.__build_road(x=x, z=z, y=y, size=3, district_type=district_type)))
             else:
                 print(f"couldn't find type: {tile_type}")
+            if b:
+                p = input("Spawn next? ('cancel' to skip): ")
+            if p == 'cancel':
+                b = False
+
+
+        # TODO: Comment out when jonas back
         self.client.spawnBlocks(Blocks(blocks=blocks))
+
+        # TODO: Jonas help
+        # for i in range(0, len(blocks), 36):  # [start:stop:step]
+        #     self.client.spawnBlocks(Blocks(blocks=blocks[i:i+36]))
+        #     x = input("Spawn next? (enter: 'cancel' to full skip")
+        #     if x == "cancel":
+        #         self.client.spawnBlocks(Blocks(blocks=blocks))
+        #         break
+
+
+
         input("3")
         input("2")
         input("1")
@@ -45,20 +72,21 @@ class WFCBuilder:
             block.type = AIR
         self.client.spawnBlocks(Blocks(blocks=blocks))
 
+
     def __build_interior(self, x: int, z: int, y: int, district_type: str, tile_type: str,
                          size: int) -> List[Block]:
         if tile_type == "corner_upper_left":
             x_value_for_wall = 0
-            z_value_for_wall = size-1
+            z_value_for_wall = 0
         elif tile_type == "corner_upper_right":
             x_value_for_wall = size-1
-            z_value_for_wall = size-1
+            z_value_for_wall = 0
         elif tile_type == "corner_bottom_left":
             x_value_for_wall = 0
-            z_value_for_wall = 0
+            z_value_for_wall = size-1
         elif tile_type == "corner_bottom_right":
             x_value_for_wall = size-1
-            z_value_for_wall = 0
+            z_value_for_wall = size-1
         elif tile_type == "wall_left":
             x_value_for_wall = 0
             z_value_for_wall = -1
@@ -67,10 +95,10 @@ class WFCBuilder:
             z_value_for_wall = -1
         elif tile_type == "wall_upper":
             x_value_for_wall = -1
-            z_value_for_wall = size-1
+            z_value_for_wall = 0
         elif tile_type == "wall_bottom":
             x_value_for_wall = -1
-            z_value_for_wall = 0
+            z_value_for_wall = size-1
         else:  # floor
             x_value_for_wall = -1
             z_value_for_wall = -1
@@ -104,13 +132,14 @@ class WFCBuilder:
                         # random_block.type = self.dict_of_building_blocks[district_type]
                         random_block.type = GLASS
                     elif x_wall or z_wall:
-                        random_block.type = COBBLESTONE
+                        random_block.type = self.dict_of_building_blocks[district_type]
+                        #random_block.type = COBBLESTONE
                     else:
                         random_block.type = AIR
                     blocks.append(random_block)
         return blocks
 
-    def __build_road(self, x: int, z: int, y: int, size: int) -> List[Block]:
+    def __build_road(self, x: int, z: int, y: int, size: int, district_type: str) -> List[Block]:
         blocks = []
         for x_increase in range(0, size):
             for z_increase in range(0, size):
@@ -118,7 +147,8 @@ class WFCBuilder:
                 random_block.position.x = x + x_increase
                 random_block.position.z = z + z_increase
                 random_block.position.y = y
-                random_block.type = GRASS_PATH
+                random_block.type = self.dict_of_building_blocks[district_type]
+                # random_block.type = GRASS_PATH
                 blocks.append(random_block)
         return blocks
 
