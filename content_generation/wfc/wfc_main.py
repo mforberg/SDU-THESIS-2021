@@ -427,7 +427,7 @@ class WaveFunctionCollapse:
 
         for state_in_current in current_tile.states:
             for legal_dir_for_state in state_in_current.legal_neighbors[state_in_current.type]:
-
+                pass
 
 
     def has_changed(self, previous_states: [State], new_states: [State]) -> bool:
