@@ -27,7 +27,7 @@ class WFCBuilder:
             x, z = self.__get_smallest(tile=tile)
             y = surface_dict[(x, z)].y
             tile_type = tile.states[0].type
-            print(tile_type)
+            # print(tile_type)
             if tile_type in self.corner_builds or tile_type in self.wall_builds or tile_type == "floor":
                 blocks.extend(self.__build_interior(x=x, z=z, y=y, district_type=district_type,
                                                     tile_type=tile_type, size=3))

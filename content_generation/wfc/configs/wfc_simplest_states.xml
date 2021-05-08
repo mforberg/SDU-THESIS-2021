@@ -10,7 +10,7 @@
 
         <!-- Walls -->
         <parent name="wall_upper">
-            <neighbor name="wall_bottom" legal="D"/>
+            <!-- <neighbor name="wall_bottom" legal="D"/> -->
             <neighbor name="road" legal="LRU"/>
         </parent>
         <parent name="wall_bottom">

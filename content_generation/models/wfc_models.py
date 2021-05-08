@@ -14,7 +14,7 @@ class Tile:
         self.cluster_assignment = -1  # Reassigned later
         self.collapsed = False
         self.district_type = "Nothing"
-        self.states: [State] = []
+        self.states: List[State] = []
         self.entropy = 0  # TODO: Implement something to assign this + figure out how to calc this
 
     def add_neighbor(self, other: Tile):
