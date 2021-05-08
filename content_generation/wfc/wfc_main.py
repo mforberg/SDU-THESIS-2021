@@ -13,11 +13,12 @@ class WaveFunctionCollapse:
 
     def __init__(self):
         self.heaps = []
+        self.required_dict = {}
 
     def run(self, clustered_tiles: [Cluster], connection_tiles):
         # wfc_states = WfcStates().create_3x3_states()
-        # wfc_states = WfcStates().create_simple_3x3_states()
-        wfc_states = WfcStates().create_simplest_3x3_states()
+        wfc_states = WfcStates().create_simple_3x3_states()
+        #wfc_states = WfcStates().create_simplest_3x3_states()
         list_of_connection_tiles = []
 
         # Create list of all tiles assigned to be a connection point (road)
@@ -35,6 +36,7 @@ class WaveFunctionCollapse:
 
         print("Create state instances")
         # Create state instances
+        self.required_dict = wfc_states[2]
         states: [State] = []
         for key, value in wfc_states[1].items():
             state = State(state_type=key, pattern=[], legal_neighbors=value)
@@ -61,59 +63,61 @@ class WaveFunctionCollapse:
                     tile.states = temp_holder
                     tile.collapsed = True
                     tile.update_entropy()
-        wall_upper = []
-        wall_bottom = []
-        wall_bottom_and_road = []
-        all_states = []
+        # wall_upper = []
+        # wall_bottom = []
+        # wall_bottom_and_road = []
+        # all_states = []
+        #
+        # for state in states:
+        #     if state.type == 'wall_bottom':
+        #         if state not in wall_bottom:
+        #             wall_bottom.append(copy.deepcopy(state))
+        #         if state not in all_states:
+        #             all_states.append(copy.deepcopy(state))
+        #     if state.type == 'wall_upper':
+        #         if state not in wall_upper:
+        #             wall_upper.append(copy.deepcopy(state))
+        #         if state not in wall_bottom_and_road:
+        #             wall_bottom_and_road.append(copy.deepcopy(state))
+        #         if state not in all_states:
+        #             all_states.append(copy.deepcopy(state))
+        #     if state.type == 'road':
+        #         if state not in wall_bottom_and_road:
+        #             wall_bottom_and_road.append(copy.deepcopy(state))
+        #         if state not in all_states:
+        #             all_states.append(copy.deepcopy(state))
+        #
+        # print("- - - - start of has changed")
+        # test_tile: Tile = clustered_tiles[0].tiles[0]
+        # print(f"test_tile.nodes: {test_tile.nodes}")
+        # print(f"test_tile.states initial: {test_tile.states}")
+        # test_tile_old_states = copy.deepcopy(test_tile.states)
+        # test_tile.states = wall_upper
+        # test_tile.states = test_tile_old_states
+        # print(self.has_changed(test_tile.states, test_tile_old_states))
+        # test_tile.states = all_states
+        # print(self.has_changed(test_tile.states, test_tile_old_states))
+        # test_tile.states = wall_upper
+        # print(f"test_tile.states first change: {test_tile.states}")
+        # print(test_tile.states)
+        # print("- - - - - - - - - - - -")
+        # for neighbor in test_tile.neighbors:
+        #     print(f"neighbor.nodes: {neighbor.nodes}")
+        #     # neighbor.states = copy.deepcopy(wall_bottom_and_road)
+        #     print(f"neighbor.states pre = {neighbor.states}")
+        #     new = self.remove_by_legality(neighbor, test_tile)
+        #     neighbor.states = new
+        #     print(f"neighbor.states post legality = {neighbor.states}")
+        #     new2 = self.remove_by_existing_neighbors(neighbor)
+        #     neighbor.states = new2
+        #     print(f"neighbor.states post existing = {neighbor.states}")
+        #     new3 = self.remove_by_adjacency_rules(neighbor, test_tile)
+        #     neighbor.states = new3
+        #     print(f"neighbor.states post adjacency = {neighbor.states}")
+        #     print("- - - - -")
+        #
+        # input("HOLD THE PHONE")
 
-        for state in states:
-            if state.type == 'wall_bottom':
-                if state not in wall_bottom:
-                    wall_bottom.append(copy.deepcopy(state))
-                if state not in all_states:
-                    all_states.append(copy.deepcopy(state))
-            if state.type == 'wall_upper':
-                if state not in wall_upper:
-                    wall_upper.append(copy.deepcopy(state))
-                if state not in wall_bottom_and_road:
-                    wall_bottom_and_road.append(copy.deepcopy(state))
-                if state not in all_states:
-                    all_states.append(copy.deepcopy(state))
-            if state.type == 'road':
-                if state not in wall_bottom_and_road:
-                    wall_bottom_and_road.append(copy.deepcopy(state))
-                if state not in all_states:
-                    all_states.append(copy.deepcopy(state))
-
-        print("- - - - start of has changed")
-        test_tile: Tile = clustered_tiles[0].tiles[0]
-        print(f"test_tile.nodes: {test_tile.nodes}")
-        print(test_tile.states)
-        test_tile_old_states = copy.deepcopy(test_tile.states)
-        test_tile.states = wall_bottom
-        print(self.has_changed(test_tile_old_states, test_tile.states))
-        test_tile.states = wall_upper
-        print(self.has_changed(test_tile_old_states, test_tile.states))
-        test_tile.states = wall_bottom_and_road
-        print(self.has_changed(test_tile_old_states, test_tile.states))
-        test_tile.states = all_states
-        print(self.has_changed(test_tile_old_states, test_tile.states))
-        print(test_tile.states)
-        print("- - - - end of has changed")
-        print("- - - - - - - - - - - -")
-        for neighbor in test_tile.neighbors:
-            print(f"neighbor.nodes: {neighbor.nodes}")
-            # neighbor.states = copy.deepcopy(wall_bottom_and_road)
-            print(f"neighbor.states pre = {neighbor.states}")
-            new = self.remove_by_legality(neighbor, test_tile)
-            neighbor.states = new
-            print(f"neighbor.states post legality = {neighbor.states}")
-            new2 = self.remove_by_existing_neighbors(neighbor)
-            neighbor.states = new2
-            print(f"neighbor.states post existing = {neighbor.states}")
-            print("- - - - -")
-
-        input("HOLD THE PHONE")
 
         print("Heapify")
         # Heapify list of tiles in each cluster
@@ -181,8 +185,8 @@ class WaveFunctionCollapse:
         for cluster in self.heaps:
             test = len(cluster.tiles)
             collapsed_tiles_in_cluster = []
-            #while not cluster_fully_collapsed(cluster=cluster.tiles):
-            while len(collapsed_tiles_in_cluster) < test:
+            while not cluster_fully_collapsed(cluster=cluster.tiles):
+            #while len(collapsed_tiles_in_cluster) < test:
 
                 self.update_entropy_for_all_tiles(cluster=cluster)
                 heapq.heapify(cluster.tiles)
@@ -207,11 +211,12 @@ class WaveFunctionCollapse:
             #     print(item.states)
             print(f"total tiles in single cluster: {len(cluster.tiles)}")
             print(f"tiles states length > 1: {length}")
-            # break
+            break
         print("Return statement")
         print(f"total amount of tiles: {sum(counter_dict.values())}")
         print(f"collapsed_tiles={len(collapsed_tiles)}")
-
+        for tile in collapsed_tiles:
+            print(tile.states)
         return collapsed_tiles
 
     def observe(self, cluster_tiles: [Tile]):
@@ -279,9 +284,6 @@ class WaveFunctionCollapse:
                             if neighbor not in stack:
                                 # print(f"neighbor ({neighbor.id}) not in stack")
                                 stack.append(neighbor)
-            # inp = input("Go next")
-            # if inp == "cancel":
-            #     break
 
     # def propagate2(self, min_entropy_tile: Tile):
     #     stack = [min_entropy_tile]
@@ -355,35 +357,40 @@ class WaveFunctionCollapse:
 
         stack = [min_entropy_tile]
         UP, DOWN, RIGHT, LEFT = (0, -3), (0, 3), (3, 0), (-3, 0)
-
+        checked_nodes = set()
         while len(stack) > 0:
+            print(f"stack length: {len(stack)}")
             current_tile: Tile = stack.pop()
 
+            # if current_tile.entropy == 0.0:
+            #     continue
+
             for neighbor in current_tile.neighbors:
+
+
                 legal_states_for_neighbor = []
                 neighbor_initial_possible_states: [State] = neighbor.states
 
-                # Identify neighbors legal "neighbors neighbor" direction
-                existing_directions = self.identify_neighbor_directions(neighbor, current_tile)
-
-                previous_tile_direction = self.find_previous_tile_direction(neighbor, current_tile)
-                # TODO: Use bool toggle if all hope is lost
-
 
                 # TODO: Remove based on neighbor legality alone
-                self.remove_by_legality(neighbor, current_tile)
+                rule_compliant_neighbors = self.remove_by_legality(neighbor, current_tile)
+                neighbor.states = rule_compliant_neighbors
 
-                # TODO: Remove based on existing neighbors
-                self.remove_by_existing_neighbors(neighbor)
+                # # TODO: Remove based on existing neighbors
+                # existence_compliant_neighbors = self.remove_by_existing_neighbors(neighbor)
+                # neighbor.states = existence_compliant_neighbors
 
-                # TODO: Remove based on adjacency rules
-                self.remove_by_adjacency_rules(neighbor, current_tile)
+                # # TODO: Remove based on adjacency rules
+                # adjacency_compliant_neighbors = self.remove_by_adjacency_rules(neighbor, current_tile)
+                # neighbor.states = adjacency_compliant_neighbors
 
+                if self.has_changed(neighbor.states, neighbor_initial_possible_states):
+                # if len(neighbor.states) < len(neighbor_initial_possible_states):
 
-                    # if not set(temp).issubset(set(legal_states_for_neighbor)):
-                    #     neighbor.reassign_states(legal_states_for_neighbor)
-                    #     if neighbor not in stack:
-                    #         stack.append(neighbor)
+                    if neighbor not in stack and neighbor not in checked_nodes:
+                        stack.append(neighbor)
+                        checked_nodes.add(neighbor)
+            #input("wait")
 
 
     def remove_by_legality(self, neighbor: Tile, current_tile: Tile):
@@ -405,33 +412,132 @@ class WaveFunctionCollapse:
 
 
 
-    def remove_by_existing_neighbors(self, neighbor): # TODO: still test this ohno
-        existing_directions = self.find_directions(neighbor, 'should delete this string, fucking retard')
+    def remove_by_existing_neighbors(self, neighbor):  # TODO: still test this ohno
+        existing_directions = self.identify_neighbor_directions(neighbor)
         UP, DOWN, RIGHT, LEFT = (0, -3), (0, 3), (3, 0), (-3, 0)
         direction_lookup = {'U': UP, 'D': DOWN, 'R': RIGHT, 'L': LEFT}
         inverse_lookup = {'U': 'D', 'D': 'U', 'R': 'L', 'L': 'R'}
 
         legal_states_for_tile = []
+        original_states = copy.deepcopy(neighbor.states)
+        blacklisted: [str] = []  # contains state.type
 
-        for state in neighbor.states:
-            for legal_dirs_for_state in state.legal_neighbors.values():
-                # 'U', 'D', 'L', 'R'
-                for legal_dir in legal_dirs_for_state:
-                    if existing_directions[direction_lookup[inverse_lookup[legal_dir]]]:
-                        if state not in legal_states_for_tile:
-                            legal_states_for_tile.append(state)
+
+
+        # TODO: closer, but not quite there
+        # for state in neighbor.states:
+        #     is_possible = False
+        #     for legal_neighbor_for_state, legal_directions in state.legal_neighbors.items():
+        #         #print(legal_neighbor_for_state, legal_directions)
+        #
+        #         for legal_direction in legal_directions:
+        #             #print(f"here: {legal_direction}")
+        #
+        #             if existing_directions[direction_lookup[legal_direction]]:
+        #                 is_possible = True
+        #     if is_possible:
+        #         if state not in legal_states_for_tile:
+        #             legal_states_for_tile.append(state)
+        #
+        #             # for direction, exists in existing_directions.items():
+        #             #     print(f"here2: {direction}, {exists}")
+
+
+
+        # TODO: this is almost functional, but not really
+        # for state in neighbor.states:
+        #     for legal_neighbor, directions in state.legal_neighbors.items():
+        #         # print("- - - - - -")
+        #         # print(state.type)
+        #         # print(legal_neighbor)
+        #         # print(directions)
+        #         # print("- - - - - -")
+        #         possible = False
+        #         for direction in directions:
+        #             if direction == 'U':
+        #                 if existing_directions[UP]:
+        #                     possible = True
+        #             elif direction == 'D':
+        #                 if direction == 'D':
+        #                     if existing_directions[DOWN]:
+        #                         possible = True
+        #             elif direction == 'L':
+        #                 if direction == 'L':
+        #                     if existing_directions[LEFT]:
+        #                         possible = True
+        #             elif direction == 'R':
+        #                 if direction == 'R':
+        #                     if existing_directions[RIGHT]:
+        #                         possible = True
+        #         if possible:
+        #             legal_states_for_tile.append(copy.deepcopy(state))
+        return legal_states_for_tile
+
+        # legality = []
+        # legal_states_for_tile = []
+        # for state in neighbor.states:
+        #     for legal_state_type, legal_state in state.legal_neighbors.items():
+        #         for direction in legal_state:
+        #             if existing_direc[direction_lookup[direction]]:
+        #                 legality.append(legal_state_type)
+        # for types in legality:
+        #     for state in neighbor.states:
+        #         if state.type == types:
+        #             legal_states_for_tile.append(state)
+        # return legal_states_for_tile
+
+        # for state in neighbor.states:
+        #     for legal_direction in state.legal_neighbors:
+        #         for required_direction in state.legal_neighbors[legal_direction]:
+        #             #print(required_direction)
+        #             if required_direction == 'U':
+        #                 if existing_directions[UP]:
+        #                     #print(f"state: {state.type} legal: {state.legal_neighbors.values()}, req. dir: {required_direction}, exi_dir: {existing_directions[UP]}")
+        #                     legal_states_for_tile.append(copy.deepcopy(state))
+        #             elif required_direction == 'D':
+        #                 if existing_directions[DOWN]:
+        #                     #print(f"state: {state.type} legal: {state.legal_neighbors.values()}, req. dir: {required_direction}, exi_dir: {existing_directions[DOWN]}")
+        #                     legal_states_for_tile.append(copy.deepcopy(state))
+        #             elif required_direction == 'R':
+        #                 if existing_directions[RIGHT]:
+        #                     #print(f"state: {state.type} legal: {state.legal_neighbors.values()}, req. dir: {required_direction}, exi_dir: {existing_directions[RIGHT]}")
+        #                     legal_states_for_tile.append(copy.deepcopy(state))
+        #             elif required_direction == 'L':
+        #                 if existing_directions[LEFT]:
+        #                     #print(f"state: {state.type} legal: {state.legal_neighbors.values()}, req. dir: {required_direction}, exi_dir: {existing_directions[LEFT]}")
+        #                     legal_states_for_tile.append(copy.deepcopy(state))
+
+        # TODO: this is original
+        # for state in neighbor.states:  # [State(WU), State(WB), State(R)]
+        #
+        #     #           WB=
+        #     for state_type, legal_dirs_for_state in state.legal_neighbors.items():  # ['U', 'D', 'R', 'L']
+        #
+        #         if self.required_dict[state_type] == "True":
+        #
+        #             for legal_dir in legal_dirs_for_state:  # ['U']
+        #                 if existing_directions[direction_lookup[legal_dir]]:
+        #                     if state not in legal_states_for_tile:
+        #                         legal_states_for_tile.append(state)
         return legal_states_for_tile
 
 
     def remove_by_adjacency_rules(self, neighbor, current_tile):
 
+        legal_states_for_tile: [State] = []
+        current_tile_direction = self.find_previous_tile_direction(neighbor, current_tile)
         for state_in_current in current_tile.states:
-            for legal_dir_for_state in state_in_current.legal_neighbors[state_in_current.type]:
-                pass
+            for state_in_neighbor in neighbor.states:
+                for key, legal_directions in state_in_current.legal_neighbors.items():
 
+                    for direction in legal_directions:
+                        if direction == current_tile_direction:
+                            if key == state_in_neighbor.type:
+                                legal_states_for_tile.append(copy.deepcopy(state_in_neighbor))
+
+        return legal_states_for_tile
 
     def has_changed(self, previous_states: [State], new_states: [State]) -> bool:
-
         result = all(elem in new_states for elem in previous_states)
 
         return result
@@ -528,7 +634,7 @@ class WaveFunctionCollapse:
     #                     if neighbor not in stack:
     #                         stack.append(neighbor)
 
-    def identify_neighbor_directions(self, neighbor, current_tile):
+    def identify_neighbor_directions(self, neighbor):
         UP, DOWN, RIGHT, LEFT = (0, -3), (0, 3), (3, 0), (-3, 0)
         directions = [UP, DOWN, RIGHT, LEFT]
         existing_directions = {UP: False, DOWN: False, RIGHT: False, LEFT: False}
@@ -564,7 +670,7 @@ class WaveFunctionCollapse:
             if len(tile.states) > 1:
                 tile.update_entropy()
 
-    def find_previous_tile_direction(self, neighbor, current_tile):
+    def find_previous_tile_direction(self, neighbor, current_tile) -> str:
         existing_directions = {(0, -3): 'D', (0, 3): 'U', (3, 0): 'L', (-3, 0): 'R'}
 
         delta_difference = (current_tile.nodes[0][0] - neighbor.nodes[0][0],

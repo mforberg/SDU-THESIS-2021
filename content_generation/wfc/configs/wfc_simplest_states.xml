@@ -10,19 +10,19 @@
 
         <!-- Walls -->
         <parent name="wall_upper">
-            <!-- <neighbor name="wall_bottom" legal="D"/> -->
-            <neighbor name="road" legal="LRU"/>
+            <neighbor name="wall_bottom" legal="D" required="True"/>
+            <neighbor name="road" legal="LRU" required="False"/>
         </parent>
         <parent name="wall_bottom">
-            <neighbor name="wall_upper" legal="U"/>
-            <neighbor name="road" legal="LRD"/>
+            <neighbor name="wall_upper" legal="U" required="True"/>
+            <neighbor name="road" legal="LRD" required="False"/>
         </parent>
 
         <!-- Road -->
         <parent name="road">
-            <neighbor name="wall_upper" legal="D"/>
-            <neighbor name="wall_bottom" legal="U"/>
-            <neighbor name="road" legal="LRDU"/>
+            <neighbor name="wall_upper" legal="D" required="True"/>
+            <neighbor name="wall_bottom" legal="U" required="True"/>
+            <neighbor name="road" legal="LRDU" required="False"/>
         </parent>
     </neighbors>
 </wfc_states>

@@ -46,6 +46,7 @@ class WfcStates:
 
         weights = {}
         states = {}
+        required = {}
 
         mytree = ET.parse('wfc/configs/wfc_simple_states.xml')
         myroot = mytree.getroot()
@@ -76,14 +77,16 @@ class WfcStates:
                 legal_neighbors = parent.findall('neighbor')
                 for ln in legal_neighbors:
                     values[ln.get('name')] = [char for char in ln.get('legal')]
+                    required[ln.get('name')] = ln.get('required')
 
                 states[key] = values
-        return weights, states
+        return weights, states, required
 
     def create_simplest_3x3_states(self):
 
         weights = {}
         states = {}
+        required = {}
 
         mytree = ET.parse('wfc/configs/wfc_simplest_states.xml')
         myroot = mytree.getroot()
@@ -105,15 +108,12 @@ class WfcStates:
             parent_list = element.findall('parent')
             for parent in parent_list:
                 key = parent.get('name')
-                # values = []
-                # legal_neighbors = parent.findall('neighbor')
-                # for ln in legal_neighbors:
-                #     values.append(ln.get('name'))
-                # states[key] = values
+
                 values = {}
                 legal_neighbors = parent.findall('neighbor')
                 for ln in legal_neighbors:
                     values[ln.get('name')] = [char for char in ln.get('legal')]
+                    required[ln.get('name')] = ln.get('required')
 
                 states[key] = values
-        return weights, states
+        return weights, states, required

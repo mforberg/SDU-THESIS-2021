@@ -105,6 +105,8 @@ class Main:
             clustered_tiles = pickle.load(file)
         with open("test_files/connection_test_tiles.pkl", "rb") as file:
             connection_tiles = pickle.load(file)
+
+        self.SFB.build_connection_tiles(surface_dict=self.surface_dict, connection_tiles=connection_tiles)
         wfc = WaveFunctionCollapse()
         list_of_collapsed_tiles = wfc.run(clustered_tiles=clustered_tiles, connection_tiles=connection_tiles)
         input("rdy?")
