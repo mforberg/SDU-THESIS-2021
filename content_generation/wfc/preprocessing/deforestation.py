@@ -35,7 +35,7 @@ class Deforest:
             for tile in cluster.tiles:
                 for node in tile.nodes:
                     if node[0] >= BOX_X_MIN and node[1] >= BOX_Z_MIN:
-                        if list_clusters[1][node[0], node[1]].block.type in self.trees:
+                        if list_clusters[1][node[0], node[1]].block.state_type in self.trees:
                             self.trees_for_persistence[(node[0], node[1])] = list_clusters[1][node[0], node[1]].block
 
     def __read_tree(self):
@@ -74,7 +74,7 @@ class Deforest:
             random_block.position.y = tree[1]
             random_block.position.x = tree[0]
             random_block.position.z = tree[2]
-            random_block.type = self.block_dict[tree]['type']
+            random_block.state_type = self.block_dict[tree]['type']
             temp_blocks.append(random_block)
         SurfaceBuilder().spawn_blocks(temp_blocks)
 

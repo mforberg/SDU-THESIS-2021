@@ -25,8 +25,7 @@ class WFCBuilder:
             district_type = tile.district_type
             x, z = self.__get_smallest(tile=tile)
             y = surface_dict[(x, z)].y
-            tile_type = tile.states[0].type
-            print(tile_type)
+            tile_type = tile.states[0].state_type
             if tile_type in self.corner_builds or tile_type in self.wall_builds or tile_type == "floor":
                 blocks.extend(self.__build_interior(x=x, z=z, y=y, district_type=district_type,
                                                     tile_type=tile_type, size=3))
@@ -34,7 +33,7 @@ class WFCBuilder:
                 blocks.extend(self.__build_dots(x=x, z=z, y=y, district_type=district_type,
                                                 tile_type=tile_type, size=3))
             elif tile_type == "road":
-                blocks.extend(self.__build_road(x=x, z=z, y=y, size=3))
+                blocks.extend(self.__build_road(x=x, z=z, y=y, size=3, district_type=district_type))
             else:
                 print(f"couldn't find type: {tile_type}")
         self.client.spawnBlocks(Blocks(blocks=blocks))
@@ -49,16 +48,16 @@ class WFCBuilder:
                          size: int) -> List[Block]:
         if tile_type == "corner_upper_left":
             x_value_for_wall = 0
-            z_value_for_wall = size-1
+            z_value_for_wall = 0
         elif tile_type == "corner_upper_right":
             x_value_for_wall = size-1
-            z_value_for_wall = size-1
+            z_value_for_wall = 0
         elif tile_type == "corner_bottom_left":
             x_value_for_wall = 0
-            z_value_for_wall = 0
+            z_value_for_wall = size-1
         elif tile_type == "corner_bottom_right":
             x_value_for_wall = size-1
-            z_value_for_wall = 0
+            z_value_for_wall = size-1
         elif tile_type == "wall_left":
             x_value_for_wall = 0
             z_value_for_wall = -1
@@ -67,10 +66,10 @@ class WFCBuilder:
             z_value_for_wall = -1
         elif tile_type == "wall_upper":
             x_value_for_wall = -1
-            z_value_for_wall = size-1
+            z_value_for_wall = 0
         elif tile_type == "wall_bottom":
             x_value_for_wall = -1
-            z_value_for_wall = 0
+            z_value_for_wall = size-1
         else:  # floor
             x_value_for_wall = -1
             z_value_for_wall = -1
@@ -102,15 +101,15 @@ class WFCBuilder:
                         random_block.type = PLANKS
                     elif roof:
                         # random_block.type = self.dict_of_building_blocks[district_type]
-                        random_block.type = GLASS
+                        random_block.type = STAINED_GLASS
                     elif x_wall or z_wall:
-                        random_block.type = COBBLESTONE
+                        random_block.type = self.dict_of_building_blocks[district_type]
                     else:
                         random_block.type = AIR
                     blocks.append(random_block)
         return blocks
 
-    def __build_road(self, x: int, z: int, y: int, size: int) -> List[Block]:
+    def __build_road(self, x: int, z: int, y: int, size: int, district_type: str) -> List[Block]:
         blocks = []
         for x_increase in range(0, size):
             for z_increase in range(0, size):
@@ -118,7 +117,7 @@ class WFCBuilder:
                 random_block.position.x = x + x_increase
                 random_block.position.z = z + z_increase
                 random_block.position.y = y
-                random_block.type = GRASS_PATH
+                random_block.type = self.dict_of_building_blocks[district_type]
                 blocks.append(random_block)
         return blocks
 
@@ -126,16 +125,16 @@ class WFCBuilder:
                      size: int) -> List[Block]:
         if tile_type == "dot_upper_left":
             x_value_for_wall = 0
-            z_value_for_wall = size - 1
+            z_value_for_wall = 0
         elif tile_type == "dot_upper_right":
             x_value_for_wall = size - 1
-            z_value_for_wall = size - 1
+            z_value_for_wall = 0
         elif tile_type == "dot_bottom_left":
             x_value_for_wall = 0
-            z_value_for_wall = 0
+            z_value_for_wall = size-1
         elif tile_type == "dot_bottom_right":
             x_value_for_wall = size - 1
-            z_value_for_wall = 0
+            z_value_for_wall = size-1
         else:
             x_value_for_wall = 0
             z_value_for_wall = 0

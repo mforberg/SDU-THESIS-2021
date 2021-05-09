@@ -14,7 +14,7 @@ class Tile:
         self.cluster_assignment = -1  # Reassigned later
         self.collapsed = False
         self.district_type = "Nothing"
-        self.states: [State] = []
+        self.states: List[State] = []
         self.entropy = 0  # TODO: Implement something to assign this + figure out how to calc this
 
     def add_neighbor(self, other: Tile):
@@ -39,7 +39,7 @@ class Tile:
             print(neighbor.nodes)
         print("- - - - - - -")
 
-    def assign_states(self, states: [State]):
+    def assign_states(self, states: List[State]):
         self.states = states
         sum_of_weights = 0
         pp_weights = 0
@@ -59,10 +59,12 @@ class Tile:
         for state in self.states:
             sum_of_weights += state.weight
             pp_weights += state.weight * log(state.weight)
+        if len(self.states) == 0:
+            print("error incumming")
         self.entropy = (log(sum_of_weights) - pp_weights / sum_of_weights)
 
     def __repr__(self):
-        return f"<{self.__class__.__name__} ({hex(id(self))}): ID[:8] {self.id[:8]}, CA: {self.cluster_assignment}, Nodes:\n {self.nodes}>"
+        return f"<{self.__class__.__name__} ({hex(id(self))}): ID[:8] {self.id[:8]}, CA: {self.cluster_assignment}, Nodes: {self.nodes}, Neighbors: {len(self.neighbors)}, State: {self.states}> \n"
 
     def __hash__(self):
         return hash(self.id)
@@ -82,21 +84,21 @@ class Tile:
 
 class State:
 
-
-    def __init__(self, state_type: str, pattern, legal_neighbors):
-        self.type = state_type
+    def __init__(self, state_type: str, pattern, legal_neighbors, needs: List[str]):
+        self.state_type = state_type
         self.pattern = pattern
         self.legal_neighbors = legal_neighbors # {neighbor: str = [valid_dir: str, valid_dir: str]
         self.weight = 1  # reassigned later
+        self.needs = needs
 
     def __repr__(self):
-        return f"<{self.__class__.__name__} ({hex(id(self))}: TYPE={self.type}, WEIGHT={self.weight}>"
+        return f"<{self.__class__.__name__} ({hex(id(self))}): TYPE={self.state_type}, WEIGHT={self.weight}, needs={self.needs}>"
 
     def __eq__(self, other):
-        return self.type == other.type
+        return self.state_type == other.state_type
 
     def __hash__(self):
-        return hash(self.type)
+        return hash(self.state_type)
 
 
 class Pattern:

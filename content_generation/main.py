@@ -1,3 +1,5 @@
+from typing import List
+
 from k_means.k_means_clustering import KMeansClustering
 from genetic_algorithm.map_ga.map_main import AreasGA
 from wfc.preprocessing.deforestation import Deforest
@@ -10,11 +12,13 @@ from builder.wfc_builder import WFCBuilder
 from a_star.a_star_main import PrepareMap
 import time
 import pickle
+import sys
 import copy
 from block_file_loader import BlockFileLoader
 from map_variables import *
 from UserInputFetcher import fetch_user_integer
 from wfc_main import WaveFunctionCollapse
+from wfc_models import Tile
 
 
 class Main:
@@ -94,22 +98,36 @@ class Main:
             self.SFB.spawn_blocks(new_and_old_dict['old'])
             self.surface_dict = old_surface_dict
 
+            # May segfault without this line. 0x100 is a guess at the size of each stack frame.
+            sys.setrecursionlimit(10000)
             clustered_tiles = result[1][1]
             #  TESTING!!!
             with open("test_files/clustered_test_file.pkl", "wb") as file:
                 pickle.dump(clustered_tiles, file)
             with open("test_files/connection_test_tiles.pkl", "wb") as file:
                 pickle.dump(connection_tiles, file)
-
+                pickle.dump(connection_tiles, file)
+        self.rollback(surface_dict=self.surface_dict)
         with open("test_files/clustered_test_file.pkl", "rb") as file:
             clustered_tiles = pickle.load(file)
         with open("test_files/connection_test_tiles.pkl", "rb") as file:
             connection_tiles = pickle.load(file)
+        self.SFB.build_connection_tiles(surface_dict=self.surface_dict, connection_tiles=connection_tiles)
         wfc = WaveFunctionCollapse()
         list_of_collapsed_tiles = wfc.run(clustered_tiles=clustered_tiles, connection_tiles=connection_tiles)
+        # amount_of_tiles = len(clustered_tiles)
+        # list_of_collapsed_tiles = []
+        # while not self.check_if_wfc_completed(amount_of_tiles=amount_of_tiles, tiles=list_of_collapsed_tiles):
+        #     try:
+        #         list_of_collapsed_tiles = wfc.run(clustered_tiles=clustered_tiles, connection_tiles=connection_tiles)
+        #     except:
+        #         print("we go agane")
+
+        print(list_of_collapsed_tiles)
         input("rdy?")
         self.WFC_builder.build_collapsed_tiles(surface_dict=self.surface_dict,
                                                list_of_collapsed_tiles=list_of_collapsed_tiles)
+        self.rollback(surface_dict=self.surface_dict)
 
         print("- - - - WFC RELATED GARBAGE STOPPED - - - -")
         # WFC End
@@ -127,6 +145,13 @@ class Main:
             # # # # # # # # # # # # # # # # # # # # # # #
 
             # deforester.rollback()
+
+    def check_if_wfc_completed(self, amount_of_tiles: int, tiles: List[Tile]) -> bool:
+        amount_of_tiles_done = 0
+        for tile in tiles:
+            if len(tile.states) > 0:
+                amount_of_tiles_done += 1
+        return amount_of_tiles == amount_of_tiles_done
 
     def rollback(self, surface_dict):
         print("Reset surface? 1 or 2")

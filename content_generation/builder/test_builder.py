@@ -22,7 +22,7 @@ class TestBuilder:
                     random_block.position.y = y
                     random_block.position.x = x
                     random_block.position.z = z
-                    random_block.type = type_of_block
+                    random_block.state_type = type_of_block
                     blocks.append(random_block)
         self.client.spawnBlocks(Blocks(blocks=blocks))
 
@@ -57,9 +57,9 @@ class TestBuilder:
                 y = 74
                 random_block = Block()
                 if build_x or build_z:
-                    random_block.type = BEDROCK
+                    random_block.state_type = BEDROCK
                 else:
-                    random_block.type = AIR
+                    random_block.state_type = AIR
                 random_block.position.y = y
                 random_block.position.x = x
                 random_block.position.z = z
@@ -118,9 +118,9 @@ class TestBuilder:
                 for y in range(75, 80):
                     random_block = Block()
                     if build_x or build_z:
-                        random_block.type = BEDROCK
+                        random_block.state_type = BEDROCK
                     else:
-                        random_block.type = AIR
+                        random_block.state_type = AIR
                     random_block.position.y = y
                     random_block.position.x = x
                     random_block.position.z = z

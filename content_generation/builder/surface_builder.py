@@ -99,7 +99,7 @@ class SurfaceBuilder:
             current_building_block = list_of_building_blocks.pop(0)
             for value in cluster.list_of_coordinates:
                 block = copy.deepcopy(surface_dict[(value[0], value[1])].block)
-                block.type = current_building_block
+                block.state_type = current_building_block
                 blocks.append(block)
         self.client.spawnBlocks(Blocks(blocks=blocks))
 
