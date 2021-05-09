@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wfc_states>
     <states>
-        <state name="corner_upper_left" weight="40"/>
-        <state name="corner_upper_right" weight="40"/>
-        <state name="corner_bottom_left" weight="40"/>
-        <state name="corner_bottom_right" weight="40"/>
+        <state name="corner_upper_left" weight="40" requires="DR"/>
+        <state name="corner_upper_right" weight="40" requires="DL"/>
+        <state name="corner_bottom_left" weight="40" requires="UR"/>
+        <state name="corner_bottom_right" weight="40" requires="UL"/>
 
-        <state name="road" weight="100"/>
+        <state name="road" weight="100" requires=""/>
     </states>
 
     <neighbors>

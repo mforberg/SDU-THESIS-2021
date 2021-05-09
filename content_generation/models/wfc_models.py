@@ -17,6 +17,7 @@ class Tile:
         self.states: List[State] = []
         self.entropy = 0  # TODO: Implement something to assign this + figure out how to calc this
 
+
     def add_neighbor(self, other: Tile):
         if other not in self.neighbors:
             self.neighbors.append(other)
@@ -93,6 +94,7 @@ class State:
         self.pattern = pattern
         self.legal_neighbors = legal_neighbors  # {neighbor: str = [valid_dir: str, valid_dir: str]
         self.weight = 1  # reassigned later
+        self.requires: [str] = []
 
     def __repr__(self):
         return f"<{self.__class__.__name__} ({hex(id(self))}: TYPE={self.type}, WEIGHT={self.weight}>"

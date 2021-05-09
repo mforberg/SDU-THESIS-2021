@@ -47,6 +47,7 @@ class WfcStates:
         weights = {}
         states = {}
         required = {}
+        requires = {}
 
         mytree = ET.parse('wfc/configs/wfc_simple_states.xml')
         myroot = mytree.getroot()
@@ -58,6 +59,7 @@ class WfcStates:
             for p in test:
                 try:
                     weights[p.get('name')] = int(p.get('weight'))
+                    requires[p.get('name')] = [char for char in p.get('requires')]
                 except ValueError:
                     print("Could not parse weight to int")
 
@@ -80,13 +82,14 @@ class WfcStates:
                     required[ln.get('name')] = ln.get('required')
 
                 states[key] = values
-        return weights, states, required
+        return weights, states, requires
 
     def create_simplest_3x3_states(self):
 
         weights = {}
         states = {}
         required = {}
+        requires = {}
 
         mytree = ET.parse('wfc/configs/wfc_simplest_states.xml')
         myroot = mytree.getroot()
@@ -98,6 +101,7 @@ class WfcStates:
             for p in test:
                 try:
                     weights[p.get('name')] = int(p.get('weight'))
+                    requires[p.get('name')] = [char for char in p.get('requires')]
                 except ValueError:
                     print("Could not parse weight to int")
 
@@ -116,4 +120,4 @@ class WfcStates:
                     required[ln.get('name')] = ln.get('required')
 
                 states[key] = values
-        return weights, states, required
+        return weights, states, requires

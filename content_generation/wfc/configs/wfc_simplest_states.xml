@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wfc_states>
     <states>
-        <state name="wall_upper" weight="40"/>
-        <state name="wall_bottom" weight="40"/>
-        <state name="road" weight="80"/>
+        <state name="wall_upper" weight="40" requires="D"/>
+        <state name="wall_bottom" weight="40" requires="U"/>
+        <state name="road" weight="80" requires=""/>
     </states>
 
     <neighbors>
