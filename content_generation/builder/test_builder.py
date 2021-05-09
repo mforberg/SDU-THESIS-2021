@@ -22,7 +22,7 @@ class TestBuilder:
                     random_block.position.y = y
                     random_block.position.x = x
                     random_block.position.z = z
-                    random_block.state_type = type_of_block
+                    random_block.type = type_of_block
                     blocks.append(random_block)
         self.client.spawnBlocks(Blocks(blocks=blocks))
 
@@ -57,16 +57,16 @@ class TestBuilder:
                 y = 74
                 random_block = Block()
                 if build_x or build_z:
-                    random_block.state_type = BEDROCK
+                    random_block.type = BEDROCK
                 else:
-                    random_block.state_type = AIR
+                    random_block.type = AIR
                 random_block.position.y = y
                 random_block.position.x = x
                 random_block.position.z = z
                 blocks.append(random_block)
         self.client.spawnBlocks(Blocks(blocks=blocks))
 
-    def create_walls(self):
+    def create_walls(self, block_type: int):
         first_count = 24
         first_passed_x = False
 
@@ -118,9 +118,9 @@ class TestBuilder:
                 for y in range(75, 80):
                     random_block = Block()
                     if build_x or build_z:
-                        random_block.state_type = BEDROCK
+                        random_block.type = block_type
                     else:
-                        random_block.state_type = AIR
+                        random_block.type = AIR
                     random_block.position.y = y
                     random_block.position.x = x
                     random_block.position.z = z

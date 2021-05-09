@@ -27,13 +27,13 @@ class Main:
         self.global_dict_of_used_coordinates = {}
         self.global_dict_of_types = {}
         self.SFB = SurfaceBuilder()
-        self.WFC_builder = WFCBuilder()
         self.tester = BlockFileLoader()
         self.surface_dict = {}
+        self.tile_size = 7
+        self.WFC_builder = WFCBuilder(self.tile_size)
 
     def run(self):
         # self.create_test_map()
-
         #  Map analysis
         self.tester.run()
 
@@ -68,9 +68,9 @@ class Main:
 
             # WFC Start
             print("- - - - WFC RELATED GARBAGE KEEP SCROLLING - - - -")
-            wfc_pp = WFCPreprocessing()
+            wfc_pp = WFCPreprocessing(tile_size=self.tile_size)
             # result[0] all tiles, result[1] only tiles associated with solution
-            result = wfc_pp.create_tiles(complete_solution_ga=final_solution_ga, tile_size=3,
+            result = wfc_pp.create_tiles(complete_solution_ga=final_solution_ga,
                                          surface_dict=self.surface_dict)
 
             #  deforester = Deforest.getInstance()
@@ -94,9 +94,7 @@ class Main:
             old_surface_dict = copy.deepcopy(self.surface_dict)
             new_and_old_dict = wfc_pp.normalize_height(clustered_tiles=result[1][1], surface_dict=self.surface_dict)
             self.SFB.spawn_blocks(new_and_old_dict['new'])
-            input("Rebuild map?")
-            self.SFB.spawn_blocks(new_and_old_dict['old'])
-            self.surface_dict = old_surface_dict
+
 
             # May segfault without this line. 0x100 is a guess at the size of each stack frame.
             sys.setrecursionlimit(10000)
@@ -107,13 +105,14 @@ class Main:
             with open("test_files/connection_test_tiles.pkl", "wb") as file:
                 pickle.dump(connection_tiles, file)
                 pickle.dump(connection_tiles, file)
+
         self.rollback(surface_dict=self.surface_dict)
         with open("test_files/clustered_test_file.pkl", "rb") as file:
             clustered_tiles = pickle.load(file)
         with open("test_files/connection_test_tiles.pkl", "rb") as file:
             connection_tiles = pickle.load(file)
         self.SFB.build_connection_tiles(surface_dict=self.surface_dict, connection_tiles=connection_tiles)
-        wfc = WaveFunctionCollapse()
+        wfc = WaveFunctionCollapse(tile_size=self.tile_size)
         list_of_collapsed_tiles = wfc.run(clustered_tiles=clustered_tiles, connection_tiles=connection_tiles)
         # amount_of_tiles = len(clustered_tiles)
         # list_of_collapsed_tiles = []
@@ -144,6 +143,10 @@ class Main:
             # # # # # # # # #   A* End  # # # # # # # # #
             # # # # # # # # # # # # # # # # # # # # # # #
 
+            input("Rebuild map?")
+            self.SFB.spawn_blocks(new_and_old_dict['old'])
+            self.surface_dict = old_surface_dict
+            self.rollback(surface_dict=self.surface_dict)
             # deforester.rollback()
 
     def check_if_wfc_completed(self, amount_of_tiles: int, tiles: List[Tile]) -> bool:
@@ -178,8 +181,8 @@ class Main:
     def create_test_map(self):
         tb = TestBuilder()
         tb.build_flat_surface(type_of_block=STONE)
-        tb.create_big_areas()
-        tb.create_walls()
+        # tb.create_big_areas()
+        tb.create_walls(block_type=AIR)
 
 
 if __name__ == '__main__':

@@ -11,9 +11,9 @@ import copy
 
 class WaveFunctionCollapse:
 
-    def __init__(self):
+    def __init__(self, tile_size: int):
         self.heaps = []
-        self.NORTH, self.SOUTH, self.EAST, self.WEST = (0, -3), (0, 3), (3, 0), (-3, 0)
+        self.NORTH, self.SOUTH, self.EAST, self.WEST = (0, -tile_size), (0, tile_size), (tile_size, 0), (-tile_size, 0)
 
     def run(self, clustered_tiles: List[Cluster], connection_tiles: tuple):
         wfc_states = WfcStates().create_simplest_3x3_states()
@@ -96,12 +96,6 @@ class WaveFunctionCollapse:
         for cluster in self.heaps:
             test = len(cluster.tiles)
             while not cluster_fully_collapsed(cluster=cluster.tiles):
-                amount = 0
-                for tile in cluster.tiles:
-                    if len(tile.states) == 0:
-                        amount += 1
-                print(f"amount of 0 states: {amount}")
-
                 self.update_entropy_for_all_tiles(cluster=cluster)
                 heapq.heapify(cluster.tiles)
                 min_entropy_tile = self.observe(cluster.tiles)
@@ -193,7 +187,8 @@ class WaveFunctionCollapse:
         for need in state.needs:
             need_met = False
             for neighbor in neighbors:
-                orientation = self.__get_orientation_to_second(first_tile=current, second_tile=neighbor)
+                # orientation = self.__get_orientation_to_second(first_tile=current, second_tile=neighbor)
+                orientation = self.find_previous_tile_direction(neighbor=current, current_tile=neighbor)
                 # print("-----------------------------------")
                 # print(f"me: {current.nodes[0]}, you: {neighbor.nodes[0]}")
                 # print(f"I am: {state}")
@@ -208,7 +203,8 @@ class WaveFunctionCollapse:
     def __is_state_allowed_based_on_neighbor(self, current_tile: Tile, state: State, neighbors: List[Tile]) -> bool:
         for neighbor in neighbors:
             neighbor_allow = False
-            orientation = self.__get_orientation_to_second(first_tile=neighbor, second_tile=current_tile)
+            # orientation = self.__get_orientation_to_second(first_tile=neighbor, second_tile=current_tile)
+            orientation = self.find_previous_tile_direction(neighbor=neighbor, current_tile=current_tile)
             for neighbor_state in neighbor.states:
                 for legal_neighbor, legal_directions in neighbor_state.legal_neighbors.items():
                     if state.state_type == legal_neighbor:
@@ -239,6 +235,14 @@ class WaveFunctionCollapse:
         else:
             print("something wrong in orientation")
             return "N"
+
+    def find_previous_tile_direction(self, neighbor, current_tile) -> str:
+        existing_directions = {self.NORTH: 'N', self.SOUTH: 'S', self.WEST: 'W', self.EAST: 'E'}
+
+        delta_difference = (current_tile.nodes[0][0] - neighbor.nodes[0][0],
+                            current_tile.nodes[0][1] - neighbor.nodes[0][1])
+
+        return existing_directions[delta_difference]
 
     def identify_neighbor_directions(self, neighbor: Tile) -> dict:
         directions = [self.NORTH, self.SOUTH, self.EAST, self.WEST]

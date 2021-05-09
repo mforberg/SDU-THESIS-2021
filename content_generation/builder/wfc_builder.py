@@ -8,7 +8,7 @@ from wfc_models import Tile
 
 class WFCBuilder:
 
-    def __init__(self):
+    def __init__(self, tile_size: int):
         __options = [('grpc.max_send_message_length', 512 * 1024 * 1024),
                      ('grpc.max_receive_message_length', 512 * 1024 * 1024)]
         __channel = grpc.insecure_channel('localhost:5001', options=__options)
@@ -18,8 +18,10 @@ class WFCBuilder:
         self.corner_builds = ['corner_upper_left', 'corner_upper_right', 'corner_bottom_left', 'corner_bottom_right']
         self.dot_builds = ['dot_upper_left', 'dot_upper_right', 'dot_bottom_left', 'dot_bottom_right']
         self.wall_builds = ['wall_left', 'wall_right', 'wall_upper', 'wall_bottom']
+        self.tile_size = tile_size
 
     def build_collapsed_tiles(self, surface_dict: dict, list_of_collapsed_tiles: List[Tile]):
+        build_size = self.tile_size
         blocks = []
         for tile in list_of_collapsed_tiles:
             district_type = tile.district_type
@@ -28,12 +30,12 @@ class WFCBuilder:
             tile_type = tile.states[0].state_type
             if tile_type in self.corner_builds or tile_type in self.wall_builds or tile_type == "floor":
                 blocks.extend(self.__build_interior(x=x, z=z, y=y, district_type=district_type,
-                                                    tile_type=tile_type, size=3))
+                                                    tile_type=tile_type, size=build_size))
             elif tile_type in self.dot_builds:
                 blocks.extend(self.__build_dots(x=x, z=z, y=y, district_type=district_type,
-                                                tile_type=tile_type, size=3))
+                                                tile_type=tile_type, size=build_size))
             elif tile_type == "road":
-                blocks.extend(self.__build_road(x=x, z=z, y=y, size=3, district_type=district_type))
+                blocks.extend(self.__build_road(x=x, z=z, y=y, size=build_size, district_type=district_type))
             else:
                 print(f"couldn't find type: {tile_type}")
         self.client.spawnBlocks(Blocks(blocks=blocks))

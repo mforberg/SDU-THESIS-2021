@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wfc_states>
     <states>
-        <state name="wall_upper" weight="40" needs="SWE"/>
-        <state name="wall_bottom" weight="40" needs="NWE"/>
-        <state name="wall_right" weight="40" needs="WNS"/>
-        <state name="wall_left" weight="40" needs="ENS"/>
-        <state name="corner_upper_left" weight="40" needs="ES"/>
-        <state name="corner_upper_right" weight="40" needs="WS"/>
-        <state name="corner_bottom_left" weight="40" needs="EN"/>
-        <state name="corner_bottom_right" weight="40" needs="WN"/>
-        <state name="floor" weight="40" needs="NSEW"/>
-        <state name="road" weight="80" needs=""/>
+        <state name="wall_upper" weight="60" needs="SWE"/>
+        <state name="wall_bottom" weight="60" needs="NWE"/>
+        <state name="wall_right" weight="60" needs="WNS"/>
+        <state name="wall_left" weight="60" needs="ENS"/>
+        <state name="corner_upper_left" weight="20" needs="ES"/>
+        <state name="corner_upper_right" weight="20" needs="WS"/>
+        <state name="corner_bottom_left" weight="20" needs="EN"/>
+        <state name="corner_bottom_right" weight="20" needs="WN"/>
+        <state name="floor" weight="60" needs="NSEW"/>
+        <state name="road" weight="20" needs=""/>
     </states>
 
     <neighbors>
