@@ -15,7 +15,7 @@ class Tile:
         self.collapsed = False
         self.district_type = "Nothing"
         self.states: List[State] = []
-        self.entropy = 0  # TODO: Implement something to assign this + figure out how to calc this
+        self.entropy = 0  # reassigned later
 
     def add_neighbor(self, other: Tile):
         if other not in self.neighbors:

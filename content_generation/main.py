@@ -29,7 +29,7 @@ class Main:
         self.SFB = SurfaceBuilder()
         self.tester = BlockFileLoader()
         self.surface_dict = {}
-        self.tile_size = 7
+        self.tile_size = 3
         self.WFC_builder = WFCBuilder(self.tile_size)
 
     def run(self):
@@ -38,10 +38,10 @@ class Main:
         self.tester.run()
 
         total_block_dict, self.surface_dict, district_areas, set_of_fluids = self.tester.total_block_dict, \
-                                                                        self.tester.total_surface_dict, \
-                                                                        self.tester.district_areas, \
-                                                                        self.tester.set_of_fluids
-        testing = True
+                                                                             self.tester.total_surface_dict, \
+                                                                             self.tester.district_areas, \
+                                                                             self.tester.set_of_fluids
+        testing = False
         if not testing:
             #  Map GA
             solution_ga_without_types = AreasGA().run(areas=district_areas)
@@ -55,19 +55,15 @@ class Main:
             # self.rollback(surface_dict=self.surface_dict)
 
             #  Type GA
-            first = time.time()
-
             final_solution_ga = TypesGA().run(surface_dict=self.surface_dict, clusters=clusters,
-                                              global_district_types_dict=self.global_dict_of_types, fluid_set=set_of_fluids)
-            print(f"TYPE GA: {time.time()-first}")
-            # for solution in result.population:
-            #     print(solution.type_of_district)
+                                              global_district_types_dict=self.global_dict_of_types,
+                                              fluid_set=set_of_fluids)
 
             self.SFB.build_type_ga(surface_dict=self.surface_dict, type_ga_result=final_solution_ga)
             self.rollback(surface_dict=self.surface_dict)
 
             # WFC Start
-            print("- - - - WFC RELATED GARBAGE KEEP SCROLLING - - - -")
+            print("- - - - WFC ALGORITHM STARTING - - - -")
             wfc_pp = WFCPreprocessing(tile_size=self.tile_size)
             # result[0] all tiles, result[1] only tiles associated with solution
             result = wfc_pp.create_tiles(complete_solution_ga=final_solution_ga,
@@ -75,26 +71,17 @@ class Main:
 
             #  deforester = Deforest.getInstance()
             #  deforester.run(clusters=result[1][1], surface_dict=self.surface_dict)
-            #  self.SFB.build_wfc_glass_layer(self.surface_dict, result[0])
 
             connection_p = ConnectionPoints(clusters=result[1][1])
             connection_tiles = connection_p.run()
 
-            wfc_pp.remove_neighbors(clustered_tiles=result[1][1])  # TODO: Maybe check this works
+            wfc_pp.remove_neighbors(clustered_tiles=result[1][1])
 
-            # self.SFB.build_wfc_absorubed_tiles_layer(self.surface_dict, result[1][0])
-            # SFB.build_wfc_trash_layer(surface_dict, result[0])
             self.SFB.build_connection_tiles(surface_dict=self.surface_dict, connection_tiles=connection_tiles)
-            x = input("Please hold xd")
-            # SFB.delete_wfc_glass_layer()
-            # self.SFB.delete_wfc_absorbed_tiles_layer()
 
-            # self.SFB.delete_wfc_poop_layer()
-            # SFB.delete_wfc_trash_layer()
             old_surface_dict = copy.deepcopy(self.surface_dict)
             new_and_old_dict = wfc_pp.normalize_height(clustered_tiles=result[1][1], surface_dict=self.surface_dict)
             self.SFB.spawn_blocks(new_and_old_dict['new'])
-
 
             # May segfault without this line. 0x100 is a guess at the size of each stack frame.
             sys.setrecursionlimit(10000)
@@ -121,8 +108,6 @@ class Main:
         #         list_of_collapsed_tiles = wfc.run(clustered_tiles=clustered_tiles, connection_tiles=connection_tiles)
         #     except:
         #         print("we go agane")
-
-        print(list_of_collapsed_tiles)
         input("rdy?")
         self.WFC_builder.build_collapsed_tiles(surface_dict=self.surface_dict,
                                                list_of_collapsed_tiles=list_of_collapsed_tiles)
@@ -148,13 +133,6 @@ class Main:
             self.surface_dict = old_surface_dict
             self.rollback(surface_dict=self.surface_dict)
             # deforester.rollback()
-
-    def check_if_wfc_completed(self, amount_of_tiles: int, tiles: List[Tile]) -> bool:
-        amount_of_tiles_done = 0
-        for tile in tiles:
-            if len(tile.states) > 0:
-                amount_of_tiles_done += 1
-        return amount_of_tiles == amount_of_tiles_done
 
     def rollback(self, surface_dict):
         print("Reset surface? 1 or 2")

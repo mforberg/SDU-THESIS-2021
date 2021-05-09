@@ -16,20 +16,16 @@ class WFCPreprocessing:
         # this is needed to draw grid over the whole solution so that it can be divided into tiles
         self.__min_x, self.__min_z = 9999999, 9999999 #numpy.inf, numpy.inf
         self.__max_x, self.__max_z = -9999999, -9999999 #-numpy.inf, -numpy.inf
-        self.n = tile_size  # just a default value
+        self.n = tile_size
 
     def create_tiles(self, complete_solution_ga: SolutionGA, surface_dict: dict):
-        # TODO: Remove print statements when code is functional
 
         # Set min/max x/z values of all coordinates in full solution
         self.__set_min_max_values(self.__get_min_max_values(complete_solution_ga))
-        self.__print_modulo_n(self.n)
 
         # Prune edges if delta_x or delta_z mod n is not 0; delta z/x has to be a rectangle dividable by n
-        print(f"(FIRST) max_x: {self.__max_x} min_x: {self.__min_x} max_z: {self.__max_z} min_z: {self.__min_z}")
         self.__prune_edges(self.n, complete_solution_ga)
         self.__set_min_max_values(self.__get_min_max_values(complete_solution_ga))
-        self.__print_modulo_n(self.n)
 
         # Create tileset for solution
         total_coordinates = []
@@ -41,10 +37,6 @@ class WFCPreprocessing:
 
         # Assign tiles to cluster
         clustered_tiles = self.__clustered_tileset(solution_tiles, complete_solution_ga)
-
-        # print(((self.__max_x - self.__min_x) / n) * ((self.__max_z - self.__min_z) / n))
-        # print(f"N={n}, max_x-min_x={self.__max_x - self.__min_x}, delta_x%n={(self.__max_x - self.__min_x + 1) % n}")
-        # print(f"(SECOND) max_x: {self.__max_x} min_x: {self.__min_x} max_z: {self.__max_z} min_z: {self.__min_z}")
 
         return solution_tiles, clustered_tiles
 
@@ -117,7 +109,7 @@ class WFCPreprocessing:
                         max_z = z
             max_key = max(test, key=test.get)
             cluster.y = max_key
-        print("Reading from world uwu")
+        print("Reading data for normalization of height in clusters")
         result_dict = MapAnalysis().read_part_of_world(min_x=min_x, max_x=max_x, min_z=min_z, max_z=max_z,
                                                        block_dt=True, min_y=min_y, max_y=max_y)
         print("Done reading")

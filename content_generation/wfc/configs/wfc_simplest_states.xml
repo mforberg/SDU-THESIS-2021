@@ -9,7 +9,7 @@
         <state name="corner_upper_right" weight="20" needs="WS"/>
         <state name="corner_bottom_left" weight="20" needs="EN"/>
         <state name="corner_bottom_right" weight="20" needs="WN"/>
-        <state name="floor" weight="60" needs="NSEW"/>
+        <state name="floor" weight="120" needs="NSEW"/>
         <state name="road" weight="20" needs=""/>
     </states>
 
