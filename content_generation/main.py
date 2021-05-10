@@ -9,7 +9,7 @@ from wfc.preprocessing.connection_points import ConnectionPoints
 from builder.surface_builder import SurfaceBuilder
 from builder.test_builder import TestBuilder
 from builder.wfc_builder import WFCBuilder
-from a_star.a_star_main import PrepareMap
+from a_star.a_star_main import AStarMain
 import time
 import pickle
 import sys
@@ -18,7 +18,6 @@ from block_file_loader import BlockFileLoader
 from map_variables import *
 from UserInputFetcher import fetch_user_integer
 from wfc_main import WaveFunctionCollapse
-from wfc_models import Tile
 
 
 class Main:
@@ -31,6 +30,8 @@ class Main:
         self.surface_dict = {}
         self.tile_size = 3
         self.WFC_builder = WFCBuilder(self.tile_size)
+        self.new_and_old_map = dict
+        self.old_surface_dict = dict
 
     def run(self):
         # self.create_test_map()
@@ -51,7 +52,6 @@ class Main:
             clusters = KMeansClustering().run(first_ga_result=solution_ga_without_types, surface_dict=self.surface_dict)
 
             # SurfaceBuilder().build_clusters(clusters=clusters, surface_dict=surface_dict)
-
             # self.rollback(surface_dict=self.surface_dict)
 
             #  Type GA
@@ -59,8 +59,8 @@ class Main:
                                               global_district_types_dict=self.global_dict_of_types,
                                               fluid_set=set_of_fluids)
 
-            self.SFB.build_type_ga(surface_dict=self.surface_dict, type_ga_result=final_solution_ga)
-            self.rollback(surface_dict=self.surface_dict)
+            # self.SFB.build_type_ga(surface_dict=self.surface_dict, type_ga_result=final_solution_ga)
+            # self.rollback(surface_dict=self.surface_dict)
 
             # WFC Start
             print("- - - - WFC ALGORITHM STARTING - - - -")
@@ -68,71 +68,68 @@ class Main:
             # result[0] all tiles, result[1] only tiles associated with solution
             result = wfc_pp.create_tiles(complete_solution_ga=final_solution_ga,
                                          surface_dict=self.surface_dict)
+            clustered_tiles = result[1][1]
 
-            #  deforester = Deforest.getInstance()
-            #  deforester.run(clusters=result[1][1], surface_dict=self.surface_dict)
+            deforester = Deforest.getInstance()
+            deforester.run(clusters=clustered_tiles, surface_dict=self.surface_dict)
 
-            connection_p = ConnectionPoints(clusters=result[1][1])
+            wfc_pp.remove_neighbors(clustered_tiles=clustered_tiles)
+
+            self.old_surface_dict = copy.deepcopy(self.surface_dict)
+            self.new_and_old_map = wfc_pp.normalize_height(clustered_tiles=clustered_tiles,
+                                                           surface_dict=self.surface_dict)
+            self.SFB.spawn_blocks(self.new_and_old_map['new'])
+
+            connection_p = ConnectionPoints(clusters=clustered_tiles)
             connection_tiles = connection_p.run()
 
-            wfc_pp.remove_neighbors(clustered_tiles=result[1][1])
-
-            self.SFB.build_connection_tiles(surface_dict=self.surface_dict, connection_tiles=connection_tiles)
-
-            old_surface_dict = copy.deepcopy(self.surface_dict)
-            new_and_old_dict = wfc_pp.normalize_height(clustered_tiles=result[1][1], surface_dict=self.surface_dict)
-            self.SFB.spawn_blocks(new_and_old_dict['new'])
+            # # # # # # # # # # # # # # # # # # # # # # #
+            # # # # # # # # #  A* Start # # # # # # # # #
+            a_star = AStarMain(surface_dict=self.surface_dict, fluid_set=set_of_fluids)
+            roads = a_star.run(cluster_list=clustered_tiles, connection_tiles=connection_tiles)
+            self.SFB.build_roads(surface_dict=self.surface_dict, coordinates=roads)
+            # # # # # # # # #   A* End  # # # # # # # # #
+            # # # # # # # # # # # # # # # # # # # # # # #
 
             # May segfault without this line. 0x100 is a guess at the size of each stack frame.
             sys.setrecursionlimit(10000)
-            clustered_tiles = result[1][1]
+
             #  TESTING!!!
             with open("test_files/clustered_test_file.pkl", "wb") as file:
                 pickle.dump(clustered_tiles, file)
             with open("test_files/connection_test_tiles.pkl", "wb") as file:
                 pickle.dump(connection_tiles, file)
-                pickle.dump(connection_tiles, file)
 
-        self.rollback(surface_dict=self.surface_dict)
+        # self.rollback(surface_dict=self.surface_dict)
+
         with open("test_files/clustered_test_file.pkl", "rb") as file:
             clustered_tiles = pickle.load(file)
         with open("test_files/connection_test_tiles.pkl", "rb") as file:
             connection_tiles = pickle.load(file)
+
         self.SFB.build_connection_tiles(surface_dict=self.surface_dict, connection_tiles=connection_tiles)
         wfc = WaveFunctionCollapse(tile_size=self.tile_size)
         list_of_collapsed_tiles = wfc.run(clustered_tiles=clustered_tiles, connection_tiles=connection_tiles)
-        # amount_of_tiles = len(clustered_tiles)
-        # list_of_collapsed_tiles = []
-        # while not self.check_if_wfc_completed(amount_of_tiles=amount_of_tiles, tiles=list_of_collapsed_tiles):
-        #     try:
-        #         list_of_collapsed_tiles = wfc.run(clustered_tiles=clustered_tiles, connection_tiles=connection_tiles)
-        #     except:
-        #         print("we go agane")
-        input("rdy?")
+
         self.WFC_builder.build_collapsed_tiles(surface_dict=self.surface_dict,
                                                list_of_collapsed_tiles=list_of_collapsed_tiles)
-        self.rollback(surface_dict=self.surface_dict)
 
         print("- - - - WFC RELATED GARBAGE STOPPED - - - -")
         # WFC End
-
-        if not testing:
-            # # # # # # # # # # # # # # # # # # # # # # #
-            # # # # # # # # #  A* Start # # # # # # # # #
-            prepare_map = PrepareMap(surface_dict=self.surface_dict, fluid_set=set_of_fluids)
-            roads = prepare_map.run(cluster_list=result[1][1], connection_tiles=connection_tiles)
-            self.SFB.build_from_list_of_tuples(surface_dict=self.surface_dict, coordinates=roads)
-            input("Delete road?")
+        if testing:
+            input("Ready to delete?")
+            self.WFC_builder.remove_buildings()
+            SurfaceBuilder().rollback(surface_dict=self.surface_dict)
+        else:
+            input("Reset map...")
+            print("Continued")
             self.SFB.delete_road_blocks()
-            self.rollback(surface_dict=self.surface_dict)
-            # # # # # # # # #   A* End  # # # # # # # # #
-            # # # # # # # # # # # # # # # # # # # # # # #
-
-            input("Rebuild map?")
-            self.SFB.spawn_blocks(new_and_old_dict['old'])
-            self.surface_dict = old_surface_dict
-            self.rollback(surface_dict=self.surface_dict)
-            # deforester.rollback()
+            self.WFC_builder.remove_buildings()
+            SurfaceBuilder().rollback(surface_dict=self.surface_dict)
+            self.SFB.spawn_blocks(self.new_and_old_map['old'])
+            SurfaceBuilder().rollback(surface_dict=self.old_surface_dict)
+            deforester = Deforest.getInstance()
+            deforester.rollback()
 
     def rollback(self, surface_dict):
         print("Reset surface? 1 or 2")
@@ -168,7 +165,6 @@ if __name__ == '__main__':
     # try:
     #     Main().run()
     # except:
-    #     print("ja")
     #     Main().failsafe()
     # else:
     #     print("Rollback commence due to errors")

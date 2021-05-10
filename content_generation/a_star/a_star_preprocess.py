@@ -1,5 +1,4 @@
 from typing import Set, List
-
 from a_star_models import APoint
 from wfc_models import Cluster
 
@@ -16,7 +15,6 @@ class AStarPreprocess:
             for tile in cluster.tiles:
                 for coordinate in tile.nodes:
                     blocked_coordinates.add(APoint(node=coordinate, y=-1))
-
         for connection_point in connection_tiles:
             first_list = []
             for node in connection_point[0].nodes:

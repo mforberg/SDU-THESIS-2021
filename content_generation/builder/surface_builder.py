@@ -116,7 +116,7 @@ class SurfaceBuilder:
             blocks.append(block)
         self.client.spawnBlocks(Blocks(blocks=blocks))
 
-    def build_from_list_of_tuples(self, surface_dict: dict, coordinates: List[tuple]):
+    def build_roads(self, surface_dict: dict, coordinates: List[tuple]):
         blocks = []
         for value in coordinates:
             block = copy.deepcopy(surface_dict[(value[0], value[1])].block)
@@ -148,10 +148,12 @@ class SurfaceBuilder:
             second = tup[1]
             for value in first.nodes:
                 block = copy.deepcopy(surface_dict[(value[0], value[1])].block)
+                block.position.y = surface_dict[(value[0], value[1])].y
                 block.type = DIAMOND_BLOCK
                 blocks.append(block)
             for value in second.nodes:
                 block = copy.deepcopy(surface_dict[(value[0], value[1])].block)
+                block.position.y = surface_dict[(value[0], value[1])].y
                 block.type = DIAMOND_BLOCK
                 blocks.append(block)
         self.client.spawnBlocks(Blocks(blocks=blocks))
