@@ -19,6 +19,7 @@ class WFCBuilder:
         self.dot_builds = ['dot_upper_left', 'dot_upper_right', 'dot_bottom_left', 'dot_bottom_right']
         self.wall_builds = ['wall_left', 'wall_right', 'wall_upper', 'wall_bottom']
         self.tile_size = tile_size
+        self.anti_WFC = []
 
     def build_collapsed_tiles(self, surface_dict: dict, list_of_collapsed_tiles: List[Tile]):
         build_size = self.tile_size
@@ -39,12 +40,12 @@ class WFCBuilder:
             else:
                 print(f"couldn't find type: {tile_type}")
         self.client.spawnBlocks(Blocks(blocks=blocks))
-        input("3")
-        input("2")
-        input("1")
         for block in blocks:
             block.type = AIR
-        self.client.spawnBlocks(Blocks(blocks=blocks))
+        self.anti_WFC = blocks
+
+    def remove_buildings(self):
+        self.client.spawnBlocks(Blocks(blocks=self.anti_WFC))
 
     def __build_interior(self, x: int, z: int, y: int, district_type: str, tile_type: str,
                          size: int) -> List[Block]:
