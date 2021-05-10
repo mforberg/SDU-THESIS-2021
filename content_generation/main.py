@@ -9,7 +9,7 @@ from wfc.preprocessing.connection_points import ConnectionPoints
 from builder.surface_builder import SurfaceBuilder
 from builder.test_builder import TestBuilder
 from builder.wfc_builder import WFCBuilder
-from a_star.a_star_main import PrepareMap
+from a_star.a_star_main import AStarMain
 import time
 import pickle
 import sys
@@ -83,6 +83,14 @@ class Main:
             connection_p = ConnectionPoints(clusters=clustered_tiles)
             connection_tiles = connection_p.run()
 
+            # # # # # # # # # # # # # # # # # # # # # # #
+            # # # # # # # # #  A* Start # # # # # # # # #
+            a_star = AStarMain(surface_dict=self.surface_dict, fluid_set=set_of_fluids)
+            roads = a_star.run(cluster_list=clustered_tiles, connection_tiles=connection_tiles)
+            self.SFB.build_roads(surface_dict=self.surface_dict, coordinates=roads)
+            # # # # # # # # #   A* End  # # # # # # # # #
+            # # # # # # # # # # # # # # # # # # # # # # #
+
             # May segfault without this line. 0x100 is a guess at the size of each stack frame.
             sys.setrecursionlimit(10000)
 
@@ -113,15 +121,8 @@ class Main:
             self.WFC_builder.remove_buildings()
             SurfaceBuilder().rollback(surface_dict=self.surface_dict)
         else:
-            # # # # # # # # # # # # # # # # # # # # # # #
-            # # # # # # # # #  A* Start # # # # # # # # #
-            prepare_map = PrepareMap(surface_dict=self.surface_dict, fluid_set=set_of_fluids)
-            roads = prepare_map.run(cluster_list=clustered_tiles, connection_tiles=connection_tiles)
-            self.SFB.build_roads(surface_dict=self.surface_dict, coordinates=roads)
-            # # # # # # # # #   A* End  # # # # # # # # #
-            # # # # # # # # # # # # # # # # # # # # # # #
-
             input("Reset map...")
+            print("Continued")
             self.SFB.delete_road_blocks()
             self.WFC_builder.remove_buildings()
             SurfaceBuilder().rollback(surface_dict=self.surface_dict)

@@ -5,7 +5,7 @@ from a_star_preprocess import AStarPreprocess
 from wfc_models import Cluster
 
 
-class PrepareMap:
+class AStarMain:
 
     def __init__(self, surface_dict: dict, fluid_set: set):
         self.surface_dict = surface_dict
@@ -13,6 +13,7 @@ class PrepareMap:
         self.a_star = AStar(surface_dict=surface_dict, fluid_set=fluid_set)
 
     def run(self, cluster_list: List[Cluster], connection_tiles: List[tuple]) -> List[tuple]:
+        # self.__test()
         blocked_coordinates, connection_points = self.a_star_preprocess.run(cluster_list=cluster_list,
                                                                             connection_tiles=connection_tiles)
         a_points = self.a_star.run(blocked_coordinates=blocked_coordinates, connection_points=connection_points)
@@ -26,3 +27,8 @@ class PrepareMap:
             y = a_point.y
             point_list.append((x, z, y))
         return point_list
+
+    def __test(self):
+        first = APoint(node=(0, 0), y=-1)
+        second = APoint(node=(0, 0), y=2)
+        print(first == second)
