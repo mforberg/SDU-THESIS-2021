@@ -24,7 +24,6 @@ class AStar:
 
     def connect_point_to_goal(self, start_points: List[APoint], goal_points: List[APoint],
                               blocked_coordinates: Set[APoint], dict_of_road_blocks: dict) -> List[APoint]:
-        copy_of_blocked = copy.deepcopy(blocked_coordinates)
         if start_points[0].node[0] > goal_points[0].node[0]:
             temp = copy.deepcopy(start_points)
             start_points = copy.deepcopy(goal_points)
@@ -49,7 +48,7 @@ class AStar:
                 parent = parent_dict[current_point]
             else:
                 parent = None
-            for neighbor in self.get_neighbors(point=current_point, blocked_coordinates=copy_of_blocked, parent=parent,
+            for neighbor in self.get_neighbors(point=current_point, blocked_coordinates=blocked_coordinates, parent=parent,
                                                road_blocks_dict=dict_of_road_blocks):
                 new_cost = cost_so_far[current_point]
                 new_cost += self.calculate_path_cost(current_point=current_point, to_point=neighbor)
