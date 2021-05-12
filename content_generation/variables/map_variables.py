@@ -22,10 +22,14 @@ from minecraft_pb2 import *
 # BOX_Z_MIN = 1500
 # BOX_Z_MAX = 1600
 """Mikkel's coordinates"""
-BOX_X_MIN = -243  # -153 #-245
-BOX_X_MAX = -43   # 96   #4
-BOX_Z_MIN = 1355  # 1411 #1483
-BOX_Z_MAX = 1591  # 1661 #1733
+BOX_X_MIN = -153 #-245
+BOX_X_MAX = 96   #4
+BOX_Z_MIN = 1411 #1483
+BOX_Z_MAX = 1661 #1733
+# BOX_X_MIN = 237  # -293 #  -243  # -153 #-245
+# BOX_X_MAX = 358  # -143 #  -43   # 96   #4
+# BOX_Z_MIN = 852  # 1246 #  1355  # 1411 #1483
+# BOX_Z_MAX = 986  # 1495 #  1591  # 1661 #1733
 
 
 # Map analysis

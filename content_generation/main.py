@@ -5,7 +5,7 @@ from genetic_algorithm.map_ga.map_main import AreasGA
 from wfc.preprocessing.deforestation import Deforest
 from genetic_algorithm.type_ga.type_main import TypesGA
 from wfc.preprocessing.wfc_preprocessing import WFCPreprocessing
-from wfc.preprocessing.connection_points import ConnectionPoints
+from wfc.preprocessing.connection_points import ConnectionPoints, Tile
 from builder.surface_builder import SurfaceBuilder
 from builder.test_builder import TestBuilder
 from builder.wfc_builder import WFCBuilder
@@ -42,7 +42,7 @@ class Main:
                                                                              self.tester.total_surface_dict, \
                                                                              self.tester.district_areas, \
                                                                              self.tester.set_of_fluids
-        testing = False
+        testing = True
         if not testing:
             #  Map GA
             solution_ga_without_types = AreasGA().run(areas=district_areas)
@@ -108,9 +108,16 @@ class Main:
             connection_tiles = pickle.load(file)
 
         self.SFB.build_connection_tiles(surface_dict=self.surface_dict, connection_tiles=connection_tiles)
+        list_of_collapsed_tiles = []
         wfc = WaveFunctionCollapse(tile_size=self.tile_size)
+        # tile_count = 0
+        # for cluster in clustered_tiles:
+        #     tile_count += len(cluster.tiles)
+        # while self.check_if_wfc_completed(tile_count, list_of_collapsed_tiles):
+        #     try:
         list_of_collapsed_tiles = wfc.run(clustered_tiles=clustered_tiles, connection_tiles=connection_tiles)
-
+            # except:
+            #     print(" uh oh ")
         self.WFC_builder.build_collapsed_tiles(surface_dict=self.surface_dict,
                                                list_of_collapsed_tiles=list_of_collapsed_tiles)
 
@@ -159,6 +166,12 @@ class Main:
         # tb.create_big_areas()
         tb.create_walls(block_type=AIR)
 
+    def check_if_wfc_completed(self, amount_of_tiles: int, tiles: List[Tile]) -> bool:
+        amount_of_tiles_done = 0
+        for tile in tiles:
+            if len(tile.states) > 0:
+                amount_of_tiles_done += 1
+        return amount_of_tiles == amount_of_tiles_done
 
 if __name__ == '__main__':
     Main().run()

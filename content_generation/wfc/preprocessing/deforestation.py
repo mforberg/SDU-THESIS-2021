@@ -101,11 +101,12 @@ class Deforest:
             for ele in templist:
                 if ele['type'] in [self.trees[1], self.trees[0]]:
                     templist.remove(ele)
-            templist = sorted(templist, key=lambda t: t['block'].position.y, reverse=True)
-            tempconditionalvar = templist[0]['block'].position.y
-            if (tree[0], tempconditionalvar, tree[1]) in self.block_dict:
-                heavy_sigh = SurfaceDictionaryValue(y=tempconditionalvar, block_type=
-                self.block_dict[tree[0], tempconditionalvar, tree[1]]['type'],
-                                                    block=self.block_dict[tree[0], tempconditionalvar, tree[1]][
-                                                        'block'])
-                surface_dict[tree[0], tree[1]] = heavy_sigh
+            if templist:
+                templist = sorted(templist, key=lambda t: t['block'].position.y, reverse=True)
+                tempconditionalvar = templist[0]['block'].position.y
+                if (tree[0], tempconditionalvar, tree[1]) in self.block_dict:
+                    heavy_sigh = SurfaceDictionaryValue(y=tempconditionalvar, block_type=
+                    self.block_dict[tree[0], tempconditionalvar, tree[1]]['type'],
+                                                        block=self.block_dict[tree[0], tempconditionalvar, tree[1]][
+                                                            'block'])
+                    surface_dict[tree[0], tree[1]] = heavy_sigh

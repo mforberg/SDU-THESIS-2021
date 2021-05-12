@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wfc_states>
     <states>
-        <state name="wall_upper" weight="50" needs="SWE"/>
-        <state name="wall_bottom" weight="50" needs="NWE"/>
-        <state name="wall_right" weight="50" needs="WNS"/>
-        <state name="wall_left" weight="50" needs="ENS"/>
-        <state name="corner_upper_left" weight="25" needs="ES"/>
-        <state name="corner_upper_right" weight="25" needs="WS"/>
-        <state name="corner_bottom_left" weight="25" needs="EN"/>
-        <state name="corner_bottom_right" weight="25" needs="WN"/>
-        <state name="floor" weight="100" needs="NSEW"/>
-        <state name="road" weight="150" needs=""/>
+        <state name="wall_upper" weight="800" needs="SWE"/>
+        <state name="wall_bottom" weight="40" needs="NWE"/>
+        <state name="wall_right" weight="800" needs="WNS"/>
+        <state name="wall_left" weight="40" needs="ENS"/>
+        <state name="corner_upper_left" weight="5" needs="ES"/>
+        <state name="corner_upper_right" weight="5" needs="WS"/>
+        <state name="corner_bottom_left" weight="5" needs="EN"/>
+        <state name="corner_bottom_right" weight="5" needs="WN"/>
+        <state name="floor" weight="400" needs="NSEW"/>
+        <state name="road" weight="1" needs=""/>
     </states>
 
     <neighbors>
@@ -97,7 +97,7 @@
             <neighbor name="wall_bottom" legal="S"/>
             <neighbor name="wall_left" legal="W"/>
             <neighbor name="wall_right" legal="E"/>
-            <!-- <neighbor name="floor" legal="NSEW"/> -->
+            <neighbor name="floor" legal="NSEW"/>
         </parent>
 
     </neighbors>

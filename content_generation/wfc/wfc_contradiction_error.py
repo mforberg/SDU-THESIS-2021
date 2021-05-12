@@ -1,0 +1,4 @@
+
+
+class ContradictionException(Exception):
+    pass
