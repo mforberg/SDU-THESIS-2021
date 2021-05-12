@@ -82,7 +82,6 @@ class WaveFunctionCollapse:
                 tile_holder[cluster.id] = []
                 print(f"Cluster '{cluster.tiles[0].district_type}' Failed")
                 self.__reset_tiles(cluster, self.connection_tiles, self.states)
-                print(len(cluster.tiles))
                 self.__wfc_run_loop()
 
     def __reset_tiles(self, cluster, list_of_connection_tiles, states):
