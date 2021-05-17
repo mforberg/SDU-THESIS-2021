@@ -24,10 +24,6 @@ class AStar:
 
     def connect_point_to_goal(self, start_points: List[APoint], goal_points: List[APoint],
                               blocked_coordinates: Set[APoint], dict_of_road_blocks: dict) -> List[APoint]:
-        if start_points[0].node[0] > goal_points[0].node[0]:
-            temp = copy.deepcopy(start_points)
-            start_points = copy.deepcopy(goal_points)
-            goal_points = temp
         open_list = []
         parent_dict = {}
         cost_so_far = dict()
@@ -35,15 +31,11 @@ class AStar:
             cost = self.calculate_heuristic(point=point, goals=goal_points)
             cost_so_far[point] = cost
             heapq.heappush(open_list, (cost, point))
-        
         while open_list:
-
             current_point = heapq.heappop(open_list)[1]
-
             if current_point in goal_points:
                 return self.backtrack(parent_dict=parent_dict, goal_point=current_point,
                                       road_blocks_dict=dict_of_road_blocks)
-
             if current_point in parent_dict:
                 parent = parent_dict[current_point]
             else:

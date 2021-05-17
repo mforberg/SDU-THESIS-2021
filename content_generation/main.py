@@ -42,7 +42,7 @@ class Main:
                                                                              self.tester.total_surface_dict, \
                                                                              self.tester.district_areas, \
                                                                              self.tester.set_of_fluids
-        testing = True
+        testing = False
         if not testing:
             #  Map GA
             solution_ga_without_types = AreasGA().run(areas=district_areas)
