@@ -59,7 +59,6 @@ class WaveFunctionCollapse:
         tile_holder = {cluster.id: [] for cluster in self.heaps}
 
         for cluster in self.heaps:
-            # TODO: handle contradictions, hint: run again
             try:
                 collapsed_tiles = []
                 while not cluster_fully_collapsed(cluster=cluster.tiles):

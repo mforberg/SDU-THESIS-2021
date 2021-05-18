@@ -81,6 +81,41 @@ class WFCPreprocessing:
 
         return build_list, cluster_list_with_neighbors
 
+    def __generate_tileset(self, n, coordinates):
+        solution_tiles = []
+        existing_nodes = {}
+
+        # -n: Subtract to not go out of bounds, as the LAST tiles in a row/column will be at max_x - n
+        # +2: +1 because range is not inclusive, and also +1 to ensure last row of tiles is created
+        for x in range(self.__min_x, (self.__max_x - n) + 2, n):
+            for z in range(self.__min_z, (self.__max_z - n) + 2, n):
+
+                # Create NxN nodes
+                nodes = []
+                for x_range_n in range(0, n):
+                    for z_range_n in range(0, n):
+                        x1 = x + x_range_n
+                        z1 = z + z_range_n
+                        nodes.append((x1, z1))
+
+                tile = Tile(nodes)
+
+                # Add tile if any node is part of solution space
+                if set(nodes).intersection(coordinates):
+                    existing_nodes[x, z] = tile
+                    solution_tiles.append(tile)
+
+                # Add neighbors to tiles
+                neighbor_directions = [(0, self.n), (0, -self.n), (self.n, 0), (-self.n, 0)]
+                for direction in neighbor_directions:
+                    neighbor_x = x + direction[0]
+                    neighbor_z = z + direction[1]
+
+                    if (neighbor_x, neighbor_z) in existing_nodes:
+                        tile.add_neighbor(existing_nodes[neighbor_x, neighbor_z])
+
+        return solution_tiles
+
     def normalize_height(self, clustered_tiles: List[Cluster], surface_dict: dict) -> dict:
         min_y = min_x = min_z = 99999999999999999999999
         max_y = max_x = max_z = -99999999999999999999999
@@ -169,41 +204,6 @@ class WFCPreprocessing:
                                 if targeted_y != current_height:
                                     surface_dict[node].y -= 1
         return {'new': list_of_blocks_to_be_placed, 'old': list_of_old_block_to_remember}
-
-    def __generate_tileset(self, n, coordinates):
-        solution_tiles = []
-        existing_nodes = {}
-
-        # -n: Subtract to not go out of bounds, as the LAST tiles in a row/column will be at max_x - n
-        # +2: +1 because range is not inclusive, and also +1 to ensure last row of tiles is created
-        for x in range(self.__min_x, (self.__max_x - n) + 2, n):
-            for z in range(self.__min_z, (self.__max_z - n) + 2, n):
-
-                # Create NxN nodes
-                nodes = []
-                for x_range_n in range(0, n):
-                    for z_range_n in range(0, n):
-                        x1 = x + x_range_n
-                        z1 = z + z_range_n
-                        nodes.append((x1, z1))
-
-                tile = Tile(nodes)
-
-                # Add tile if any node is part of solution space
-                if set(nodes).intersection(coordinates):
-                    existing_nodes[x, z] = tile
-                    solution_tiles.append(tile)
-
-                # Add neighbors to tiles
-                neighbor_directions = [(0, self.n), (0, -self.n), (self.n, 0), (-self.n, 0)]
-                for direction in neighbor_directions:
-                    neighbor_x = x + direction[0]
-                    neighbor_z = z + direction[1]
-
-                    if (neighbor_x, neighbor_z) in existing_nodes:
-                        tile.add_neighbor(existing_nodes[neighbor_x, neighbor_z])
-
-        return solution_tiles
 
     def __prune_edges(self, n: int, result: SolutionGA):
         dicts = []
