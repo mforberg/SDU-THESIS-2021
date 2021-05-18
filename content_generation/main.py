@@ -10,7 +10,6 @@ from builder.surface_builder import SurfaceBuilder
 from builder.test_builder import TestBuilder
 from builder.wfc_builder import WFCBuilder
 from a_star.a_star_main import AStarMain
-import time
 import pickle
 import sys
 import copy
@@ -35,6 +34,7 @@ class Main:
 
     def run(self):
         # self.create_test_map()
+
         #  Map analysis
         self.tester.run()
 
@@ -42,7 +42,7 @@ class Main:
                                                                              self.tester.total_surface_dict, \
                                                                              self.tester.district_areas, \
                                                                              self.tester.set_of_fluids
-        testing = True
+        testing = False
         if not testing:
             #  Map GA
             solution_ga_without_types = AreasGA().run(areas=district_areas)
