@@ -48,7 +48,7 @@ class MapAnalysis:
     def pool_handler(self):
         p = Pool(int(multiprocessing.cpu_count() - 1))
         result = []
-        for i in tqdm.tqdm(p.imap_unordered(self.work_log, self.work), total=len(self.work)):
+        for i in tqdm.tqdm(p.imap_unordered(self.work_log, self.work), total=len(self.work), desc='Map Analysis'):
             result.append(i)
         return result
 
