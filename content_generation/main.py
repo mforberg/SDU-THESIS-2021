@@ -163,8 +163,8 @@ class Main:
     def create_test_map(self):
         tb = TestBuilder()
         tb.build_flat_surface(type_of_block=STONE)
-        # tb.create_big_areas(block_type=BEDROCK)
-        # tb.create_walls(block_type=AIR)
+        tb.create_big_areas(block_type=BEDROCK)
+        tb.create_walls(block_type=BEDROCK)
 
     def check_if_wfc_completed(self, amount_of_tiles: int, tiles: List[Tile]) -> bool:
         amount_of_tiles_done = 0
