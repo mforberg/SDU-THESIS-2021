@@ -117,6 +117,7 @@ class WaveFunctionCollapse:
                     tile.collapsed = True
                     tile.update_entropy()
 
+
     def __create_states(self, wfc_state_config):
         states: List[State] = []
         for key, value in wfc_state_config[1].items():
@@ -188,17 +189,14 @@ class WaveFunctionCollapse:
                 neighbor.states = legal_states_for_neighbor
                 length_of_new = len(legal_states_for_neighbor)
                 if length_of_old > length_of_new:
-                    # TODO: neighbor not in stack?
                     stack.append(neighbor)
 
     def __get_neighbors_allowed_states(self, current_tile: Tile, neighbor_tile: Tile) -> List[State]:
         illegal_states_for_neighbor = set()
         neighbor_initial_possible_states = copy.deepcopy(neighbor_tile.states)
 
-        # TODO: FIX current!
-        current = [current_tile]
         for neighbor_state in neighbor_initial_possible_states:
-            if not self.__is_state_allowed_based_on_neighbor(state=neighbor_state, neighbors=current,
+            if not self.__is_state_allowed_based_on_neighbor(state=neighbor_state, previous_tile=current_tile,
                                                              current_tile=neighbor_tile):
                 illegal_states_for_neighbor.add(neighbor_state)
                 continue
@@ -224,17 +222,16 @@ class WaveFunctionCollapse:
                 return False
         return True
 
-    def __is_state_allowed_based_on_neighbor(self, current_tile: Tile, state: State, neighbors: List[Tile]) -> bool:
-        for neighbor in neighbors:
-            neighbor_allow = False
-            orientation = self.__find_previous_tile_direction(neighbor=neighbor, current_tile=current_tile)
-            for neighbor_state in neighbor.states:
-                for legal_neighbor, legal_directions in neighbor_state.legal_neighbors.items():
-                    if state.state_type == legal_neighbor:
-                        if orientation in legal_directions:
-                            neighbor_allow = True
-            if not neighbor_allow:
-                return False
+    def __is_state_allowed_based_on_neighbor(self, current_tile: Tile, state: State, previous_tile: Tile) -> bool:
+        neighbor_allow = False
+        orientation = self.__find_previous_tile_direction(neighbor=previous_tile, current_tile=current_tile)
+        for neighbor_state in previous_tile.states:
+            for legal_neighbor, legal_directions in neighbor_state.legal_neighbors.items():
+                if state.state_type == legal_neighbor:
+                    if orientation in legal_directions:
+                        neighbor_allow = True
+        if not neighbor_allow:
+            return False
         return True
 
     def __find_previous_tile_direction(self, neighbor, current_tile) -> str:
