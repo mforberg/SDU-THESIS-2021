@@ -82,14 +82,16 @@ class Main:
 
             connection_p = ConnectionPoints(clusters=clustered_tiles)
             connection_tiles = connection_p.run()
+            self.SFB.build_connection_tiles(surface_dict=self.surface_dict, connection_tiles=connection_tiles)
 
             # # # # # # # # # # # # # # # # # # # # # # #
             # # # # # # # # #  A* Start # # # # # # # # #
             a_star = AStarMain(surface_dict=self.surface_dict, fluid_set=set_of_fluids)
             roads = a_star.run(cluster_list=clustered_tiles, connection_tiles=connection_tiles)
-            self.SFB.build_roads(surface_dict=self.surface_dict, coordinates=roads)
+            self.SFB.build_roads(surface_dict=self.surface_dict, coordinates=roads, block_type=COBBLESTONE)
             # # # # # # # # #   A* End  # # # # # # # # #
             # # # # # # # # # # # # # # # # # # # # # # #
+            input("stop")
 
             # May segfault without this line. 0x100 is a guess at the size of each stack frame.
             sys.setrecursionlimit(10000)
@@ -107,7 +109,6 @@ class Main:
         with open("test_files/connection_test_tiles.pkl", "rb") as file:
             connection_tiles = pickle.load(file)
 
-        self.SFB.build_connection_tiles(surface_dict=self.surface_dict, connection_tiles=connection_tiles)
         list_of_collapsed_tiles = []
         wfc = WaveFunctionCollapse(tile_size=self.tile_size)
         # tile_count = 0
@@ -163,8 +164,8 @@ class Main:
     def create_test_map(self):
         tb = TestBuilder()
         tb.build_flat_surface(type_of_block=STONE)
-        # tb.create_big_areas()
-        tb.create_walls(block_type=AIR)
+        tb.create_big_areas()
+        tb.create_walls(block_type=BEDROCK)
 
     def check_if_wfc_completed(self, amount_of_tiles: int, tiles: List[Tile]) -> bool:
         amount_of_tiles_done = 0

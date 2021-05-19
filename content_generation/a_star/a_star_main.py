@@ -35,9 +35,8 @@ class AStarMain:
         print(f"simple test: {first == second}")
 
     def __test2(self, blocked_coordinates: Set[APoint]):
-        print(blocked_coordinates)
-        test_point = APoint(node=(135, 1540), y=75)
-        print(test_point)
-        test_point2 = APoint(node=(135, 1540), y=-1)
+        blocked_coordinates.add(APoint(node=(0, 0), y=1))
+        test_point = APoint(node=(0, 0), y=75)
+        test_point2 = APoint(node=(0, 0), y=-1)
         print(f"first 'in' test: {test_point in blocked_coordinates}")
         print(f"second 'in' test: {test_point2 in blocked_coordinates}")
