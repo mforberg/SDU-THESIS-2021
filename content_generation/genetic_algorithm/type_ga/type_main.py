@@ -58,9 +58,3 @@ class TypesGA:
                 global_dict_of_used_types[area.type_of_district] += 1
             else:
                 global_dict_of_used_types[area.type_of_district] = 1
-    #
-    # def __check_for_new_best_solution(self, populations_list: list, current_gen: int):
-    #     for solution in populations_list:
-    #         if solution.fitness > self.best_solution.fitness:
-    #             self.best_solution = copy.deepcopy(solution)
-    #             self.new_best_prints.append(f"New best {solution.fitness} at gen {current_gen}")

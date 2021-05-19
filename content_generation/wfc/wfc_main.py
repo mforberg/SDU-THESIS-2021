@@ -196,10 +196,8 @@ class WaveFunctionCollapse:
         illegal_states_for_neighbor = set()
         neighbor_initial_possible_states = copy.deepcopy(neighbor_tile.states)
 
-        # TODO: FIX current!
-        current = [current_tile]
         for neighbor_state in neighbor_initial_possible_states:
-            if not self.__is_state_allowed_based_on_neighbor(state=neighbor_state, neighbors=current,
+            if not self.__is_state_allowed_based_on_neighbor(state=neighbor_state, neighbor=current_tile,
                                                              current_tile=neighbor_tile):
                 illegal_states_for_neighbor.add(neighbor_state)
                 continue
@@ -225,17 +223,16 @@ class WaveFunctionCollapse:
                 return False
         return True
 
-    def __is_state_allowed_based_on_neighbor(self, current_tile: Tile, state: State, neighbors: List[Tile]) -> bool:
-        for neighbor in neighbors:
-            neighbor_allow = False
-            orientation = self.__find_previous_tile_direction(neighbor=neighbor, current_tile=current_tile)
-            for neighbor_state in neighbor.states:
-                for legal_neighbor, legal_directions in neighbor_state.legal_neighbors.items():
-                    if state.state_type == legal_neighbor:
-                        if orientation in legal_directions:
-                            neighbor_allow = True
-            if not neighbor_allow:
-                return False
+    def __is_state_allowed_based_on_neighbor(self, current_tile: Tile, state: State, neighbor: Tile) -> bool:
+        neighbor_allow = False
+        orientation = self.__find_previous_tile_direction(neighbor=neighbor, current_tile=current_tile)
+        for neighbor_state in neighbor.states:
+            for legal_neighbor, legal_directions in neighbor_state.legal_neighbors.items():
+                if state.state_type == legal_neighbor:
+                    if orientation in legal_directions:
+                        neighbor_allow = True
+        if not neighbor_allow:
+            return False
         return True
 
     def __find_previous_tile_direction(self, neighbor, current_tile) -> str:

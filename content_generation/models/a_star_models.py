@@ -13,7 +13,7 @@ class APoint:
             return False
 
     def __hash__(self):
-        return hash((self.node[0], self.node[1], self.y))
+        return hash((self.node[0], self.node[1]))
 
     def __repr__(self):
         return f"<node:{self.node}, y:{self.y}>"
