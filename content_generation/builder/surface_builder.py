@@ -116,12 +116,12 @@ class SurfaceBuilder:
             blocks.append(block)
         self.client.spawnBlocks(Blocks(blocks=blocks))
 
-    def build_roads(self, surface_dict: dict, coordinates: List[tuple]):
+    def build_roads(self, surface_dict: dict, coordinates: List[tuple], block_type: int):
         blocks = []
         for value in coordinates:
             block = copy.deepcopy(surface_dict[(value[0], value[1])].block)
             block.position.y = value[2]
-            block.type = COBBLESTONE
+            block.type = block_type
             blocks.append(block)
         self.client.spawnBlocks(Blocks(blocks=blocks))
         for block in blocks:

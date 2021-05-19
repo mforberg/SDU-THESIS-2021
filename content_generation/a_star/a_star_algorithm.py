@@ -104,8 +104,6 @@ class AStar:
                             y_difference = abs(road_blocks_dict[possible_point.node] - y)
                             if y_difference not in DISALLOWED_Y_DIFFERENCE:
                                 neighbors.append(possible_point)
-                    else:
-                        print(f"Blocked coordinate at: {possible_point}")
         return neighbors
 
     def backtrack(self, parent_dict: dict, goal_point: APoint, road_blocks_dict: dict) -> List[APoint]:
