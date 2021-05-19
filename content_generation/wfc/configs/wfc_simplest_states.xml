@@ -40,7 +40,7 @@
         <parent name="wall_left">
             <neighbor name="wall_right" legal="E"/>
             <neighbor name="corner_upper_left" legal="N"/>
-            <neighbor name="corner_bottom_LEFT" legal="S"/>
+            <neighbor name="corner_bottom_left" legal="S"/>
             <neighbor name="road" legal="W"/>
             <neighbor name="floor" legal="E"/>
         </parent>

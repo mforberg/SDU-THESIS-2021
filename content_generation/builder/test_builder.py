@@ -17,7 +17,7 @@ class TestBuilder:
         blocks = []
         for x in range(BOX_X_MIN, BOX_X_MAX + 1):
             for z in range(BOX_Z_MIN, BOX_Z_MAX + 1):
-                for y in range(70, 75):
+                for y in range(120, 121):
                     random_block = Block()
                     random_block.position.y = y
                     random_block.position.x = x
@@ -57,7 +57,7 @@ class TestBuilder:
                 y = 74
                 random_block = Block()
                 if build_x or build_z:
-                    random_block.type = BEDROCK
+                    random_block.type = AIR
                 else:
                     random_block.type = AIR
                 random_block.position.y = y

@@ -84,7 +84,6 @@ class WaveFunctionCollapse:
                 self.__wfc_run_loop()
 
     def __reset_tiles(self, cluster, list_of_connection_tiles, states):
-
         for tile in cluster.tiles:
             tile.assign_states(copy.deepcopy(states))
             tile.collapsed = False
