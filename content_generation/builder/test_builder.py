@@ -41,7 +41,7 @@ class TestBuilder:
     #                         blocks.append(random_block)
     #     self.client.spawnBlocks(Blocks(blocks=blocks))
 
-    def create_big_areas(self):
+    def create_big_areas(self, block_type: int):
         default = False
         blocks = []
         build_x = default
@@ -57,7 +57,7 @@ class TestBuilder:
                 y = 74
                 random_block = Block()
                 if build_x or build_z:
-                    random_block.type = BEDROCK
+                    random_block.type = block_type
                 else:
                     random_block.type = AIR
                 random_block.position.y = y

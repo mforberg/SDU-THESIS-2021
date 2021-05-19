@@ -91,7 +91,6 @@ class Main:
             self.SFB.build_roads(surface_dict=self.surface_dict, coordinates=roads, block_type=COBBLESTONE)
             # # # # # # # # #   A* End  # # # # # # # # #
             # # # # # # # # # # # # # # # # # # # # # # #
-            input("stop")
 
             # May segfault without this line. 0x100 is a guess at the size of each stack frame.
             sys.setrecursionlimit(10000)
@@ -164,8 +163,8 @@ class Main:
     def create_test_map(self):
         tb = TestBuilder()
         tb.build_flat_surface(type_of_block=STONE)
-        tb.create_big_areas()
-        tb.create_walls(block_type=BEDROCK)
+        # tb.create_big_areas(block_type=BEDROCK)
+        # tb.create_walls(block_type=AIR)
 
     def check_if_wfc_completed(self, amount_of_tiles: int, tiles: List[Tile]) -> bool:
         amount_of_tiles_done = 0
