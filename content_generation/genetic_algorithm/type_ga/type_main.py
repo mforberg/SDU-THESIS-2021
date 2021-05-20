@@ -43,7 +43,8 @@ class TypesGA:
             # as long as it is not the last generation, find parents, do crossover, and mutate
             if i != TYPE_GENERATION_AMOUNT - 1:
                 parents_no_fitness = self.type_select.select_best_solutions(population_list=population)
-                crossed_population_no_fitness = self.type_crossover.crossover(population, parents_no_fitness)
+                crossed_population_no_fitness, elites = self.type_crossover.crossover(population, parents_no_fitness)
+                crossed_population_no_fitness.extend(elites)
                 self.type_mutation.mutate_populations(crossed_population_no_fitness)
                 population = crossed_population_no_fitness
         self.__update_global_dict_of_types(solution=self.best_solution,

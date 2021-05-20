@@ -1,6 +1,5 @@
 import random
 from typing import Dict
-from variables.ga_type_variables import *
 from models.shared_models import *
 
 
@@ -9,10 +8,11 @@ class Crossover:
     def __init__(self, population_size: int):
         self.parent_list = []
         self.population_size = population_size
-        self.elitism_amount = TYPE_ELITISM_AMOUNT
+        self.elitism_amount = 0
 
-    def crossover(self, population_list: List[SolutionGA], parent_list: List[SolutionGA]) -> List[SolutionGA]:
+    def crossover(self, population_list: List[SolutionGA], parent_list: List[SolutionGA]) -> tuple:
         self.parent_list = parent_list
+        elites = []
         new_population = []
         ordered_population_list = population_list
         ordered_population_list.sort(key=lambda x: x.fitness, reverse=True)
@@ -22,14 +22,14 @@ class Crossover:
                 break
             new_solution = copy.deepcopy(solution)
             new_solution.fitness = 0
-            new_population.append(new_solution)
-        while len(new_population) < self.population_size:
+            elites.append(new_solution)
+        while len(new_population) < self.population_size - len(elites):
             parents = self.__find_two_parents()
             children_dict = self.__create_offspring(parents['p1'], parents['p2'])
             new_population.append(SolutionGA(fitness=0, population=children_dict['c1']))
-            if len(new_population) < self.population_size:
+            if len(new_population) < self.population_size - len(elites):
                 new_population.append(SolutionGA(fitness=0, population=children_dict['c2']))
-        return new_population
+        return new_population, elites
 
     def __find_two_parents(self) -> dict:
         parent1 = self.__get_parent()
