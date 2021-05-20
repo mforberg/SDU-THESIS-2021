@@ -46,7 +46,7 @@ class Main:
         if not testing:
             #  Map GA
             solution_ga_without_types = AreasGA().run(areas=district_areas)
-
+            return
             #  K-means clustering
             print("Clustering Started")
             clusters = KMeansClustering().run(first_ga_result=solution_ga_without_types, surface_dict=self.surface_dict)

@@ -19,8 +19,9 @@ class Crossover:
         for i, solution in enumerate(ordered_population_list):
             if i == TYPE_ELITISM_AMOUNT:
                 break
-            solution.fitness = 0
-            new_population.append(copy.deepcopy(solution))
+            new_solution = copy.deepcopy(solution)
+            new_solution.fitness = 0
+            new_population.append(new_solution)
         while len(new_population) < self.population_size:
             parents = self.__find_two_parents()
             children_dict = self.__create_offspring(parents['p1'], parents['p2'])

@@ -40,8 +40,8 @@ class MapFitness:
         current_fitness += self.__mass_distance_fitness(mass_centers, area_masses)
         current_fitness += self.__altitude_fitness(height_list)
         current_fitness += self.__amount_fitness(population_len)
-        if current_fitness < 0:
-            current_fitness = 0
+        # if current_fitness < 0:
+        #     current_fitness = 0
         return current_fitness
 
     def __size_fitness(self, area_list: List[tuple], min_max_values: dict) -> float:
@@ -72,7 +72,10 @@ class MapFitness:
         # b = max score
         # x = average_distance_to_mass
         a = -FITNESS_DISTANCE_MAX_SCORE / FITNESS_DISTANCE_MAX_ALLOWED_DISTANCE_BEFORE_MINUS
-        return (a * avg_distance) + FITNESS_DISTANCE_MAX_SCORE
+        fitness = (a * avg_distance) + FITNESS_DISTANCE_MAX_SCORE
+        if fitness < 0:
+            return 0
+        return fitness
 
     def __altitude_fitness(self, height_list: list) -> float:
         # Altitude difference (too much too bad)
@@ -85,7 +88,10 @@ class MapFitness:
         # b = max score
         # x = average_distance
         a = -FITNESS_ALTITUDE_MAX_SCORE / FITNESS_ALTITUDE_MAX_ALLOWED_DIFFERENCE_BEFORE_MINUS
-        return (a * average_difference) + FITNESS_ALTITUDE_MAX_SCORE
+        fitness = (a * average_difference) + FITNESS_ALTITUDE_MAX_SCORE
+        if fitness < 0:
+            return 0
+        return fitness
 
     def __amount_fitness(self, population_len: int) -> float:
         # Amount (should not always go for most districts, but smaller solutions can easily get max score in the other)
