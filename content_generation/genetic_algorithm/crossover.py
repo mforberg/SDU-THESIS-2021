@@ -9,6 +9,7 @@ class Crossover:
     def __init__(self, population_size: int):
         self.parent_list = []
         self.population_size = population_size
+        self.elitism_amount = TYPE_ELITISM_AMOUNT
 
     def crossover(self, population_list: List[SolutionGA], parent_list: List[SolutionGA]) -> List[SolutionGA]:
         self.parent_list = parent_list
@@ -17,7 +18,7 @@ class Crossover:
         ordered_population_list.sort(key=lambda x: x.fitness, reverse=True)
         # pick top x
         for i, solution in enumerate(ordered_population_list):
-            if i == TYPE_ELITISM_AMOUNT:
+            if i == self.elitism_amount:
                 break
             new_solution = copy.deepcopy(solution)
             new_solution.fitness = 0
