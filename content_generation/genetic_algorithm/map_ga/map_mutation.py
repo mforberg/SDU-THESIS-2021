@@ -9,7 +9,7 @@ class MapMutation:
         for solution in population_list:
             if random.randint(1, 100) <= MAP_MUTATION_PERCENTAGE:
                 if random.randint(1, 2) == 1:
-                    if len(solution.population) < MAX_AREAS_IN_CITY:
+                    if len(solution.population) < MAX_AREAS_IN_CITY and len(solution.population) < len(areas.population):
                         self.__increase_size(solution.population, areas=areas)
                 else:
                     if len(solution.population) > MIN_AREAS_IN_CITY:
