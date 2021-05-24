@@ -1,0 +1,1 @@
+This dir will contain the world files.
