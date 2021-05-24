@@ -8,7 +8,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-content_generation/stats/*
+content_generation/stats/*.csv
 build/
 develop-eggs/
 dist/
