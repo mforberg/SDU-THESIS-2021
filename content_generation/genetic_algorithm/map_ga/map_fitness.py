@@ -7,8 +7,6 @@ from models.shared_models import *
 class MapFitness:
 
     def __init__(self):
-        self.median_y = 0
-        self.mass_center = {'x': 0, 'z': 0}
         #  amount of blocks divided by distance from min-max corners
         self.min_value_for_fitness_size = MIN_SIZE_OF_AREA / math.sqrt(MIN_SIZE_OF_AREA * 2)
 
@@ -17,8 +15,6 @@ class MapFitness:
             self.__calculate_individual_fitness(population)
 
     def __calculate_individual_fitness(self, solution: SolutionGA):
-        self.median_y = 0
-        self.mass_center = {'x': 0, 'z': 0}
         solution.fitness = self.calculate_fitness_from_population(solution.population)
 
     def calculate_fitness_from_population(self, population: List[SolutionArea]) -> float:
@@ -34,14 +30,12 @@ class MapFitness:
             total_z += area.mass_coordinate['z']
             area_masses.append(len(area.set_of_coordinates))
         population_len = len(population)
-        self.mass_center = {'x': total_x / population_len, 'z': total_z / population_len}
-        self.median_y = statistics.median(height_list)
+        mass_center = {'x': total_x / population_len, 'z': total_z / population_len}
+        median_y = statistics.median(height_list)
         current_fitness += per_area_fitness / population_len
-        current_fitness += self.__mass_distance_fitness(mass_centers, area_masses)
-        current_fitness += self.__altitude_fitness(height_list)
+        current_fitness += self.__mass_distance_fitness(mass_centers, area_masses, mass_center)
+        current_fitness += self.__altitude_fitness(height_list, median_y)
         current_fitness += self.__amount_fitness(population_len)
-        if current_fitness < 0:
-            current_fitness = 0
         return current_fitness
 
     def __size_fitness(self, area_list: List[tuple], min_max_values: dict) -> float:
@@ -58,12 +52,12 @@ class MapFitness:
         else:
             return value * FITNESS_SIZE_VALUE_MULTIPLIER
 
-    def __mass_distance_fitness(self, mass_centers: List[dict], mass_of_areas: List[int]) -> float:
+    def __mass_distance_fitness(self, mass_centers: List[dict], mass_of_areas: List[int], mass_center: dict) -> float:
         # Distance to each other (use mass center for all and check distance to average mass center)
         total_distance = 0
         for center, areas_len in zip(mass_centers, mass_of_areas):
-            x_distance = center['x'] - self.mass_center['x']
-            z_distance = center['z'] - self.mass_center['z']
+            x_distance = center['x'] - mass_center['x']
+            z_distance = center['z'] - mass_center['z']
             # a^2 + b^2 = c^2
             total_distance += (math.sqrt(math.pow(x_distance, 2) + math.pow(z_distance, 2)))/areas_len
         avg_distance = total_distance / len(mass_centers)
@@ -72,20 +66,26 @@ class MapFitness:
         # b = max score
         # x = average_distance_to_mass
         a = -FITNESS_DISTANCE_MAX_SCORE / FITNESS_DISTANCE_MAX_ALLOWED_DISTANCE_BEFORE_MINUS
-        return (a * avg_distance) + FITNESS_DISTANCE_MAX_SCORE
+        fitness = (a * avg_distance) + FITNESS_DISTANCE_MAX_SCORE
+        if fitness < 0:
+            return 0
+        return fitness
 
-    def __altitude_fitness(self, height_list: list) -> float:
+    def __altitude_fitness(self, height_list: list, median_y: float) -> float:
         # Altitude difference (too much too bad)
         total_difference = 0
         for y in height_list:
-            total_difference += abs(self.median_y - y)
+            total_difference += abs(median_y - y)
         average_difference = total_difference / len(height_list)
         # y = a*x + b
         # a = y2 - y1 / x2 - x1 (y1 is max score, x1 is 0, y2 is 0, x2 is the max y-diff unless minus)
         # b = max score
         # x = average_distance
         a = -FITNESS_ALTITUDE_MAX_SCORE / FITNESS_ALTITUDE_MAX_ALLOWED_DIFFERENCE_BEFORE_MINUS
-        return (a * average_difference) + FITNESS_ALTITUDE_MAX_SCORE
+        fitness = (a * average_difference) + FITNESS_ALTITUDE_MAX_SCORE
+        if fitness < 0:
+            return 0
+        return fitness
 
     def __amount_fitness(self, population_len: int) -> float:
         # Amount (should not always go for most districts, but smaller solutions can easily get max score in the other)

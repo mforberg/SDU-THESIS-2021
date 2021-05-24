@@ -13,7 +13,7 @@ class AStarMain:
         self.a_star = AStar(surface_dict=surface_dict, fluid_set=fluid_set)
 
     def run(self, cluster_list: List[Cluster], connection_tiles: List[tuple]) -> List[tuple]:
-        self.__unit_test()
+        # self.__unit_test()
         blocked_coordinates, connection_points = self.a_star_preprocess.run(cluster_list=cluster_list,
                                                                             connection_tiles=connection_tiles)
         a_points = self.a_star.run(blocked_coordinates=blocked_coordinates, connection_points=connection_points)

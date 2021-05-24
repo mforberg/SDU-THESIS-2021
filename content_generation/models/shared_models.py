@@ -64,6 +64,13 @@ class SolutionArea:
             total_y += surface_dict[coordinate].y
         self.height = total_y / len(self.list_of_coordinates)
 
+    def __eq__(self, other):
+        self_mass_coordinate = (int(self.mass_coordinate['x']), int(self.mass_coordinate['z']))
+        other_mass_coordinate = (int(other.mass_coordinate['x']), int(other.mass_coordinate['z']))
+        if self_mass_coordinate == other_mass_coordinate:
+            return True
+        return False
+
 
 class SolutionGA:
 

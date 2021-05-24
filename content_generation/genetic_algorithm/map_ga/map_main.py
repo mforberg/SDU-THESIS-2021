@@ -44,21 +44,24 @@ class AreasGA:
                 #  Select
                 parents_no_fitness = self.map_select.select_best_solutions(population)
                 #  Crossover
-                crossed_population_no_fitness = self.map_crossover.crossover(population, parents_no_fitness)
+                crossed_population_no_fitness, elites = self.map_crossover.crossover(population, parents_no_fitness)
+                crossed_population_no_fitness.extend(elites)
                 #  Mutation
                 self.map_mutation.mutate_populations(crossed_population_no_fitness, areas)
                 #  set population and clean it
                 population = crossed_population_no_fitness
+
                 self.__clean_population_for_duplicates(population=population)
         # for string in self.new_best_prints:
         #     print(string)
+        print(self.best_solution)
         return self.best_solution
 
     def __clean_population_for_duplicates(self, population: List[SolutionGA]):
         for solution in population:
             unique_sets = set()
             for area in solution.population:
-                mass_coordinate = (area.mass_coordinate['x'], area.mass_coordinate['z'])
+                mass_coordinate = (int(area.mass_coordinate['x']), int(area.mass_coordinate['z']))
                 if mass_coordinate in unique_sets:
                     solution.population.remove(area)
                 else:

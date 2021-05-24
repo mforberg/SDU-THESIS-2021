@@ -33,7 +33,7 @@ class DataFileCreator:
                     best_solution = copy.deepcopy(solution)
                     new_best_prints.append(f"New best {solution.fitness} at gen {current_gen}")
         data = {'Min': min_fitness, 'Max': max_fitness, 'Avg': avg_fitness / len(population)}
-        # self.__store_stats(gen=current_gen, data=data)
+        self.__store_stats(gen=current_gen, data=data)
         return new_best_prints, best_solution
 
     def __store_stats(self, gen: int, data: dict):

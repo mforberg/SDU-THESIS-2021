@@ -3,7 +3,6 @@ from typing import Set
 import minecraft_pb2_grpc
 import multiprocessing
 from multiprocessing import Pool
-import time
 import grpc
 from shared_models import *
 from map_anal_models import MapAnalData
@@ -26,9 +25,7 @@ class MapAnalysis:
         total_surface_dict = {}
         total_block_dict = {}
         self.create_area_for_work()
-        first_time = time.time()
         result = self.pool_handler()
-        print("Time:", time.time() - first_time)
         for dictionary in result:
             total_block_dict.update(dictionary['block_dict'])
             total_surface_dict.update(dictionary['surface_dict'])
@@ -48,7 +45,7 @@ class MapAnalysis:
     def pool_handler(self):
         p = Pool(int(multiprocessing.cpu_count() - 1))
         result = []
-        for i in tqdm.tqdm(p.imap_unordered(self.work_log, self.work), total=len(self.work)):
+        for i in tqdm.tqdm(p.imap_unordered(self.work_log, self.work), total=len(self.work), desc='Map Analysis'):
             result.append(i)
         return result
 
@@ -78,14 +75,11 @@ class MapAnalysis:
         solution = SolutionGA(population=[], fitness=0)
         fluid_blocks_set = set()
         checked_nodes = set()
-        start = time.time()
         for node in surface_dict:
             if node not in checked_nodes:
                 area = self.find_area(surface_dict, node[0], node[1], checked_nodes, fluid_blocks_set)
                 if len(area.list_of_coordinates) >= MIN_SIZE_OF_AREA:
                     solution.population.append(area)
-        print(f"End of while time: {time.time() - start}")
-        print(f"Length of checked nodes {len(checked_nodes)}")
         return solution, fluid_blocks_set
 
     def find_area(self, surface_dict: dict, block_x: int, block_z: int, checked_nodes: Set[tuple],
