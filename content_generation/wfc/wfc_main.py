@@ -180,8 +180,8 @@ class WaveFunctionCollapse:
         while len(stack) > 0:
             current_tile = stack.pop()
             for neighbor in current_tile.neighbors:
-                if len(neighbor.states) == 1:
-                    continue
+                # if len(neighbor.states) == 1:
+                #     continue
                 length_of_old = len(neighbor.states)
                 legal_states_for_neighbor = self.__get_neighbors_allowed_states(current_tile=current_tile,
                                                                                 neighbor_tile=neighbor)
