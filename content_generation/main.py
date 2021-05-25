@@ -51,7 +51,7 @@ class Main:
             print("Clustering Started")
             clusters = KMeansClustering().run(first_ga_result=solution_ga_without_types, surface_dict=self.surface_dict)
 
-            # SurfaceBuilder().build_clusters(clusters=clusters, surface_dict=surface_dict)
+            # SurfaceBuilder().build_clusters(clusters=clusters, surface_dict=self.surface_dict)
             # self.rollback(surface_dict=self.surface_dict)
 
             #  Type GA
