@@ -8,20 +8,20 @@ from minecraft_pb2 import *
 # BOX_Z_MAX = 23232950
 """Jonas' coordinates"""
 # Showcases:
-BOX_X_MIN = 150
-BOX_X_MAX = 350
-BOX_Z_MIN = 1900
-BOX_Z_MAX = 2100
+# BOX_X_MIN = 150
+# BOX_X_MAX = 350
+# BOX_Z_MIN = 1900
+# BOX_Z_MAX = 2100
 # ------
 # BOX_X_MIN = 170
 # BOX_X_MAX = 370
 # BOX_Z_MIN = 2240
 # BOX_Z_MAX = 2440
 # ------
-# BOX_X_MIN = 260
-# BOX_X_MAX = 460
-# BOX_Z_MIN = 2490
-# BOX_Z_MAX = 2690
+BOX_X_MIN = 260
+BOX_X_MAX = 460
+BOX_Z_MIN = 2490
+BOX_Z_MAX = 2690
 # A* Test coordinates
 # BOX_X_MIN = 100
 # BOX_X_MAX = 300
