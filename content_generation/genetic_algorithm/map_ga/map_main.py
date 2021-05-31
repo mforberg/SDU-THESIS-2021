@@ -52,8 +52,6 @@ class AreasGA:
                 population = crossed_population_no_fitness
 
                 self.__clean_population_for_duplicates(population=population)
-        # for string in self.new_best_prints:
-        #     print(string)
         print(self.best_solution)
         return self.best_solution
 
