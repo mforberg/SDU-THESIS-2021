@@ -36,11 +36,10 @@ class TypeFitness:
 
     def __crafting_has_resources_nearby(self, area: SolutionArea, preprocess_dict: dict) -> float:
         resource_list = preprocess_dict[(area.mass_coordinate['x'], area.mass_coordinate['z'])].resource_list
-        water_mass = preprocess_dict[(area.mass_coordinate['x'], area.mass_coordinate['z'])].resource_mass
         resource_amount = len(resource_list)
         if resource_amount <= 0:
             return -FITNESS_TYPE_CRAFTING_MAX_SCORE
-        resource_per_block = len(area.list_of_coordinates) / resource_amount
+        resource_per_block = resource_amount / len(area.list_of_coordinates)
         # y = a*x + b
         # a = y2 - y1 / x2 - x1 (y1 is 0, x1 is 0, y2 is max score, x2 is the perfect amount of resources per block)
         # b = 0
@@ -64,11 +63,10 @@ class TypeFitness:
 
     def __fishing_should_be_near_water(self, area: SolutionArea, preprocess_dict: dict) -> float:
         water_list = preprocess_dict[(area.mass_coordinate['x'], area.mass_coordinate['z'])].water_list
-        water_mass = preprocess_dict[(area.mass_coordinate['x'], area.mass_coordinate['z'])].water_mass
         water_amount = len(water_list)
         if water_amount == 0:
             return -FITNESS_TYPE_FISHING_MAX_SCORE
-        water_per_block = len(area.list_of_coordinates) / water_amount
+        water_per_block = water_amount / len(area.list_of_coordinates)
         # y = a*x + b
         # a = y2 - y1 / x2 - x1 (y1 is 0, x1 is 0, y2 is max score, x2 is the perfect amount of water per block)
         # b = 0
