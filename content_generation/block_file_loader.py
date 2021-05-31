@@ -14,12 +14,12 @@ class BlockFileLoader:
         if os.path.exists(f'{save_file_dir}{save_file_path}'):
             print('Do you want to run on save file? 1 or 2')
             keyOne = fetch_user_integer()
-            #Should the user want to use a saved file
+            # Should the user want to use a saved file
             if keyOne == 1:
                 block_file = self.file_selector(save_file_dir)
                 unpickled_block_file = pickle.load(block_file)
                 self.load_from_pkl_file(unpickled_block_file)
-            #If the user doesn't want to use a save file
+            # If the user doesn't want to use a save file
             else:
                 print('Do you want to save the old file before creating a new one? 1 or 2')
                 keyTwo = fetch_user_integer()

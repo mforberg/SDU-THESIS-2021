@@ -135,7 +135,6 @@ class WaveFunctionCollapse:
         return list_of_connection_tiles
 
     def __remove_illegal_neighbors(self, clustered_tiles):
-        # Remove illegal neighbors AGAIN???
         for cluster in clustered_tiles:
             for tile in cluster.tiles:
                 for neighbor in tile.neighbors:

@@ -49,9 +49,6 @@ class Tile:
         entropy = (log(sum_of_weights) - pp_weights / sum_of_weights)
         noise = random.uniform(0, (entropy*0.05))
         self.entropy = entropy - noise
-        # print("- - - - look here - - - - -")
-        # print(f"entropy: {entropy}, noise: {noise}")
-        # print(self.entropy)
 
     def update_entropy(self):
         sum_of_weights = 0
@@ -59,8 +56,6 @@ class Tile:
         for state in self.states:
             sum_of_weights += state.weight
             pp_weights += state.weight * log(state.weight)
-        if len(self.states) == 0:
-            print("error incumming")
         self.entropy = (log(sum_of_weights) - pp_weights / sum_of_weights)
 
     def __repr__(self):

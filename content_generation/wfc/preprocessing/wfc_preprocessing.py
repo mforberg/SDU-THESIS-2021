@@ -292,8 +292,8 @@ class WFCPreprocessing:
         self.__min_z = values[3]
 
     def __get_min_max_values(self, result: SolutionGA) -> (int, int, int, int):
-        min_x, min_z = 9999999, 9999999 #self.__min_x, self.__min_z
-        max_x, max_z = -9999999, -9999999 #self.__max_x, self.__max_z
+        min_x, min_z = 9999999, 9999999
+        max_x, max_z = -9999999, -9999999
         for population in result.population:
             population.recalculate_min_max_mass()
             min_max_dict = population.min_max_values
