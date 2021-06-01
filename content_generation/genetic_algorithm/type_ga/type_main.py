@@ -49,8 +49,6 @@ class TypesGA:
                 population = crossed_population_no_fitness
         self.__update_global_dict_of_types(solution=self.best_solution,
                                            global_dict_of_used_types=global_district_types_dict)
-        # for string in self.new_best_prints:
-        #     print(string)
         return self.best_solution
 
     def __update_global_dict_of_types(self, solution: SolutionGA, global_dict_of_used_types: dict):

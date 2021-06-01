@@ -4,8 +4,6 @@ import xml.etree.ElementTree as ET
 
 class WfcStates:
 
-    # TODO: Combine to 1 method I guess, parameter = path
-
     def create_3x3_states(self):
 
         weights = {}

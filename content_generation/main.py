@@ -101,23 +101,15 @@ class Main:
             with open("test_files/connection_test_tiles.pkl", "wb") as file:
                 pickle.dump(connection_tiles, file)
 
-        # self.rollback(surface_dict=self.surface_dict)
-
         with open("test_files/clustered_test_file.pkl", "rb") as file:
             clustered_tiles = pickle.load(file)
         with open("test_files/connection_test_tiles.pkl", "rb") as file:
             connection_tiles = pickle.load(file)
 
-        list_of_collapsed_tiles = []
         wfc = WaveFunctionCollapse(tile_size=self.tile_size)
-        # tile_count = 0
-        # for cluster in clustered_tiles:
-        #     tile_count += len(cluster.tiles)
-        # while self.check_if_wfc_completed(tile_count, list_of_collapsed_tiles):
-        #     try:
+
         list_of_collapsed_tiles = wfc.run(clustered_tiles=clustered_tiles, connection_tiles=connection_tiles)
-            # except:
-            #     print(" uh oh ")
+
         self.WFC_builder.build_collapsed_tiles(surface_dict=self.surface_dict,
                                                list_of_collapsed_tiles=list_of_collapsed_tiles)
 
@@ -173,11 +165,6 @@ class Main:
                 amount_of_tiles_done += 1
         return amount_of_tiles == amount_of_tiles_done
 
+
 if __name__ == '__main__':
     Main().run()
-    # try:
-    #     Main().run()
-    # except:
-    #     Main().failsafe()
-    # else:
-    #     print("Rollback commence due to errors")
