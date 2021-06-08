@@ -1,6 +1,6 @@
 # Map_GA variables
-MAP_POPULATION_SIZE = 400
-MAP_AMOUNT_OF_PARENTS_CHOSEN = 400  # if this is not the same as MAP_POP_SIZE randoms will be put into the parent list
+MAP_POPULATION_SIZE = 1000
+MAP_AMOUNT_OF_PARENTS_CHOSEN = 1000  # if this is not the same as MAP_POP_SIZE randoms will be put into the parent list
 MIN_AREAS_IN_CITY = 1
 MAX_AREAS_IN_CITY = 10
 MAP_GENERATION_AMOUNT = 200

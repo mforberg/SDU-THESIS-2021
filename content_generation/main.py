@@ -68,12 +68,16 @@ class Main:
             # result[0] all tiles, result[1] only tiles associated with solution
             result = wfc_pp.create_tiles(complete_solution_ga=final_solution_ga,
                                          surface_dict=self.surface_dict)
+            # self.SFB.build_wfc_absorubed_tiles_layer(surface_dict=self.surface_dict, wfc_tiles=result[1][0])
+            # input("Waiting..")
+            # self.SFB.delete_wfc_absorbed_tiles_layer()
+
             clustered_tiles = result[1][1]
 
             deforester = Deforest.getInstance()
             deforester.run(clusters=clustered_tiles, surface_dict=self.surface_dict)
 
-            wfc_pp.remove_neighbors(clustered_tiles=clustered_tiles)
+            # wfc_pp.remove_neighbors(clustered_tiles=clustered_tiles)
 
             self.old_surface_dict = copy.deepcopy(self.surface_dict)
             self.new_and_old_map = wfc_pp.normalize_height(clustered_tiles=clustered_tiles,
@@ -83,6 +87,7 @@ class Main:
             connection_p = ConnectionPoints(clusters=clustered_tiles)
             connection_tiles = connection_p.run()
             self.SFB.build_connection_tiles(surface_dict=self.surface_dict, connection_tiles=connection_tiles)
+            # input("Waiting..")
 
             # # # # # # # # # # # # # # # # # # # # # # #
             # # # # # # # # #  A* Start # # # # # # # # #

@@ -85,7 +85,7 @@ class SolutionGA:
     def __deepcopy__(self, memo):
         copy_list = []
         for x in self.population:
-            copy_list.append(copy.deepcopy(x, memo))
+            copy_list.append(copy.copy(x))
         copy_object = SolutionGA(self.fitness, copy_list)
         return copy_object
 
